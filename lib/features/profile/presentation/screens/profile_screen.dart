@@ -1,6 +1,7 @@
 import 'package:bitacoras_app/features/profile/domain/models/profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bitacoras_app/app/routes/app_routes.dart';
 import '../widgets/profile_info_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -32,10 +33,14 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF0F4C81),
         elevation: 0,
         centerTitle: true,
-        // 👈 Flecha de regreso manual garantizada
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.pop(), 
+          onPressed: () async {
+            final didPop = await Navigator.of(context).maybePop();
+            if (!didPop) {
+              context.go(AppRoutes.studentHome);
+            }
+          },
         ),
         title: const Text(
           'Mi Perfil',

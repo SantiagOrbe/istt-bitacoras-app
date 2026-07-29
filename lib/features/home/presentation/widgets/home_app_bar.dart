@@ -39,7 +39,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               backgroundColor: Colors.white.withOpacity(0.2), // Avatar translúcido
               child: InkWell(
                 borderRadius: BorderRadius.circular(100),
-                onTap: () => context.go(AppRoutes.profile),
+                onTap: () => context.push(AppRoutes.profile),
                 child: const Icon(
                   Icons.person_outline,
                   color: Colors.white,
