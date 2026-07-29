@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
   const HomePage({
     super.key,
     required this.user,
-    required this.actions,
+    required this.actions, 
   });
 
   @override
@@ -44,10 +44,6 @@ class HomePage extends StatelessWidget {
             if (isStudent) ...[
               const SizedBox(height: 16),
               const StatusCard(
-                title: "Estado Actual",
-                description: "No ha registrado entrada",
-                color: Color(0xFFC0392B), // Rojo de advertencia
-                icon: Icons.access_time_filled_rounded,
               ),
             ],
             

@@ -1,6 +1,9 @@
+import 'package:bitacoras_app/features/attendance/presentation/providers/attendance_provider.dart';
 import 'package:bitacoras_app/features/home/data/repositories/fake_dashboard_repository.dart';
 import 'package:bitacoras_app/features/home/data/repositories/fake_user_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'home_page.dart';
 
@@ -9,9 +12,19 @@ class StudentHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomePage(
-      user: FakeUserRepository.student,
-      actions: FakeDashboardRepository.studentActions(),
-    );
+    // 1. Escuchar los cambios del estado de asistencia en tiempo real
+    final attendanceProvider = context.watch<AttendanceProvider>();
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await SystemNavigator.pop();
+      },
+      child: HomePage(
+        user: FakeUserRepository.student,
+        actions: FakeDashboardRepository.studentActions(context),
+      ),
+    ); 
   }
 }

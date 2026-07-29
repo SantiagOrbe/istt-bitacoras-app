@@ -4,6 +4,8 @@ import '../../../home/models/user_role.dart';
 
 // Imports de tus pantallas de destino (Homes)
 import '../../../home/presentation/pages/student_home.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../app/routes/app_routes.dart';
 import '../../../home/presentation/pages/teacher_home.dart';
 import '../../../home/presentation/pages/academic_tutor_home.dart';
 import '../../../home/presentation/pages/company_tutor_home.dart';
@@ -84,6 +86,12 @@ class LoginController {
       case UserRole.admin:
         targetHome = const AdminHome();
         break;
+    }
+
+    // Use GoRouter to navigate to student home so routing is consistent
+    if (role == UserRole.student) {
+      context.go(AppRoutes.studentHome);
+      return;
     }
 
     Navigator.pushReplacement(

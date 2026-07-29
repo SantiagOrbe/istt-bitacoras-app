@@ -34,10 +34,6 @@ class DashboardBody extends StatelessWidget {
           const SizedBox(height:20),
 
           const StatusCard(
-            title: "Estado actual",
-            description: "No ha registrado entrada",
-            color: Colors.red,
-            icon: Icons.access_time,
           ),
 
           const SizedBox(height:30),

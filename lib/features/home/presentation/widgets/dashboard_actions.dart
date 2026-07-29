@@ -20,7 +20,7 @@ class DashboardActions extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 1.05, // Ajuste milimétrico para simular tu diseño cuadrado
+        childAspectRatio: 1.05, 
       ),
       itemBuilder: (context, index) {
         final action = actions[index];
@@ -29,23 +29,22 @@ class DashboardActions extends StatelessWidget {
         Color cardColor;
         switch (index) {
           case 0:
-            cardColor = const Color(0xFFF1C40F); // Amarillo institucional para Registro de Entrada
+            cardColor = const Color(0xFF2E7D32); 
             break;
           case 1:
-            cardColor = const Color(0xFFBDC3C7); // Gris para Registro de Salida (deshabilitado al inicio)
+            cardColor = const Color(0xFFD35400);; 
             break;
           case 2:
-            cardColor = const Color(0xFF27AE60); // Verde para el Historial
+            cardColor = const Color(0xFF00695C); 
             break;
           case 3:
-            cardColor = const Color(0xFF2980B9); // Azul para el Perfil
+            cardColor = const Color(0xFF0F4C81); 
             break;
           default:
             cardColor = const Color(0xFF0F4C81);
         }
 
-        // Si el botón es el de registrar salida (index 1), podemos simular que está deshabilitado temporalmente
-        final bool isEnabled = index != 1;
+        final bool isEnabled = action.enabled;
 
         return QuickAccessCard(
           title: action.title,

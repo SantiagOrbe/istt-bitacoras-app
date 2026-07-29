@@ -1,30 +1,26 @@
+// lib/config/constants/app_colors.dart
 import 'package:flutter/material.dart';
 
 class AppColors {
   AppColors._();
 
- 
-  // Colores Institucionales
-  static const primary = Color(0xFF0F9D58);
-  static const secondary = Color(0xFF1E88E5);
+  // Colores Institucionales IST Tena
+  static const primary = Color(0xFF0F52BA);   // Azul Petróleo Principal
+  static const secondary = Color(0xFF00A8E8); // Cian / Verde Agua
 
-
-  // Backgrounds
-  static const background = Color(0xFFF6F8FA);
-
+  // Backgrounds y Superficies
+  static const background = Color(0xFFF8FAFC);
   static const surface = Colors.white;
 
   // Textos
-  static const textPrimary = Color(0xFF212121);
-  static const textSecondary = Color(0xFF616161);
+  static const textPrimary = Color(0xFF1E293B);
+  static const textSecondary = Color(0xFF64748B);
   static const textHint = Color(0xFF9E9E9E);
 
-
-  // Estados
-  static const success = Color(0xFF2E7D32);
-  static const warning = Color(0xFFF9A825);
+  // Estados Institucionales (Colores del Isotipo)
+  static const success = Color(0xFF8CBF3F);   // Verde Hoja IST Tena
+  static const warning = Color(0xFFFFD100);   // Amarillo Hoja IST Tena
   static const error = Color(0xFFD32F2F);
-
 
   // Bordes
   static const outline = Color(0xFFE0E0E0);

@@ -1,31 +1,72 @@
+import 'package:bitacoras_app/features/attendance/presentation/providers/attendance_provider.dart';
+import 'package:bitacoras_app/features/attendance/presentation/screens/history_screen.dart';
+import 'package:bitacoras_app/features/attendance/presentation/screens/register_attendance_screen.dart';
+import 'package:bitacoras_app/features/attendance/presentation/screens/reports_screen.dart';
 import 'package:bitacoras_app/features/home/models/quick_action.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class FakeDashboardRepository {
   FakeDashboardRepository._();
 
-  static List<QuickAction> studentActions() {
+  static List<QuickAction> studentActions(BuildContext context) {
     return [
       QuickAction(
         title: 'Registrar asistencia',
         icon: Icons.login,
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChangeNotifierProvider(
+                create: (_) => AttendanceProvider(),
+                child: const RegisterAttendanceScreen(),
+              )),
+          );
+        },
       ),
       QuickAction(
-        title: 'Mis actividades', 
-        icon: Icons.assignment,
-        onTap: () {},
+        title: "Registrar\nSalida",
+        icon: Icons.exit_to_app,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ChangeNotifierProvider(
+                create: (_) => AttendanceProvider(),
+                child: const RegisterAttendanceScreen(isEntry: false),
+              ),
+            ),
+          );
+        },
       ),
       QuickAction(
         title: 'Historial',
         icon: Icons.history,
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChangeNotifierProvider(
+                create: (_) => AttendanceProvider(),
+                child: const HistoryScreen(),
+              ),
+            ),
+          );
+        },
       ),
       QuickAction(
-        title: 'Mi perfil',
-        icon: Icons.person,
-        onTap: () {},
+        title: 'Reportes', 
+        icon: Icons.assignment,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReportsScreen(),
+            ),
+          );
+        },
       ),
     ];
   }
