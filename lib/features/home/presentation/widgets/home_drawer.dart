@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bitacoras_app/app/routes/app_routes.dart';
-import '../../models/user_model.dart';
+import '../../domain/models/user_model.dart';
 import '../../../../app/routes/app_routes.dart';
 
 class HomeDrawer extends StatelessWidget {

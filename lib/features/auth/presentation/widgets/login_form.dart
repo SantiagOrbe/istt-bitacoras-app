@@ -1,68 +1,63 @@
 import 'package:flutter/material.dart';
-import '../../../../core/widgets/buttons/custom_button.dart';
-import '../../../../core/widgets/inputs/custom_text_field.dart';
-import '../../../../core/widgets/inputs/password_text_field.dart';
-import 'login_controller.dart'; // Importamos el controlador
+import 'package:bitacoras_app/core/widgets/buttons/custom_button.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class LoginForm extends StatelessWidget {
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final bool isPasswordVisible;
+  final bool isLoading;
+  final VoidCallback onTogglePasswordVisibility;
+  final VoidCallback onSubmit;
 
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
-  final userController = TextEditingController();
-  final passwordController = TextEditingController();
-  
-  bool _isLoading = false;
-  late LoginController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    // Inicializamos el controlador pasándole las dependencias necesarias
-    _controller = LoginController(
-      context: context,
-      userController: userController,
-      passwordController: passwordController,
-      onLoadingChanged: (loading) {
-        setState(() => _isLoading = loading);
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    userController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
+  const LoginForm({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+    required this.isPasswordVisible,
+    required this.isLoading,
+    required this.onTogglePasswordVisibility,
+    required this.onSubmit,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextField(
-          controller: userController,
-          label: 'Correo Institucional',
-          prefixIcon: Icons.email_outlined,
+        TextField(
+          controller: emailController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            labelText: 'Correo Institucional',
+            hintText: 'ejemplo@itst.edu.ec',
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
         ),
-
-        const SizedBox(height: 20),
-
-        PasswordTextField(
+        AppSizes.gapV16,
+        TextField(
           controller: passwordController,
-        ),
-
-        const SizedBox(height: 30),
-
-        _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : CustomButton(
-                text: 'Ingresar',
-                onPressed: _controller.login, // Delegamos la acción al controlador
+          obscureText: !isPasswordVisible,
+          decoration: InputDecoration(
+            labelText: 'Contraseña',
+            prefixIcon: const Icon(Icons.lock_outline_rounded),
+            suffixIcon: IconButton(
+              icon: Icon(
+                isPasswordVisible
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
               ),
+              onPressed: onTogglePasswordVisibility,
+            ),
+          ),
+        ),
+        AppSizes.gapV24,
+        CustomButton(
+          isFullWidth: true,
+          text: 'Iniciar Sesión',
+          icon: Icons.login_rounded,
+          isLoading: isLoading,
+          onPressed: onSubmit,
+        ),
       ],
     );
   }

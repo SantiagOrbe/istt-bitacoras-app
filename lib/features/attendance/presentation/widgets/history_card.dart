@@ -1,5 +1,6 @@
-import 'package:bitacoras_app/features/attendance/domain/models/practice_record_model.dart';
 import 'package:flutter/material.dart';
+import 'package:bitacoras_app/features/attendance/domain/models/practice_record_model.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 
 class HistoryCard extends StatelessWidget {
   final PracticeRecordModel record;
@@ -11,47 +12,82 @@ class HistoryCard extends StatelessWidget {
     required this.onDetailPressed,
   });
 
+  // Helper para asignar color según el estado del registro
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'completado':
+      case 'aprobado':
+        return AppColors.success;
+      case 'pendiente':
+      case 'en proceso':
+        return AppColors.warning;
+      case 'rechazado':
+      case 'incompleto':
+        return AppColors.error;
+      default:
+        return AppColors.primary;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final statusColor = _getStatusColor(record.status);
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: AppSizes.md),
+      padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        border: Border.all(color: AppColors.outline),
       ),
       child: Column(
         children: [
+          // Header: Fecha y Badge de Estado
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  const Icon(Icons.calendar_today_rounded, color: Colors.black87, size: 18),
-                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.calendar_today_rounded,
+                    color: AppColors.textPrimary,
+                    size: 18,
+                  ),
+                  AppSizes.gapH8,
                   Text(
                     record.date,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: AppTextStyles.bodyBold.copyWith(
+                      fontSize: 16,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm + 2,
+                  vertical: AppSizes.xs,
+                ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F5E9),
-                  borderRadius: BorderRadius.circular(12),
+                  color: statusColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                 ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF2E7D32)),
-                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 14,
+                      color: statusColor,
+                    ),
+                    AppSizes.gapH4,
                     Text(
                       record.status,
-                      style: const TextStyle(
+                      style: AppTextStyles.caption.copyWith(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF2E7D32),
+                        color: statusColor,
                       ),
                     ),
                   ],
@@ -59,17 +95,30 @@ class HistoryCard extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(height: 20),
+          
+          Divider(height: 24, color: AppColors.divider),
+          
+          // Fila de Horarios: Entrada y Salida
           Row(
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Entrada', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    Text(
+                      'Entrada',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                    AppSizes.gapV4,
                     Text(
                       record.entryTime,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: AppTextStyles.bodyBold.copyWith(
+                        fontSize: 15,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                   ],
                 ),
@@ -78,36 +127,65 @@ class HistoryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Salida', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    Text(
+                      'Salida',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                    AppSizes.gapV4,
                     Text(
                       record.exitTime ?? '--:--',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: AppTextStyles.bodyBold.copyWith(
+                        fontSize: 15,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          
+          AppSizes.gapV16,
+          
+          // Botón Ver Detalle
           Align(
             alignment: Alignment.centerRight,
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                side: const BorderSide(color: Color(0xFF003366)),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                ),
+                side: const BorderSide(color: AppColors.primary),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.md,
+                  vertical: AppSizes.xs,
+                ),
               ),
               onPressed: onDetailPressed,
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Ver Detalle', style: TextStyle(color: Color(0xFF003366), fontSize: 12, fontWeight: FontWeight.bold)),
-                  SizedBox(width: 4),
-                  Icon(Icons.chevron_right, size: 16, color: Color(0xFF003366)),
+                  Text(
+                    'Ver Detalle',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  AppSizes.gapH4,
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    size: 16,
+                    color: AppColors.primary,
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

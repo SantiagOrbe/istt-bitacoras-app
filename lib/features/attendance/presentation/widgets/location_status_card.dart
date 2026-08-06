@@ -1,41 +1,37 @@
-import 'package:flutter/material.dart';
+
+import 'package:bitacoras_app/shared/exports.dart';
 
 class LocationStatusCard extends StatelessWidget {
-  const LocationStatusCard({super.key});
+  final bool isValid;
+  final String? message;
+
+  const LocationStatusCard({
+    super.key,
+    required this.isValid,
+    this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final statusColor = isValid ? AppColors.success : AppColors.error;
+    final statusText = message ?? (isValid ? 'Dentro del rango permitido' : 'Fuera del rango permitido');
+
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F5E9),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF2E7D32), width: 1.5),
+        color: statusColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        border: Border.all(color: statusColor),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: Color(0xFF2E7D32),
-            radius: 16,
-            child: Icon(Icons.check, color: Colors.white, size: 20),
-          ),
-          SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Ubicación Válida',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E7D32),
-                  fontSize: 15,
-                ),
-              ),
-              Text(
-                'Dentro del rango permitido',
-                style: TextStyle(color: Colors.black54, fontSize: 12),
-              ),
-            ],
+          Icon(isValid ? Icons.location_on : Icons.location_off, color: statusColor),
+          AppSizes.gapH12,
+          Expanded(
+            child: Text(
+              statusText,
+              style: AppTextStyles.bodyBold.copyWith(color: statusColor),
+            ),
           ),
         ],
       ),

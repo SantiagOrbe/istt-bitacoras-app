@@ -25,4 +25,18 @@ class AppColors {
   // Bordes
   static const outline = Color(0xFFE0E0E0);
   static const divider = Color(0xFFEEEEEE);
+
+
+  // Colores de Apoyo y Modales
+  static const overlay = Color(0x80000000);        // Transparencia para fondos de diálogos y modales
+  static const shadow = Color(0x0A000000);         // Sombras suaves de cards e inputs
+  static const disabled = Color(0xFFCBD5E1);       // Botones u opciones inactivas
+  static const textDisabled = Color(0xFF94A3B8);   // Texto sobre elementos deshabilitados
+
+  // Fondos para Badges y Estados (Tonos Soft)
+  static const successSoft = Color(0xFFF0FDF4);   // Fondo para badges o contenedores de éxito
+  static const warningSoft = Color(0xFFFEFCE8);   // Fondo para badges de registros "En curso"
+  static const errorSoft = Color(0xFFFEF2F2);     // Fondo para alertas o contenedores de error
+  static const infoSoft = Color(0xFFEFF6FF);      // Fondo para mensajes informativos
+  static const info = Color(0xFF3B82F6);           // Color de acento para notificaciones o alertas informativas
 }

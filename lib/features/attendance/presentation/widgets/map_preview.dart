@@ -1,47 +1,118 @@
 import 'package:flutter/material.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 
 class MapPreview extends StatelessWidget {
-  const MapPreview({super.key});
+  final String? mapImageUrl;
+  final bool isGpsActive;
+  final String statusLabel;
+
+  const MapPreview({
+    super.key,
+    this.mapImageUrl,
+    this.isGpsActive = true,
+    this.statusLabel = 'GPS Activo',
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 160,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        image: const DecorationImage(
-          image: NetworkImage('https://tile.openstreetmap.org/15/9385/16834.png'),
-          fit: BoxFit.cover,
+    final effectiveImageUrl = mapImageUrl ?? 'https://tile.openstreetmap.org/15/9385/16834.png';
+    final activeColor = isGpsActive ? AppColors.primary : AppColors.error;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+      child: Container(
+        height: 160,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.outline.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          border: Border.all(color: AppColors.outline),
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 12,
-            right: 12,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 4),
-                ],
-              ),
-              child: const Row(
-                children: [
-                  Icon(Icons.gps_fixed, size: 14, color: Color(0xFF003366)),
-                  SizedBox(width: 4),
-                  Text(
-                    'GPS Activo',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                ],
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Imagen del mapa de fondo con manejo de carga y error
+            Positioned.fill(
+              child: Image.network(
+                effectiveImageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: AppColors.surface,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.map_outlined,
+                          size: 32,
+                          color: AppColors.textSecondary,
+                        ),
+                        AppSizes.gapV4,
+                        Text(
+                          'No se pudo cargar el mapa',
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-        ],
+
+            // Marcador central (Pin de ubicación)
+            Center(
+              child: Icon(
+                Icons.location_on_rounded,
+                size: 36,
+                color: AppColors.primary,
+              ),
+            ),
+
+            // Badge inferior indicando el estado del GPS
+            Positioned(
+              bottom: AppSizes.sm + 4,
+              right: AppSizes.sm + 4,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm + 2,
+                  vertical: AppSizes.xs + 2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isGpsActive ? Icons.gps_fixed_rounded : Icons.gps_off_rounded,
+                      size: 14,
+                      color: activeColor,
+                    ),
+                    AppSizes.gapH4,
+                    Text(
+                      statusLabel,
+                      style: AppTextStyles.caption.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,13 +1,12 @@
 class AppStrings {
   AppStrings._();
 
-  static const appName = "Bitácoras IST Tena";
-
-  static const login = "Iniciar sesión";
-
-  static const email = "Correo electrónico";
-
-  static const password = "Contraseña";
-
-  static const signIn = "Ingresar";
+  // Info Institucional / App
+  static const String appName = 'Bitácoras IST Tena';
+  static const String institutionName = 'Instituto Superior Tecnológico Tena';
+  
+  // Mensajes Generales de Error
+  static const String errorGeneral = 'Ocurrió un error inesperado. Inténtalo de nuevo.';
+  static const String errorNetwork = 'Sin conexión a Internet. Verifica tu red.';
+  static const String noDataFound = 'No se encontraron registros.';
 }

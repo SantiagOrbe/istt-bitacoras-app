@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 
 class ProfileInfoTile extends StatelessWidget {
   final IconData icon;
@@ -14,31 +14,45 @@ class ProfileInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSizes.sm),
+      padding: const EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        border: Border.all(color: AppColors.outline),
+      ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F4C81).withOpacity(0.08),
-              borderRadius: BorderRadius.circular(10),
+              color: AppColors.primary.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
-            child: Icon(icon, color: const Color(0xFF0F4C81), size: 20),
+            child: Icon(
+              icon,
+              color: AppColors.primary,
+              size: 22,
+            ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: AppSizes.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w500),
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  value,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+                  value.isNotEmpty ? value : 'Sin especificar',
+                  style: AppTextStyles.bodyBold.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ],
             ),

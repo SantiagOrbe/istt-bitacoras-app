@@ -1,5 +1,7 @@
-import 'package:bitacoras_app/features/attendance/domain/models/practice_record_model.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 import 'package:flutter/material.dart';
+import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/attendance/domain/models/practice_record_model.dart';
 
 class ActiveSessionCard extends StatelessWidget {
   final PracticeRecordModel record;
@@ -13,44 +15,62 @@ class ActiveSessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Usamos el amarillo institucional (warning) para dar contexto de "En Proceso"
+    final warningAccent = AppColors.warning;
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFDE7),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFBC02D), width: 1.5),
+        color: warningAccent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        border: Border.all(
+          color: warningAccent.withValues(alpha: 0.4),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
+          // Cabecera: Fecha y Estado de la sesión
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  const Icon(Icons.calendar_today_rounded, color: Color(0xFFF57F17), size: 18),
-                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.calendar_today_rounded,
+                    color: AppColors.textPrimary,
+                    size: 18,
+                  ),
+                  AppSizes.gapH8,
                   Text(
                     record.date,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: AppTextStyles.bodyBold,
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm,
+                  vertical: AppSizes.xs,
+                ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF176),
-                  borderRadius: BorderRadius.circular(12),
+                  color: warningAccent.withValues(alpha: 0.25),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                 ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.sync, size: 14, color: Color(0xFFF57F17)),
-                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.sync_rounded,
+                      size: 14,
+                      color: AppColors.textPrimary,
+                    ),
+                    AppSizes.gapH4,
                     Text(
                       record.status,
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: AppTextStyles.caption.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFF57F17),
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
@@ -58,29 +78,51 @@ class ActiveSessionCard extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(height: 24),
+
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
+            child: Divider(color: AppColors.divider),
+          ),
+
+          // Horarios de Entrada y Salida
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Entrada', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  Text(
+                    'Entrada',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  AppSizes.gapV4,
                   Text(
                     record.entryTime,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: AppTextStyles.bodyBold,
                   ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Salida', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  Text(
+                    'Salida',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  AppSizes.gapV4,
                   Text(
                     record.exitTime ?? 'Esperando marcación...',
-                    style: TextStyle(
-                      fontStyle: record.exitTime == null ? FontStyle.italic : FontStyle.normal,
-                      color: record.exitTime == null ? Colors.grey : Colors.black,
+                    style: AppTextStyles.caption.copyWith(
+                      fontStyle: record.exitTime == null
+                          ? FontStyle.italic
+                          : FontStyle.normal,
+                      color: record.exitTime == null
+                          ? AppTextStyles.caption.color
+                          : AppColors.textPrimary,
                       fontSize: 14,
                     ),
                   ),
@@ -88,22 +130,19 @@ class ActiveSessionCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+
+          AppSizes.gapV16,
+
+          // Botón de Marcación de Salida
           Align(
             alignment: Alignment.centerRight,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF003366),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              ),
+            child: CustomButton(
+              text: 'Marcar Salida',
+              icon: Icons.location_on_outlined,
+              isFullWidth: false,
               onPressed: onExitPressed,
-              icon: const Icon(Icons.location_on_outlined, color: Colors.white, size: 18),
-              label: const Text(
-                'Marcar Salida',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-              ),
             ),
-          )
+          ),
         ],
       ),
     );

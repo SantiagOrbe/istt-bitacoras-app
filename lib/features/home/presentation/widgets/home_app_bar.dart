@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/features/home/models/user_model.dart';
+import 'package:bitacoras_app/features/home/domain/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
@@ -18,7 +18,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color(0xFF0F4C81), // Azul institucional del logo
       centerTitle: true,
       
-      // 👈 Forzar a que el menú del Drawer (y cualquier flecha) sea blanco
       iconTheme: const IconThemeData(
         color: Colors.white,
       ),

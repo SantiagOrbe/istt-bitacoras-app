@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/user_model.dart';
+import '../../domain/models/user_model.dart';
 import 'dashboard_section_title.dart';
 import 'greeting_card.dart';
 import 'status_card.dart';

@@ -1,50 +1,27 @@
-class StudentProfileModel {
-  // Datos heredados de USUARIO
-  final String id;
-  final String nombre;
-  final String apellido;
-  final String correo;
-  final String telefono;
-  final String rol;
-  final String estado;
+import 'package:bitacoras_app/shared/exports.dart';
 
-  // Atributos de ESTUDIANTE
+class ProfileModel {
+  final UserModel user;
   final String cedula;
   final String matricula;
-
-  // Tutores asignados
   final String tutorAcademico;
   final String tutorEmpresarial;
 
-  StudentProfileModel({
-    required this.id,
-    required this.nombre,
-    required this.apellido,
-    required this.correo,
-    required this.telefono,
-    required this.rol,
-    required this.estado,
+  ProfileModel({
+    required this.user,
     required this.cedula,
     required this.matricula,
-    required this.tutorAcademico,
-    required this.tutorEmpresarial,
+    this.tutorAcademico = 'Sin asignar',
+    this.tutorEmpresarial = 'Sin asignar',
   });
 
-  String get fullName => '$nombre $apellido';
-
-  factory StudentProfileModel.fromJson(Map<String, dynamic> json) {
-    return StudentProfileModel(
-      id: json['id'].toString(),
-      nombre: json['nombre'] ?? '',
-      apellido: json['apellido'] ?? '',
-      correo: json['correo'] ?? '',
-      telefono: json['telefono'] ?? '',
-      rol: json['rol'] ?? 'ESTUDIANTE',
-      estado: json['estado'] ?? 'ACTIVO',
-      cedula: json['cedula'] ?? '',
-      matricula: json['matricula'] ?? '',
-      tutorAcademico: json['tutor_academico'] ?? 'Sin asignar',
-      tutorEmpresarial: json['tutor_empresarial'] ?? 'Sin asignar',
+  factory ProfileModel.fromUser(UserModel user, {Map<String, dynamic>? extraData}) {
+    return ProfileModel(
+      user: user,
+      cedula: extraData?['cedula'] ?? '1500000000',
+      matricula: extraData?['matricula'] ?? 'EST-2026-001',
+      tutorAcademico: extraData?['tutor_academico'] ?? 'Ing. Juan Pérez',
+      tutorEmpresarial: extraData?['tutor_empresarial'] ?? 'Ing. María López',
     );
   }
 }

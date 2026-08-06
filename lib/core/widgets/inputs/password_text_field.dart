@@ -1,40 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:bitacoras_app/config/constants/app_colors.dart';
 
 class PasswordTextField extends StatefulWidget {
   final TextEditingController controller;
+  final String label;
+  final String? Function(String?)? validator;
 
   const PasswordTextField({
     super.key,
     required this.controller,
+    this.label = 'Contraseña',
+    this.validator,
   });
 
   @override
-  State<PasswordTextField> createState() =>
-      _PasswordTextFieldState();
+  State<PasswordTextField> createState() => _PasswordTextFieldState();
 }
 
-class _PasswordTextFieldState
-    extends State<PasswordTextField> {
-  bool obscure = true;
+class _PasswordTextFieldState extends State<PasswordTextField> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: widget.controller,
-      obscureText: obscure,
+      obscureText: _obscureText,
+      validator: widget.validator,
+      style: const TextStyle(
+        color: AppColors.textPrimary,
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
-        labelText: 'Contraseña',
-        prefixIcon: const Icon(Icons.lock_outline),
+        labelText: widget.label,
+        prefixIcon: const Icon(
+          Icons.lock_outline_rounded,
+          color: AppColors.textSecondary,
+        ),
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {
-              obscure = !obscure;
+              _obscureText = !_obscureText;
             });
           },
           icon: Icon(
-            obscure
-                ? Icons.visibility
-                : Icons.visibility_off,
+            _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            color: AppColors.textSecondary,
           ),
         ),
       ),

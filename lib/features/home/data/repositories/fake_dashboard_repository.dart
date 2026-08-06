@@ -1,221 +1,309 @@
-import 'package:bitacoras_app/features/attendance/presentation/providers/attendance_provider.dart';
-import 'package:bitacoras_app/features/attendance/presentation/screens/history_screen.dart';
-import 'package:bitacoras_app/features/attendance/presentation/screens/register_attendance_screen.dart';
-import 'package:bitacoras_app/features/attendance/presentation/screens/reports_screen.dart';
-import 'package:bitacoras_app/features/home/models/quick_action.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:bitacoras_app/app/routes/app_routes.dart';
+import '../../domain/models/quick_action.dart';
+import '../../domain/models/user_role.dart';
+import '../../domain/repositories/i_dashboard_repository.dart';
 
+class FakeDashboardRepository implements IDashboardRepository {
+  @override
+  Future<List<QuickAction>> getActionsForRole(UserRole role) async {
+    await Future.delayed(const Duration(milliseconds: 300));
 
-class FakeDashboardRepository {
-  FakeDashboardRepository._();
+    switch (role) {
+      case UserRole.student:
+        return studentActions();
+      case UserRole.teacher:
+        return teacherActions();
+      case UserRole.academicTutor:
+        return academicTutorActions();
+      case UserRole.companyTutor:
+        return companyTutorActions();
+      case UserRole.coordinator:
+        return coordinatorActions();
+      case UserRole.practiceManager:
+        return practiceManagerActions();
+      case UserRole.admin:
+        return adminActions();
+    }
+  }
 
-  static List<QuickAction> studentActions(BuildContext context) {
+  @override
+  List<QuickAction> studentActions() {
     return [
       QuickAction(
         title: 'Registrar asistencia',
-        icon: Icons.login,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                create: (_) => AttendanceProvider(),
-                child: const RegisterAttendanceScreen(),
-              )),
-          );
-        },
+        subtitle: 'Marcar entrada de jornada',
+        icon: Icons.login_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.attendance,
+        onTap: () {},
       ),
       QuickAction(
-        title: "Registrar\nSalida",
-        icon: Icons.exit_to_app,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ChangeNotifierProvider(
-                create: (_) => AttendanceProvider(),
-                child: const RegisterAttendanceScreen(isEntry: false),
-              ),
-            ),
-          );
-        },
+        title: 'Registrar salida',
+        subtitle: 'Marcar fin de jornada',
+        icon: Icons.exit_to_app_rounded,
+        iconBackgroundColor: const Color(0xFFE53935),
+        route: AppRoutes.registerExitAttendance,
+        onTap: () {},
       ),
       QuickAction(
         title: 'Historial',
-        icon: Icons.history,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                create: (_) => AttendanceProvider(),
-                child: const HistoryScreen(),
-              ),
-            ),
-          );
-        },
-      ),
-      QuickAction(
-        title: 'Reportes', 
-        icon: Icons.assignment,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ReportsScreen(),
-            ),
-          );
-        },
-      ),
-    ];
-  }
-
-  static List<QuickAction> teacherActions() {
-    return [
-      QuickAction(
-        title: 'Estudiantes',
-        icon: Icons.groups,
+        subtitle: 'Asistencias e incidencias',
+        icon: Icons.history_rounded,
+        iconBackgroundColor: const Color(0xFFF57C00),
+        route: AppRoutes.history,
         onTap: () {},
       ),
       QuickAction(
         title: 'Reportes',
-        icon: Icons.bar_chart,
+        subtitle: 'Descargar PDF de bitácoras',
+        icon: Icons.assignment_rounded,
+        iconBackgroundColor: const Color(0xFF43A047),
+        route: AppRoutes.reports,
+        onTap: () {},
+      ),
+    ];
+  }
+
+  @override
+  List<QuickAction> teacherActions() {
+    return [
+      QuickAction(
+        title: 'Estudiantes',
+        subtitle: 'Lista de alumnos asignados',
+        icon: Icons.groups_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.userManagement,
+        onTap: () {},
+      ),
+      QuickAction(
+        title: 'Reportes',
+        subtitle: 'Avances e informes',
+        icon: Icons.bar_chart_rounded,
+        iconBackgroundColor: const Color(0xFF43A047),
+        route: AppRoutes.reports,
         onTap: () {},
       ),
       QuickAction(
         title: 'Bitácoras',
-        icon: Icons.menu_book,
+        subtitle: 'Revisión y firma',
+        icon: Icons.menu_book_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.registerActivity,
         onTap: () {},
       ),
       QuickAction(
         title: 'Mi perfil',
-        icon: Icons.person,
+        subtitle: 'Información del docente',
+        icon: Icons.person_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.profile,
         onTap: () {},
       ),
     ];
   }
 
-  static List<QuickAction> academicTutorActions() {
+  @override
+  List<QuickAction> academicTutorActions() {
     return [
       QuickAction(
         title: 'Practicantes',
-        icon: Icons.school,
+        subtitle: 'Alumnos a supervisar',
+        icon: Icons.school_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.userManagement,
         onTap: () {},
       ),
       QuickAction(
         title: 'Seguimiento',
-        icon: Icons.track_changes,
+        subtitle: 'Monitoreo en empresas',
+        icon: Icons.track_changes_rounded,
+        iconBackgroundColor: const Color(0xFFF57C00),
+        route: AppRoutes.reports,
         onTap: () {},
       ),
       QuickAction(
         title: 'Reportes',
-        icon: Icons.analytics,
+        subtitle: 'Evaluaciones y horas',
+        icon: Icons.analytics_rounded,
+        iconBackgroundColor: const Color(0xFF43A047),
+        route: AppRoutes.reports,
         onTap: () {},
       ),
       QuickAction(
         title: 'Mi perfil',
-        icon: Icons.person,
+        subtitle: 'Datos personales',
+        icon: Icons.person_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.profile,
         onTap: () {},
       ),
     ];
   }
 
-  static List<QuickAction> companyTutorActions() {
+  @override
+  List<QuickAction> companyTutorActions() {
     return [
       QuickAction(
         title: 'Estudiantes',
-        icon: Icons.groups,
+        subtitle: 'Pasantes en la empresa',
+        icon: Icons.groups_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.userManagement,
         onTap: () {},
       ),
       QuickAction(
         title: 'Asistencia',
-        icon: Icons.fact_check,
+        subtitle: 'Validación de registros',
+        icon: Icons.fact_check_rounded,
+        iconBackgroundColor: const Color(0xFF43A047),
+        route: AppRoutes.attendance,
         onTap: () {},
       ),
       QuickAction(
         title: 'Actividades',
-        icon: Icons.assignment,
+        subtitle: 'Aprobar bitácoras diarias',
+        icon: Icons.assignment_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.registerActivity,
         onTap: () {},
       ),
       QuickAction(
         title: 'Mi perfil',
-        icon: Icons.person,
+        subtitle: 'Datos institucionales',
+        icon: Icons.person_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.profile,
         onTap: () {},
       ),
     ];
   }
 
-  static List<QuickAction> coordinatorActions() {
+  @override
+  List<QuickAction> coordinatorActions() {
     return [
       QuickAction(
         title: 'Carreras',
-        icon: Icons.account_tree,
+        subtitle: 'Gestión por coordinaciones',
+        icon: Icons.account_tree_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.careerPeriod,
         onTap: () {},
       ),
       QuickAction(
         title: 'Reportes',
-        icon: Icons.bar_chart,
+        subtitle: 'Métricas de la carrera',
+        icon: Icons.bar_chart_rounded,
+        iconBackgroundColor: const Color(0xFF43A047),
+        route: AppRoutes.reports,
         onTap: () {},
       ),
       QuickAction(
         title: 'Estudiantes',
-        icon: Icons.school,
+        subtitle: 'Estado académico y prácticas',
+        icon: Icons.school_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.userManagement,
         onTap: () {},
       ),
       QuickAction(
         title: 'Mi perfil',
-        icon: Icons.person,
+        subtitle: 'Ajustes de cuenta',
+        icon: Icons.person_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.profile,
         onTap: () {},
       ),
     ];
   }
 
-  static List<QuickAction> practiceManagerActions() {
+  @override
+  List<QuickAction> practiceManagerActions() {
     return [
       QuickAction(
         title: 'Empresas',
-        icon: Icons.business,
+        subtitle: 'Catálogo de instituciones',
+        icon: Icons.business_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.userManagement,
         onTap: () {},
       ),
       QuickAction(
         title: 'Convenios',
-        icon: Icons.handshake,
+        subtitle: 'Acuerdos vigentes',
+        icon: Icons.handshake_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.careerPeriod,
         onTap: () {},
       ),
       QuickAction(
         title: 'Prácticas',
-        icon: Icons.work_history,
+        subtitle: 'Asignaciones de cupos',
+        icon: Icons.work_history_rounded,
+        iconBackgroundColor: const Color(0xFFF57C00),
+        route: AppRoutes.registerActivity,
         onTap: () {},
       ),
       QuickAction(
         title: 'Mi perfil',
-        icon: Icons.person,
+        subtitle: 'Datos personales',
+        icon: Icons.person_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.profile,
         onTap: () {},
       ),
     ];
   }
 
-  static List<QuickAction> adminActions() {
+  @override
+  List<QuickAction> adminActions() {
     return [
       QuickAction(
-        title: 'Usuarios',
-        icon: Icons.manage_accounts,
+        title: 'Gestión de Usuarios',
+        subtitle: 'Estudiantes, Tutores y Coordinadores',
+        icon: Icons.people_alt_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.userManagement,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Roles',
-        icon: Icons.admin_panel_settings,
+        title: 'Carreras y Periodos',
+        subtitle: 'Asignar prácticas por semestre/carrera',
+        icon: Icons.account_tree_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.careerPeriod,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Configuración',
-        icon: Icons.settings,
+        title: 'Gestión de Carreras',
+        subtitle: 'Crear y administrar carreras ISTT',
+        icon: Icons.school_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.careerPeriod,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Reportes',
-        icon: Icons.bar_chart,
+        title: 'Periodos Lectivos',
+        subtitle: 'Administrar lapsos académicos',
+        icon: Icons.date_range_rounded,
+        iconBackgroundColor: const Color(0xFFF57C00),
+        route: AppRoutes.careerPeriod,
+        onTap: () {},
+      ),
+      QuickAction(
+        title: 'Cursos y Paralelos',
+        subtitle: 'Aulas, semestres y paralelos',
+        icon: Icons.class_rounded,
+        iconBackgroundColor: const Color(0xFF43A047),
+        route: AppRoutes.careerPeriod,
+        onTap: () {},
+      ),
+      QuickAction(
+        title: 'Gestión de Bitácoras',
+        subtitle: 'Auditoría y control de asistencias',
+        icon: Icons.assignment_rounded,
+        iconBackgroundColor: const Color(0xFFD81B60),
+        route: AppRoutes.registerActivity,
         onTap: () {},
       ),
     ];

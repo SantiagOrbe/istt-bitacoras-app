@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/quick_action.dart';
+import 'package:go_router/go_router.dart';
+import '../../domain/models/quick_action.dart';
 import 'quick_access_card.dart';
 
 class DashboardActions extends StatelessWidget {
@@ -44,14 +45,11 @@ class DashboardActions extends StatelessWidget {
             cardColor = const Color(0xFF0F4C81);
         }
 
-        final bool isEnabled = action.enabled;
-
         return QuickAccessCard(
           title: action.title,
           icon: action.icon,
-          onTap: action.onTap,
+          onTap: action.route != null ? () => context.push(action.route!) : action.onTap,
           color: cardColor,
-          enabled: isEnabled,
         );
       },
     );

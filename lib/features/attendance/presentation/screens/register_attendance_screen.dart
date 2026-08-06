@@ -1,141 +1,117 @@
-import 'package:bitacoras_app/features/attendance/presentation/screens/register_activity_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/features/home/presentation/widgets/home_app_bar.dart';
-import 'package:bitacoras_app/features/home/data/repositories/fake_user_repository.dart';
-import '../widgets/attendance_info_tile.dart';
-import '../widgets/company_card.dart';
-import '../widgets/location_status_card.dart';
-import '../widgets/map_preview.dart';
+import 'package:bitacoras_app/features/attendance/attendance.dart';
+import 'package:bitacoras_app/features/attendance/presentation/widgets/register_attendance_body.dart';
 
-class RegisterAttendanceScreen extends StatelessWidget {
-  final bool isEntry; // true: Entrada, false: Salida
+class RegisterAttendanceScreen extends StatefulWidget {
+  final bool isEntry;
+  final String? timeLabel;
+  final String? dateLabel;
+  final UserModel currentUser;
+  final IAttendanceRepository attendanceRepository;
 
   const RegisterAttendanceScreen({
     super.key,
     this.isEntry = true,
+    this.timeLabel,
+    this.dateLabel,
+    required this.currentUser,
+    required this.attendanceRepository,
   });
 
-  void _onConfirmAttendance(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isEntry ? '¡Entrada registrada con éxito!' : '¡Salida registrada con éxito!',
-        ),
-        backgroundColor: const Color(0xFF2E7D32),
-        duration: const Duration(seconds: 2),
-      ),
+  @override
+  State<RegisterAttendanceScreen> createState() => _RegisterAttendanceScreenState();
+}
+
+class _RegisterAttendanceScreenState extends State<RegisterAttendanceScreen> {
+  late final RegisterAttendanceController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = RegisterAttendanceController(repository: widget.attendanceRepository);
+    _controller.init();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleConfirm() async {
+    final success = await _controller.confirmAttendance(
+      isEntry: widget.isEntry,
+      latitude: _controller.companyLocation?.latitude ?? -0.9938,
+      longitude: _controller.companyLocation?.longitude ?? -77.8128,
     );
 
-    if (isEntry) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const RegisterActivityScreen()),
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            widget.isEntry ? '¡Entrada registrada con éxito!' : '¡Salida registrada con éxito!',
+            style: AppTextStyles.body.copyWith(color: AppColors.surface),
+          ),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
-    } else {
-      Navigator.pop(context);
+
+      if (widget.isEntry) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => RegisterActivityScreen(
+            currentUser: widget.currentUser,
+            attendanceRepository: widget.attendanceRepository,
+          )),
+        );
+      } else {
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final title = isEntry ? 'Registrar Entrada' : 'Registrar Salida';
+    final title = widget.isEntry ? 'Registrar Entrada' : 'Registrar Salida';
+    final currentTime = widget.timeLabel ?? (widget.isEntry ? '08:00 AM' : '17:00 PM');
+    final currentDate = widget.dateLabel ?? '05/08/2026';
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: HomeAppBar(user: FakeUserRepository.student),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF003366),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final companyName = _controller.companyLocation?.name ?? 'Cargando ubicación...';
+
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: HomeAppBar(user: widget.currentUser),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(AppSizes.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RegisterAttendanceBody(
+                    title: title,
+                    currentTime: currentTime,
+                    currentDate: currentDate,
+                    companyName: companyName,
+                  ),
+                  AppSizes.gapV24,
+                  AttendanceActionButtons(
+                    isEntry: widget.isEntry,
+                    isLoading: _controller.isLoading,
+                    onConfirm: _handleConfirm,
+                    onCancel: () => Navigator.pop(context),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: AttendanceInfoTile(
-                    icon: Icons.access_time_rounded,
-                    label: isEntry ? '08:00 AM' : '17:00 PM',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: AttendanceInfoTile(
-                    icon: Icons.calendar_today_rounded,
-                    label: '24/10/2024',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            const MapPreview(),
-            const SizedBox(height: 16),
-
-            const LocationStatusCard(),
-            const SizedBox(height: 16),
-
-            const CompanyCard(companyName: 'GAD Municipal de Tena'),
-            const SizedBox(height: 24),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF003366),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-                onPressed: () => _onConfirmAttendance(context),
-                icon: Icon(
-                  isEntry ? Icons.login_rounded : Icons.logout_rounded,
-                  color: Colors.white,
-                ),
-                label: Text(
-                  isEntry ? 'Confirmar Entrada' : 'Confirmar Salida',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  side: const BorderSide(color: Color(0xFF003366)),
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  'Regresar',
-                  style: TextStyle(
-                    color: Color(0xFF003366),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+
+// Exports compartidos desde el archivo shared/exports.dart
+import 'package:bitacoras_app/shared/exports.dart';
+
 
 class LocationCheckerWrapper extends StatefulWidget {
   final Widget child;
@@ -22,7 +25,7 @@ class _LocationCheckerWrapperState extends State<LocationCheckerWrapper> {
     _startListeningLocationStatus();
   }
 
-  /// Verifica si el GPS está activo al entrar
+  /// Verifica si el GPS está activo al iniciar la vista
   Future<void> _checkInitialLocation() async {
     bool isEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isEnabled) {
@@ -30,13 +33,12 @@ class _LocationCheckerWrapperState extends State<LocationCheckerWrapper> {
     }
   }
 
-  /// Escucha en tiempo real si el estudiante apaga/enciende el GPS
+  /// Escucha en tiempo real el cambio de estado del GPS
   void _startListeningLocationStatus() {
     _serviceStatusSubscription = Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
       if (status == ServiceStatus.disabled) {
         _showLocationDisabledDialog();
       } else if (status == ServiceStatus.enabled && _isDialogShowing) {
-        // Si reactiva el GPS, cerramos el diálogo automáticamente
         if (Navigator.of(context, rootNavigator: true).canPop()) {
           Navigator.of(context, rootNavigator: true).pop();
         }
@@ -51,33 +53,54 @@ class _LocationCheckerWrapperState extends State<LocationCheckerWrapper> {
     _isDialogShowing = true;
     showDialog(
       context: context,
-      barrierDismissible: false, // Bloquea clics fuera
+      barrierDismissible: false,
       builder: (context) {
         return PopScope(
-          canPop: false, // Bloquea botón atrás de Android
+          canPop: false,
           child: AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: const Row(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+            ),
+            title: Row(
               children: [
-                Icon(Icons.location_off_rounded, color: Colors.redAccent, size: 28),
-                SizedBox(width: 10),
-                Text('GPS Desactivado', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Icon(
+                  Icons.location_off_rounded,
+                  color: AppColors.error,
+                  size: 28,
+                ),
+                AppSizes.gapH8,
+                Text(
+                  'GPS Desactivado',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
               ],
             ),
             content: const Text(
               'Es necesario mantener el GPS activo para validar tus asistencias e historial de prácticas.',
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             actions: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0F4C81),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                  ),
                 ),
                 onPressed: () async {
                   await Geolocator.openLocationSettings();
                 },
-                child: const Text('Activar Ubicación', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Activar Ubicación',
+                  style: TextStyle(color: AppColors.surface),
+                ),
               ),
             ],
           ),

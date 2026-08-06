@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 
 class CompanyCard extends StatelessWidget {
   final String companyName;
@@ -11,30 +11,21 @@ class CompanyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        border: Border.all(color: AppColors.outline),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          const Text(
-            'EMPRESA ASIGNADA',
-            style: TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              const Icon(Icons.apartment, color: Color(0xFF003366)),
-              const SizedBox(width: 8),
-              Text(
-                companyName,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ],
+          const Icon(Icons.business, color: AppColors.primary),
+          AppSizes.gapH12,
+          Expanded(
+            child: Text(
+              companyName,
+              style: AppTextStyles.bodyBold,
+            ),
           ),
         ],
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/user_role.dart'; // Importamos el enum de roles para las condiciones
+import '../../domain/models/user_role.dart'; // Importamos el enum de roles para las condiciones
 
 class GreetingCard extends StatelessWidget {
   final String name;

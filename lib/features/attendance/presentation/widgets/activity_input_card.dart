@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 
 class ActivityInputCard extends StatelessWidget {
   final int index;
@@ -17,12 +18,12 @@ class ActivityInputCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: AppSizes.md),
+      padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        border: Border.all(color: AppColors.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,40 +33,54 @@ class ActivityInputCard extends StatelessWidget {
             children: [
               Text(
                 'Detalle su actividad ${canRemove ? "#${index + 1}" : ""}',
-                style: const TextStyle(
+                style: AppTextStyles.bodyBold.copyWith(
                   fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: AppColors.textPrimary,
                 ),
               ),
               if (canRemove)
-                InkWell(
-                  onTap: onRemove,
-                  child: const Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                IconButton(
+                  onPressed: onRemove,
+                  icon: const Icon(
+                    Icons.delete_outline_rounded,
+                    color: AppColors.error,
+                    size: 20,
                   ),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  tooltip: 'Eliminar actividad',
                 ),
             ],
           ),
-          const SizedBox(height: 10),
+          AppSizes.gapV8,
           TextField(
             controller: controller,
             maxLines: 4,
-            style: const TextStyle(fontSize: 14),
+            style: AppTextStyles.body.copyWith(
+              fontSize: 14,
+              color: AppColors.textPrimary,
+            ),
             decoration: InputDecoration(
-              hintText: 'Describa detalladamente las tareas realizadas, herramientas utilizadas y resultados obtenidos...',
-              hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+              hintText:
+                  'Describa detalladamente las tareas realizadas, herramientas utilizadas y resultados obtenidos...',
+              hintStyle: AppTextStyles.caption.copyWith(
+                color: AppColors.textHint,
+                fontSize: 13,
+              ),
               filled: true,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.all(12),
+              fillColor: AppColors.background,
+              contentPadding: const EdgeInsets.all(AppSizes.sm + 4),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                borderSide: const BorderSide(color: AppColors.outline),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Color(0xFF003366), width: 1.5),
+                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                borderSide: const BorderSide(
+                  color: AppColors.primary,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
