@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-import '../../domain/models/user_managment_model.dart';
-import '../../domain/repositories/i_admin_repository.dart';
+import 'package:bitacoras_app/app/apps.dart';
 
 class UserManagementController extends ChangeNotifier {
   final IAdminRepository repository;
 
   UserManagementController({required this.repository});
 
-  List<ManagedUser> _allUsers = [];
-  List<ManagedUser> filteredUsers = [];
+  List<UserModel> _allUsers = [];
+  List<UserModel> filteredUsers = [];
   bool isLoading = true;
   String searchQuery = '';
 
@@ -36,7 +34,7 @@ class UserManagementController extends ChangeNotifier {
       final query = searchQuery.toLowerCase();
       filteredUsers = _allUsers.where((u) {
         return u.name.toLowerCase().contains(query) ||
-            u.idNumber.contains(query);
+            (u.cedula?.contains(query) ?? false);
       }).toList();
     }
   }

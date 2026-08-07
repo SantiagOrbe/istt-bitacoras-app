@@ -29,7 +29,7 @@ class DashboardBody extends StatelessWidget {
 
         children: [
 
-          GreetingCard(name: user.fullName, role: user.role,),
+          GreetingCard(name: user.name, role: user.role,),
 
           const SizedBox(height:20),
 

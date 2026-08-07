@@ -1,5 +1,5 @@
 import 'package:bitacoras_app/core/widgets/location_checker_wrapper.dart';
-import 'package:bitacoras_app/features/attendance/presentation/controllers/attendance_provider.dart';
+import 'package:bitacoras_app/features/students/presentation/controllers/attendance_provider.dart';
 import 'package:bitacoras_app/features/home/data/repositories/fake_dashboard_repository.dart';
 import 'package:bitacoras_app/features/home/data/repositories/fake_user_repository.dart';
 import 'package:flutter/material.dart';

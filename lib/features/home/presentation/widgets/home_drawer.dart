@@ -1,127 +1,177 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bitacoras_app/app/routes/app_routes.dart';
-import '../../domain/models/user_model.dart';
-import '../../../../app/routes/app_routes.dart';
+import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/domain/models/drawer_item_model.dart';
 
 class HomeDrawer extends StatelessWidget {
   final UserModel user;
+  final List<DrawerSectionModel> sections;
 
   const HomeDrawer({
     super.key,
     required this.user,
+    required this.sections,
   });
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: AppColors.background,
       child: Column(
         children: [
-          // Encabezado del menú
+          // Header con el azul principal (0xFF0F52BA) y acentos en verde hoja
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(
-              color: Color(0xFF0F4C81), // Azul institucional
+              color: AppColors.primary,
             ),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Text(
-                user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : 'U',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F4C81),
+            currentAccountPicture: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.success, width: 2.5), // Toque verde
+              ),
+              child: CircleAvatar(
+                backgroundColor: AppColors.surface,
+                child: Text(
+                  user.initials,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ),
-            accountName: Text(
-              user.fullName,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+            accountName: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    user.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.surface,
+                    ),
+                  ),
+                ),
+                // Badge con el verde del IST Tena
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.success,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    user.role.name.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
             accountEmail: Text(
               user.email,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: AppColors.surface.withOpacity(0.85),
                 fontSize: 13,
               ),
             ),
           ),
 
-          // --- OPCIONES DEL MENÚ ---
-          
-          // 1. Inicio
-          ListTile(
-            leading: const Icon(Icons.home_outlined, color: Color(0xFF0F4C81)),
-            title: const Text("Inicio"),
-            onTap: () {
-              Navigator.pop(context); 
-              context.go(AppRoutes.studentHome);
-            },
+          // Secciones de menú
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: sections.length,
+              separatorBuilder: (_, __) => const Divider(
+                color: AppColors.divider,
+                indent: 16,
+                endIndent: 16,
+              ),
+              itemBuilder: (context, index) {
+                final section = sections[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (section.title != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                        child: Text(
+                          section.title!.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textSecondary,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ),
+                    ...section.items.map(
+                      (item) => ListTile(
+                        leading: Icon(
+                          item.icon,
+                          color: AppColors.primary, // Iconos en Azul Petróleo
+                        ),
+                        title: Text(
+                          item.title,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        horizontalTitleGap: 0,
+                        onTap: () {
+                          Navigator.pop(context);
+                          context.push(item.route);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
 
-          // 2. Registrar Asistencia
+          const Divider(color: AppColors.divider, height: 1),
+
+          // Mi Perfil
           ListTile(
-            leading: const Icon(Icons.app_registration_outlined, color: Color(0xFF0F4C81)),
-            title: const Text("Registrar Asistencia"),
-            onTap: () {
-              Navigator.pop(context);
-              context.push(AppRoutes.attendance);
-            },
-          ),
-
-          // 3. Historial de Prácticas
-          ListTile(
-            leading: const Icon(Icons.history_toggle_off_rounded, color: Color(0xFF0F4C81)),
-            title: const Text("Historial de Prácticas"),
-            onTap: () {
-              Navigator.pop(context);
-              context.push(AppRoutes.history);
-            },
-          ),
-
-          // 4. Reportes y Bitácoras
-          ListTile(
-            leading: const Icon(Icons.description_outlined, color: Color(0xFF0F4C81)),
-            title: const Text("Reportes y Bitácoras"),
-            onTap: () {
-              Navigator.pop(context);
-              context.push(AppRoutes.reports);
-            },
-          ),
-
-          const Divider(),
-
-          // 5. Mi Perfil (Pendiente de implementación de pantalla)
-          ListTile(
-            leading: const Icon(Icons.person_outline, color: Color(0xFF0F4C81)),
-            title: const Text("Mi Perfil"),
-            onTap: () {
-              Navigator.pop(context);
-                context.push(AppRoutes.profile); 
-            },
-          ),
-
-          const Spacer(), // Empuja el botón de cerrar sesión al fondo
-          const Divider(),
-
-          // 6. Botón de Cerrar Sesión
-          ListTile(
-            leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+            leading: const Icon(Icons.person_outline, color: AppColors.primary),
             title: const Text(
-              "Cerrar Sesión",
+              'Mi Perfil',
               style: TextStyle(
-                color: Colors.redAccent,
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            horizontalTitleGap: 0,
+            onTap: () {
+              Navigator.pop(context);
+              context.push(AppRoutes.profile);
+            },
+          ),
+
+          // Cerrar Sesión
+          ListTile(
+            leading: const Icon(Icons.logout_rounded, color: AppColors.error),
+            title: const Text(
+              'Cerrar Sesión',
+              style: TextStyle(
+                color: AppColors.error,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            horizontalTitleGap: 0,
             onTap: () {
-              Navigator.of(context).pop(); // Cierra Drawer
+              Navigator.pop(context);
               context.go(AppRoutes.login);
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/admin/presentation/screens/widgets/career_period_body.dart';
 import 'package:bitacoras_app/features/admin/presentation/screens/widgets/save_bottom_bar.dart';
 import 'package:bitacoras_app/features/screens.dart';
@@ -60,7 +61,11 @@ class _CareerPeriodScreenState extends State<CareerPeriodScreen> {
       builder: (context, _) {
         return Scaffold(
           backgroundColor: AppColors.background,
-          appBar: HomeAppBar(user: widget.currentUser),
+          appBar: HomeAppBar(
+            user: widget.currentUser,
+            showBackButton: true,
+            onBackPressed: () => context.pop(),
+          ),
           body: _controller.isLoading
               ? const Center(child: CircularProgressIndicator())
               : CareerPeriodBody(

@@ -11,7 +11,7 @@ class ProfileHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayName = user.fullName.isNotEmpty ? user.fullName : 'Usuario';
+    final displayName = user.name.isNotEmpty ? user.name : 'Usuario';
     final initialLetter = displayName[0].toUpperCase();
 
     return Container(
@@ -81,7 +81,7 @@ class ProfileHeaderCard extends StatelessWidget {
           ),
 
           // Empresa Asignada con control de desborde (Evita el RenderFlex Overflow)
-          if (user.company.isNotEmpty) ...[
+          if (user.company?.isNotEmpty ?? false) ...[
             AppSizes.gapV12,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +95,7 @@ class ProfileHeaderCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
-                    user.company,
+                    user.company!,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.secondary,
                       fontWeight: FontWeight.w600,

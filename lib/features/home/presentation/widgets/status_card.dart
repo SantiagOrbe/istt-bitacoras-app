@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bitacoras_app/config/constants/app_colors.dart';
-import 'package:bitacoras_app/features/attendance/presentation/controllers/attendance_provider.dart';
+import 'package:bitacoras_app/features/students/presentation/controllers/attendance_provider.dart';
 
 class StatusCard extends StatelessWidget {
   const StatusCard({super.key});

@@ -17,7 +17,13 @@ class AppRoutes {
   static const reports = '/reports';
   static const profile = '/profile';
   static const String userManagement = '/admin/user-management';
+  static const String userDetail = '/admin/user-detail';
+  static const String careerManagement = '/admin/careers';
+  static const String careerDetail = '/admin/careers/detail';
   static const String careerPeriod = '/admin/career-period';
+  static const String periodManagement = '/admin/periods';
+  static const String cycleManagement = '/admin/cycles';
+  static const String parallelManagement = '/admin/parallels';
   static const String registerExitAttendance = '/attendance/exit-attendance';
 
   // Homes
@@ -26,5 +32,8 @@ class AppRoutes {
   static const String companyTutorHome = '/company-tutor';
   static const String coordinatorHome = '/coordinator';
   static const String practiceManagerHome = '/practice-manager';
+
+  //Admin
+  static const String adminPracticeLogs = '/admin/practice-logs';
 
 }

@@ -1,10 +1,8 @@
-
-
 import 'package:bitacoras_app/features/admin/admin.dart';
 
 class UserManagementBody extends StatelessWidget {
-  final List<ManagedUser> users;
-  final ValueChanged<ManagedUser> onUserTap;
+  final List<UserModel> users;
+  final ValueChanged<UserModel> onUserTap;
   final ValueChanged<String> onSearchChanged;
 
   const UserManagementBody({

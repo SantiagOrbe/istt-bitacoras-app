@@ -30,8 +30,8 @@ class UserInfoCard extends StatelessWidget {
             _item(
               Icons.business_outlined,
               "Empresa",
-              user.company,
-            ),
+              user.company ?? "No asignada",
+            ),  
 
           ],
         ),

@@ -1,6 +1,13 @@
 import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/admin/data/repositories/fake_admin_repository.dart';
-import 'package:bitacoras_app/features/attendance/presentation/screens/register_exit_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/admin_practice_logs_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/career_detail_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/career_management_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/cycle_management_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/period_management_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/parallel_management_screen.dart';
+import 'package:bitacoras_app/features/admin/presentation/screens/user_detail_screen.dart';
+import 'package:bitacoras_app/features/students/presentation/screens/register_exit_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.login, 
@@ -68,8 +75,67 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: AppRoutes.userDetail,
+      builder: (context, state) {
+        final user = state.extra as UserModel?;
+
+        return UserDetailScreen(
+          user: user ?? FakeUserRepository.admin,
+          adminRepository: FakeAdminRepository(),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.careerManagement,
+      builder: (context, state) => CareerManagementScreen(
+        currentUser: FakeUserRepository.admin,
+        adminRepository: FakeAdminRepository(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.careerDetail,
+      builder: (context, state) {
+        final career = state.extra as CareerModel?;
+
+        return CareerDetailScreen(
+          currentUser: FakeUserRepository.admin,
+          career: career ?? const CareerModel(
+            id: '',
+            name: '',
+            code: '',
+            shortName: '',
+            description: '',
+            modality: '',
+            isActive: true,
+            totalSemesters: 0,
+          ),
+        );
+      },
+    ),
+    GoRoute(
       path: AppRoutes.careerPeriod,
       builder: (context, state) => CareerPeriodScreen(
+        currentUser: FakeUserRepository.admin,
+        adminRepository: FakeAdminRepository(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.periodManagement,
+      builder: (context, state) => PeriodManagementScreen(
+        currentUser: FakeUserRepository.admin,
+        adminRepository: FakeAdminRepository(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.cycleManagement,
+      builder: (context, state) => CycleManagementScreen(
+        currentUser: FakeUserRepository.admin,
+        adminRepository: FakeAdminRepository(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.parallelManagement,
+      builder: (context, state) => ParallelManagementScreen(
         currentUser: FakeUserRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
@@ -93,6 +159,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.practiceManagerHome,
       builder: (context, state) => const PracticeManagerHome(), 
+    ),
+    GoRoute(
+      path: AppRoutes.adminPracticeLogs,
+      builder: (context, state) => const AdminPracticeLogsScreen(currentUser: FakeUserRepository.admin,), 
     ),
   ],
 );

@@ -4,56 +4,56 @@ import '../../domain/models/user_role.dart';
 
 class FakeUserRepository implements IUserRepository {
   static const student = UserModel(
-    id: 1,
-    fullName: 'Santiago Orbe',
+    id: '1',
+    name: 'Santiago Orbe',
     email: 'santiago.orbe@est.itstena.edu.ec',
     company: 'Instituto Superior Tecnológico Tena',
     role: UserRole.student,
   );
 
   static const teacher = UserModel(
-    id: 2,
-    fullName: 'Juan Pérez',
+    id: '2',
+    name: 'Juan Pérez',
     email: 'juan.perez@itstena.edu.ec',
     company: 'Instituto Superior Tecnológico Tena',
     role: UserRole.teacher,
   );
 
   static const academicTutor = UserModel(
-    id: 3,
-    fullName: 'María López',
+    id: '3',
+    name: 'María López',
     email: 'maria.lopez@itstena.edu.ec',
     company: 'Instituto Superior Tecnológico Tena',
     role: UserRole.academicTutor,
   );
 
   static const companyTutor = UserModel(
-    id: 4,
-    fullName: 'Carlos Ruiz',
+    id: '4',
+    name: 'Carlos Ruiz',
     email: 'carlos.ruiz@empresa.com',
     company: 'Empresa XYZ',
     role: UserRole.companyTutor,
   );
 
   static const coordinator = UserModel(
-    id: 5,
-    fullName: 'Ana Morales',
+    id: '5',
+    name: 'Ana Morales',
     email: 'ana.morales@itstena.edu.ec',
     company: 'Instituto Superior Tecnológico Tena',
     role: UserRole.coordinator,
   );
 
   static const practiceManager = UserModel(
-    id: 6,
-    fullName: 'Luis Herrera',
+    id: '6',
+    name: 'Luis Herrera',
     email: 'luis.herrera@itstena.edu.ec',
     company: 'Instituto Superior Tecnológico Tena',
     role: UserRole.practiceManager,
   );
 
   static const admin = UserModel(
-    id: 7,
-    fullName: 'Administrador',
+    id: '7',
+    name: 'Administrador',
     email: 'admin@itstena.edu.ec',
     company: 'Instituto Superior Tecnológico Tena',
     role: UserRole.admin,

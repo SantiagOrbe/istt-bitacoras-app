@@ -1,8 +1,7 @@
-import 'package:bitacoras_app/features/admin/domain/models/user_managment_model.dart';
 import 'package:bitacoras_app/shared/exports.dart';
 
 class UserListTile extends StatelessWidget {
-  final ManagedUser user;
+  final UserModel user;
   final VoidCallback onTap;
 
   const UserListTile({
@@ -13,7 +12,7 @@ class UserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final roleColor = _getRoleColor(user.role);
+    final roleColor = _getRoleColor(user.role.name);
 
     return InkWell(
       onTap: onTap,
@@ -51,7 +50,7 @@ class UserListTile extends StatelessWidget {
                   ),
                   AppSizes.gapV4,
                   Text(
-                    'CI: ${user.idNumber} • ${user.role}',
+                    'CI: ${user.cedula} • ${user.role}',
                     style: AppTextStyles.caption.copyWith(
                       color: Theme.of(context).hintColor,
                     ),

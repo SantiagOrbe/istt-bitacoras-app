@@ -1,3 +1,4 @@
+import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/admin/admin.dart';
 
 
@@ -39,7 +40,11 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       builder: (context, _) {
         return Scaffold(
           backgroundColor: AppColors.background,
-          appBar: HomeAppBar(user: widget.currentUser),
+          appBar: HomeAppBar(
+            user: widget.currentUser,
+            showBackButton: true,
+            onBackPressed: () => context.pop(),
+          ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {},
             backgroundColor: AppColors.primary,
@@ -54,7 +59,10 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : UserManagementBody(
                     users: _controller.filteredUsers,
-                    onUserTap: (user) {},
+                    onUserTap: (user) => context.push(
+                      AppRoutes.userDetail,
+                      extra: user,
+                    ),
                     onSearchChanged: _controller.setSearchQuery,
                   ),
           ),

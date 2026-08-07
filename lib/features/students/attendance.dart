@@ -1,0 +1,22 @@
+export 'package:bitacoras_app/features/students/domain/models/practice_record_model.dart';
+export 'package:bitacoras_app/features/home/presentation/widgets/home_app_bar.dart';
+export 'package:bitacoras_app/features/home/data/repositories/fake_user_repository.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/active_session_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/history_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/activity_input_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/company_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/attendance_info_tile.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/location_status_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/map_preview.dart';
+export 'package:bitacoras_app/features/students/presentation/screens/register_attendance_screen.dart';
+export 'package:bitacoras_app/features/students/presentation/screens/register_activity_screen.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/pdf_generator_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/practice_progress_card.dart';
+export 'package:bitacoras_app/shared/exports.dart';
+export 'package:bitacoras_app/features/students/domain/repositories/i_attendance_repository.dart';
+export 'package:bitacoras_app/features/students/presentation/controllers/register_attendance_controller.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/attendance_action_buttons.dart';
+
+export 'package:bitacoras_app/features/students/presentation/widgets/pdf_format_preview_card.dart';
+export 'package:bitacoras_app/features/students/presentation/widgets/reports_header.dart';
+export 'package:bitacoras_app/features/students/presentation/controllers/register_exit_controller.dart';
