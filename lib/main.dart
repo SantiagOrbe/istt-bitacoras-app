@@ -1,5 +1,5 @@
 import 'package:bitacoras_app/app/routes/app_router.dart';
-import 'package:bitacoras_app/features/students/presentation/controllers/attendance_provider.dart';
+import 'package:bitacoras_app/features/estudiantes/presentation/controllers/attendance_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

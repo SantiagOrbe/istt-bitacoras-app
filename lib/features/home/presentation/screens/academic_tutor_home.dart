@@ -1,7 +1,7 @@
+import 'package:bitacoras_app/core/widgets/location_checker_wrapper.dart';
+import 'package:flutter/material.dart';
 import 'package:bitacoras_app/features/home/data/repositories/fake_dashboard_repository.dart';
 import 'package:bitacoras_app/features/home/data/repositories/fake_user_repository.dart';
-import 'package:flutter/material.dart';
-
 import 'home_page.dart';
 
 class AcademicTutorHome extends StatelessWidget {
@@ -9,9 +9,11 @@ class AcademicTutorHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomePage(
-      user: FakeUserRepository.academicTutor,
-      actions: FakeDashboardRepository().academicTutorActions(),
+    return LocationCheckerWrapper(
+      child: HomePage(
+        user: FakeUserRepository.academicTutor,
+        actions: FakeDashboardRepository().academicTutorActions(),
+      ),
     );
   }
 }

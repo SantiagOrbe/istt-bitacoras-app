@@ -1,7 +1,6 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/data/repositories/fake_admin_repository.dart';
-import 'package:bitacoras_app/features/admin/domain/models/drawer_item_model.dart';
-import 'package:bitacoras_app/features/students/data/repositories/student_drawer_options.dart';
+import 'package:bitacoras_app/features/coordinador/data/coordinador_drawer_items.dart';
+import 'package:bitacoras_app/features/responsable_practicas/data/responsable_practicas_drawer_options.dart';
 
 
 class DrawerOptionsFactory {
@@ -11,14 +10,14 @@ class DrawerOptionsFactory {
         return getAdminDrawerSections();
       case UserRole.student:
         return getStudentDrawerSections();
-      
-      // Por ahora para otros roles retorna una lista vacía o las secciones por defecto
-      case UserRole.student:
-      case UserRole.teacher:
       case UserRole.academicTutor:
+        return getAcademicTutorDrawerSections();
       case UserRole.companyTutor:
+        return getCompanyTutorDrawerSections();
       case UserRole.coordinator:
+        return getCoordinatorDrawerSections();
       case UserRole.practiceManager:
+        return getResponsablePracticasDrawerSections();
       default:
         return [];
     }

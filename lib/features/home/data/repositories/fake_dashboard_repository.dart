@@ -1,3 +1,4 @@
+import 'package:bitacoras_app/app/apps.dart';
 import 'package:flutter/material.dart';
 import 'package:bitacoras_app/app/routes/app_routes.dart';
 import '../../domain/models/quick_action.dart';
@@ -107,11 +108,11 @@ class FakeDashboardRepository implements IDashboardRepository {
   List<QuickAction> academicTutorActions() {
     return [
       QuickAction(
-        title: 'Practicantes',
+        title: 'Mis Tutoriados',
         subtitle: 'Alumnos a supervisar',
         icon: Icons.school_rounded,
         iconBackgroundColor: const Color(0xFF1E88E5),
-        route: AppRoutes.userManagement,
+        route: AppRoutes.assignedStudents,
         onTap: () {},
       ),
       QuickAction(
@@ -119,25 +120,26 @@ class FakeDashboardRepository implements IDashboardRepository {
         subtitle: 'Monitoreo en empresas',
         icon: Icons.track_changes_rounded,
         iconBackgroundColor: const Color(0xFFF57C00),
-        route: AppRoutes.reports,
+        route: AppRoutes.academicTutorTracking,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Reportes',
-        subtitle: 'Evaluaciones y horas',
-        icon: Icons.analytics_rounded,
+        title: 'Registrar Entrada',
+        subtitle: 'Hoja de ruta inicial',
+        icon: Icons.assignment_turned_in_rounded,
         iconBackgroundColor: const Color(0xFF43A047),
-        route: AppRoutes.reports,
+        route: AppRoutes.academicTutorRegisterVisit,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Mi perfil',
-        subtitle: 'Datos personales',
-        icon: Icons.person_rounded,
+        title: 'Registrar Salida',
+        subtitle: 'Hoja de ruta institucional',
+        icon: Icons.exit_to_app_rounded,
         iconBackgroundColor: const Color(0xFF00897B),
-        route: AppRoutes.profile,
+        route: AppRoutes.academicTutorRegisterDeparture,
         onTap: () {},
       ),
+
     ];
   }
 
@@ -145,32 +147,24 @@ class FakeDashboardRepository implements IDashboardRepository {
   List<QuickAction> companyTutorActions() {
     return [
       QuickAction(
-        title: 'Estudiantes',
-        subtitle: 'Pasantes en la empresa',
-        icon: Icons.groups_rounded,
+        title: 'Pasantes Asignados',
+        subtitle: 'Alumnos en mi empresa',
+        icon: Icons.people_outline_rounded,
         iconBackgroundColor: const Color(0xFF1E88E5),
-        route: AppRoutes.userManagement,
+        route: AppRoutes.assignedStudents,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Asistencia',
-        subtitle: 'Validación de registros',
-        icon: Icons.fact_check_rounded,
+        title: 'Seguimiento',
+        subtitle: 'Bitácoras y horas acumuladas',
+        icon: Icons.analytics_rounded,
         iconBackgroundColor: const Color(0xFF43A047),
-        route: AppRoutes.attendance,
+        route: AppRoutes.companyTutorTracking,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Actividades',
-        subtitle: 'Aprobar bitácoras diarias',
-        icon: Icons.assignment_rounded,
-        iconBackgroundColor: const Color(0xFF7B1FA2),
-        route: AppRoutes.registerActivity,
-        onTap: () {},
-      ),
-      QuickAction(
-        title: 'Mi perfil',
-        subtitle: 'Datos institucionales',
+        title: 'Mi Perfil',
+        subtitle: 'Datos de la empresa y personales',
         icon: Icons.person_rounded,
         iconBackgroundColor: const Color(0xFF00897B),
         route: AppRoutes.profile,
@@ -184,26 +178,26 @@ class FakeDashboardRepository implements IDashboardRepository {
     return [
       QuickAction(
         title: 'Carreras',
-        subtitle: 'Gestión por coordinaciones',
+        subtitle: 'Consulta de carreras',
         icon: Icons.account_tree_rounded,
         iconBackgroundColor: const Color(0xFF7B1FA2),
-        route: AppRoutes.careerPeriod,
-        onTap: () {},
-      ),
-      QuickAction(
-        title: 'Reportes',
-        subtitle: 'Métricas de la carrera',
-        icon: Icons.bar_chart_rounded,
-        iconBackgroundColor: const Color(0xFF43A047),
-        route: AppRoutes.reports,
+        route: AppRoutes.coordinatorCareers,
         onTap: () {},
       ),
       QuickAction(
         title: 'Estudiantes',
-        subtitle: 'Estado académico y prácticas',
+        subtitle: 'Consulta de estudiantes',
         icon: Icons.school_rounded,
         iconBackgroundColor: const Color(0xFF1E88E5),
-        route: AppRoutes.userManagement,
+        route: AppRoutes.coordinatorStudents,
+        onTap: () {},
+      ),
+      QuickAction(
+        title: 'Tutores',
+        subtitle: 'Consulta de tutores',
+        icon: Icons.badge_rounded,
+        iconBackgroundColor: const Color(0xFFE65100),
+        route: AppRoutes.coordinatorTutors,
         onTap: () {},
       ),
       QuickAction(
@@ -216,37 +210,28 @@ class FakeDashboardRepository implements IDashboardRepository {
       ),
     ];
   }
-
   @override
   List<QuickAction> practiceManagerActions() {
     return [
       QuickAction(
-        title: 'Empresas',
-        subtitle: 'Catálogo de instituciones',
+        title: 'Gestión de Empresas',
+        subtitle: 'Catálogo de instituciones y convenios',
         icon: Icons.business_rounded,
         iconBackgroundColor: const Color(0xFF1E88E5),
-        route: AppRoutes.userManagement,
+        route: AppRoutes.responsablePracticasCompanies,
         onTap: () {},
       ),
       QuickAction(
-        title: 'Convenios',
-        subtitle: 'Acuerdos vigentes',
-        icon: Icons.handshake_rounded,
+        title: 'Asignación de Estudiantes',
+        subtitle: 'Vincular tutores académicos y empresariales',
+        icon: Icons.person_add_alt_1_rounded,
         iconBackgroundColor: const Color(0xFF00897B),
-        route: AppRoutes.careerPeriod,
-        onTap: () {},
-      ),
-      QuickAction(
-        title: 'Prácticas',
-        subtitle: 'Asignaciones de cupos',
-        icon: Icons.work_history_rounded,
-        iconBackgroundColor: const Color(0xFFF57C00),
-        route: AppRoutes.registerActivity,
+        route: AppRoutes.responsablePracticasAssignStudents,
         onTap: () {},
       ),
       QuickAction(
         title: 'Mi perfil',
-        subtitle: 'Datos personales',
+        subtitle: 'Datos personales y cuenta',
         icon: Icons.person_rounded,
         iconBackgroundColor: const Color(0xFF7B1FA2),
         route: AppRoutes.profile,
@@ -254,7 +239,6 @@ class FakeDashboardRepository implements IDashboardRepository {
       ),
     ];
   }
-
   @override
   List<QuickAction> adminActions() {
     return [

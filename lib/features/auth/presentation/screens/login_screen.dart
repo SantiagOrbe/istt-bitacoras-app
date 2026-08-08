@@ -46,8 +46,14 @@ class _LoginScreenState extends State<LoginScreen> {
         case UserRole.academicTutor:
           context.go(AppRoutes.academicTutorHome);
           break;
+        case UserRole.companyTutor:
+          context.go(AppRoutes.companyTutorHome);
         case UserRole.admin:
           context.go(AppRoutes.adminHome);
+        case UserRole.practiceManager:
+          context.go(AppRoutes.practiceManagerHome);
+        case UserRole.coordinator:
+          context.go(AppRoutes.coordinatorHome);
           break;
         default:
           context.go(AppRoutes.studentHome);

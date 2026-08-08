@@ -36,4 +36,23 @@ class AppRoutes {
   //Admin
   static const String adminPracticeLogs = '/admin/practice-logs';
 
+  // Tutores
+  static const String assignedStudents = '/tutor/assigned-students';
+  static const String academicTutorRegisterVisit = '/tutor/register-visit';
+  static const String companyTutorTracking = '/company-tutor/tracking';
+  static const String visitActivityForm = '/tutor/visit-activity-form';
+  static const String academicTutorTracking = '/academic-tutor/tracking';
+  static const String academicTutorRegisterDeparture = '/tutor/register-departure';
+
+  // Responsable de Prácticas
+  static const String responsablePracticasHome = '/responsable-practicas';
+  static const String responsablePracticasCompanies = '/responsable-practicas/empresas';
+  static const String responsablePracticasCompanyForm = '/responsable-practicas/empresas/formulario';
+  static const String responsablePracticasAssignStudents = '/responsable-practicas/asignaciones';
+  static const String responsablePracticasAssignStudentForm = '/responsable-practicas/asignaciones/formulario';
+
+  //coordinador
+  static const String coordinatorStudents = '/coordinator-students';
+  static const String coordinatorCareers = '/coordinator-careers';
+  static const String coordinatorTutors = '/coordinator-tutors';
 }
