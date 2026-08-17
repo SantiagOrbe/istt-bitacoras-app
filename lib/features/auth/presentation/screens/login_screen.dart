@@ -40,19 +40,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (user != null) {
       switch (user.role) {
-        case UserRole.student:
+        case RolUsuarioModel.student:
           context.go(AppRoutes.studentHome);
           break;
-        case UserRole.academicTutor:
+        case RolUsuarioModel.academicTutor:
           context.go(AppRoutes.academicTutorHome);
           break;
-        case UserRole.companyTutor:
+        case RolUsuarioModel.companyTutor:
           context.go(AppRoutes.companyTutorHome);
-        case UserRole.admin:
+        case RolUsuarioModel.admin:
           context.go(AppRoutes.adminHome);
-        case UserRole.practiceManager:
+        case RolUsuarioModel.practiceManager:
           context.go(AppRoutes.practiceManagerHome);
-        case UserRole.coordinator:
+        case RolUsuarioModel.coordinator:
           context.go(AppRoutes.coordinatorHome);
           break;
         default:

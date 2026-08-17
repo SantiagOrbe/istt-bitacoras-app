@@ -2,269 +2,253 @@ import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_carreras_screen.dart';
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_estudiantes_screen.dart';
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_tutores_screen.dart';
-import 'package:bitacoras_app/features/home/presentation/screens/company_tutor_home.dart';
-import 'package:bitacoras_app/features/responsable_practicas/data/repositories/fake_responsable_practicas_repository.dart';
-import 'package:bitacoras_app/features/responsable_practicas/domain/models/company_model.dart';
-import 'package:bitacoras_app/features/responsable_practicas/domain/models/student_assignment_model.dart';
-import 'package:bitacoras_app/features/responsable_practicas/presentation/controllers/company_management_controller.dart';
-import 'package:bitacoras_app/features/responsable_practicas/presentation/controllers/student_assignment_controller.dart';
-import 'package:bitacoras_app/features/responsable_practicas/presentation/screens/assign_student_form_screen.dart';
-import 'package:bitacoras_app/features/responsable_practicas/presentation/screens/company_form_screen.dart';
-import 'package:bitacoras_app/features/responsable_practicas/presentation/screens/manage_companies_screen.dart';
-import 'package:bitacoras_app/features/responsable_practicas/presentation/screens/student_assignments_screen.dart';
-import 'package:bitacoras_app/features/tutores/domain/models/academic_visit_model.dart';
-import 'package:bitacoras_app/features/tutores/presentation/screens/register_departure_screen.dart';
-import 'package:bitacoras_app/features/tutores/presentation/screens/register_visit_screen.dart';
-import 'package:bitacoras_app/features/tutores/presentation/screens/student_tracking_screen.dart';
-import 'package:bitacoras_app/features/tutores/presentation/screens/visit_activity_form_screen.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.login, 
+  initialLocation: AppRoutes.login,
   routes: [
     GoRoute(
       path: AppRoutes.login,
-      builder: (context, state) => LoginScreen(
-        authRepository: AuthRepositoryImpl(),
-      ),
+      builder: (context, state) =>
+          LoginScreen(authRepository: AuthRepositoryImpl()),
     ),
     GoRoute(
       path: AppRoutes.studentHome,
-      builder: (context, state) => const StudentHome(),
+      builder: (context, state) => const InicioEstudianteScreen(),
     ),
     GoRoute(
       path: AppRoutes.registerExitAttendance,
-      builder: (context, state) => RegisterExitScreen(
-        currentUser: FakeUserRepository.student,
-        attendanceRepository: FakeAttendanceRepository(),
-      ), 
-    ),  
+      builder: (context, state) => RegistroSalidaScreen(
+        currentUser: FakeUsuarioRepository.student,
+        attendanceRepository: FakeAsistenciaRepository(),
+      ),
+    ),
     GoRoute(
       path: AppRoutes.attendance,
-      builder: (context, state) => RegisterAttendanceScreen(
-        currentUser: FakeUserRepository.student,
-        attendanceRepository: FakeAttendanceRepository(),
+      builder: (context, state) => RegistroAsistenciaScreen(
+        currentUser: FakeUsuarioRepository.student,
+        attendanceRepository: FakeAsistenciaRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.registerActivity,
-      builder: (context, state) => RegisterActivityScreen(
-        currentUser: FakeUserRepository.student,
-        attendanceRepository: FakeAttendanceRepository(),
+      builder: (context, state) => RegistroActividadScreen(
+        currentUser: FakeUsuarioRepository.student,
+        attendanceRepository: FakeAsistenciaRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.history,
-      builder: (context, state) => HistoryScreen(
-        currentUser: FakeUserRepository.student,
-        attendanceRepository: FakeAttendanceRepository()
+      builder: (context, state) => HistorialScreen(
+        currentUser: FakeUsuarioRepository.student,
+        attendanceRepository: FakeAsistenciaRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.reports,
-      builder: (context, state) => ReportsScreen(
-        currentUser: FakeUserRepository.student,
-        attendanceRepository: FakeAttendanceRepository(),
+      builder: (context, state) => ReportesScreen(
+        currentUser: FakeUsuarioRepository.student,
+        attendanceRepository: FakeAsistenciaRepository(),
       ),
     ),
     GoRoute(
-      path: AppRoutes.profile,
-      builder: (context, state) => const ProfileScreen(
-        currentUser: FakeUserRepository.student,
-      ),
+      path: AppRoutes.perfil,
+      builder: (context, state) =>
+          const PerfilScreen(currentUser: FakeUsuarioRepository.student),
     ),
     GoRoute(
       path: AppRoutes.adminHome,
-      builder: (context, state) => const AdminHome(), 
+      builder: (context, state) => const InicioAdminScreen(),
     ),
     GoRoute(
       path: AppRoutes.userManagement,
-      builder: (context, state) => UserManagementScreen(
-        currentUser: FakeUserRepository.admin,
+      builder: (context, state) => GestionUsuarioScreen(
+        currentUser: FakeUsuarioRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.userDetail,
       builder: (context, state) {
-        final user = state.extra as UserModel?;
+        final user = state.extra as UsuarioModel?;
 
-        return UserDetailScreen(
-          user: user ?? FakeUserRepository.admin,
+        return UsuarioDetailScreen(
+          user: user ?? FakeUsuarioRepository.admin,
           adminRepository: FakeAdminRepository(),
         );
       },
     ),
     GoRoute(
       path: AppRoutes.careerManagement,
-      builder: (context, state) => CareerManagementScreen(
-        currentUser: FakeUserRepository.admin,
+      builder: (context, state) => GestionCarreraScreen(
+        currentUser: FakeUsuarioRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.careerDetail,
       builder: (context, state) {
-        final career = state.extra as CareerModel?;
+        final career = state.extra as CarreraModel?;
 
-        return CareerDetailScreen(
-          currentUser: FakeUserRepository.admin,
-          career: career ?? const CareerModel(
-            id: '',
-            name: '',
-            code: '',
-            shortName: '',
-            description: '',
-            modality: '',
-            isActive: true,
-            totalSemesters: 0,
-          ),
+        return CarreraDetailScreen(
+          currentUser: FakeUsuarioRepository.admin,
+          career:
+              career ??
+              const CarreraModel(
+                id: '',
+                name: '',
+                code: '',
+                shortName: '',
+                description: '',
+                modality: '',
+                isActive: true,
+                totalSemesters: 0,
+              ),
         );
       },
     ),
     GoRoute(
       path: AppRoutes.careerPeriod,
-      builder: (context, state) => CareerPeriodScreen(
-        currentUser: FakeUserRepository.admin,
+      builder: (context, state) => CarreraPeriodoScreen(
+        currentUser: FakeUsuarioRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.periodManagement,
-      builder: (context, state) => PeriodManagementScreen(
-        currentUser: FakeUserRepository.admin,
+      builder: (context, state) => GestionPeriodoScreen(
+        currentUser: FakeUsuarioRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.cycleManagement,
-      builder: (context, state) => CycleManagementScreen(
-        currentUser: FakeUserRepository.admin,
+      builder: (context, state) => GestionCicloScreen(
+        currentUser: FakeUsuarioRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.parallelManagement,
-      builder: (context, state) => ParallelManagementScreen(
-        currentUser: FakeUserRepository.admin,
+      builder: (context, state) => GestionParaleloScreen(
+        currentUser: FakeUsuarioRepository.admin,
         adminRepository: FakeAdminRepository(),
       ),
     ),
     GoRoute(
       path: AppRoutes.teacherHome,
-      builder: (context, state) => const TeacherHome(), 
+      builder: (context, state) => const InicioDocenteScreen(),
     ),
     GoRoute(
       path: AppRoutes.academicTutorHome,
-      builder: (context, state) => const AcademicTutorHome(), 
+      builder: (context, state) => const InicioTutorAcademicoScreen(),
     ),
     GoRoute(
       path: AppRoutes.companyTutorHome,
-      builder: (context, state) => const CompanyTutorHome(), 
+      builder: (context, state) => const InicioTutorEmpresarialScreen(),
     ),
     GoRoute(
       path: AppRoutes.coordinatorHome,
-      builder: (context, state) => const CoordinatorHome(), 
+      builder: (context, state) => const InicioCoordinadorScreen(),
     ),
     GoRoute(
       path: AppRoutes.practiceManagerHome,
-      builder: (context, state) => const PracticeManagerHome(), 
+      builder: (context, state) => const InicioResponsablePracticasScreen(),
     ),
     GoRoute(
       path: AppRoutes.adminPracticeLogs,
-      builder: (context, state) => const AdminPracticeLogsScreen(currentUser: FakeUserRepository.admin,), 
+      builder: (context, state) =>
+          const AdminBitacorasScreen(currentUser: FakeUsuarioRepository.admin),
     ),
     GoRoute(
       path: AppRoutes.assignedStudents,
-      builder: (context, state) => const AssignedStudentsScreen(
-        currentUser: FakeUserRepository.academicTutor,
+      builder: (context, state) => const EstudiantesAsignadosScreen(
+        currentUser: FakeUsuarioRepository.academicTutor,
         isAcademic: true,
       ),
     ),
     GoRoute(
       path: AppRoutes.companyTutorHome,
-      builder: (context, state) => const AssignedStudentsScreen(
-        currentUser: FakeUserRepository.companyTutor,
+      builder: (context, state) => const EstudiantesAsignadosScreen(
+        currentUser: FakeUsuarioRepository.companyTutor,
         isAcademic: false,
       ),
     ),
     GoRoute(
       path: AppRoutes.academicTutorRegisterVisit,
-      builder: (context, state) => const RegisterVisitScreen(
-        currentUser: FakeUserRepository.companyTutor,
+      builder: (context, state) => const RegistroVisitaScreen(
+        currentUser: FakeUsuarioRepository.companyTutor,
       ),
     ),
     GoRoute(
       path: AppRoutes.academicTutorTracking,
-      builder: (context, state) => const StudentTrackingScreen(
-        currentUser: FakeUserRepository.academicTutor,
+      builder: (context, state) => const SeguimientoEstudiantesScreen(
+        currentUser: FakeUsuarioRepository.academicTutor,
         isAcademic: true,
       ),
     ),
     GoRoute(
       path: AppRoutes.companyTutorTracking,
-      builder: (context, state) => const StudentTrackingScreen(
-        currentUser: FakeUserRepository.companyTutor,
+      builder: (context, state) => const SeguimientoEstudiantesScreen(
+        currentUser: FakeUsuarioRepository.companyTutor,
         isAcademic: false,
       ),
     ),
     GoRoute(
       path: AppRoutes.academicTutorRegisterVisit,
-      builder: (context, state) => const RegisterVisitScreen(
-        currentUser: FakeUserRepository.academicTutor,
+      builder: (context, state) => const RegistroVisitaScreen(
+        currentUser: FakeUsuarioRepository.academicTutor,
       ),
     ),
     GoRoute(
       path: AppRoutes.visitActivityForm,
       builder: (context, state) {
-        final visit = state.extra as AcademicVisitModel;
-        return VisitActivityFormScreen(visit: visit);
+        final visit = state.extra as VisitaAcademicaModel;
+        return FormularioActividadVisitaScreen(visit: visit);
       },
     ),
     GoRoute(
       path: AppRoutes.academicTutorRegisterDeparture,
-      builder: (context, state) => const RegisterDepartureScreen(
-        currentUser: FakeUserRepository.academicTutor,
+      builder: (context, state) => const RegistroSalidaVisitaScreen(
+        currentUser: FakeUsuarioRepository.academicTutor,
       ),
     ),
-    
 
     GoRoute(
       path: AppRoutes.responsablePracticasHome,
-      builder: (context, state) => const PracticeManagerHome(),
+      builder: (context, state) => const InicioResponsablePracticasScreen(),
     ),
     GoRoute(
       path: AppRoutes.responsablePracticasCompanies,
-      builder: (context, state) => const ManageCompaniesScreen(),
+      builder: (context, state) => const GestionEmpresasScreen(),
     ),
     GoRoute(
       path: AppRoutes.responsablePracticasCompanyForm,
       builder: (context, state) {
         // Recibe un mapa o un extra si viene en modo edición
         final extraMap = state.extra as Map<String, dynamic>?;
-        final company = extraMap?['company'] as CompanyModel?;
-        final controller = extraMap?['controller'] as CompanyManagementController? ??
-            CompanyManagementController(
+        final company = extraMap?['company'] as EmpresaModel?;
+        final controller =
+            extraMap?['controller'] as GestionEmpresaController? ??
+            GestionEmpresaController(
               repository: FakeResponsablePracticasRepository(),
             );
 
-        return CompanyFormScreen(
-          company: company,
-          controller: controller,
-        );
+        return FormularioEmpresaScreen(company: company, controller: controller);
       },
     ),
     GoRoute(
       path: AppRoutes.responsablePracticasAssignStudents,
-      builder: (context, state) => const StudentAssignmentsScreen(),
+      builder: (context, state) => const AsignacionEstudiantesScreen(),
     ),
     GoRoute(
       path: AppRoutes.responsablePracticasAssignStudentForm,
       builder: (context, state) {
         final extraMap = state.extra as Map<String, dynamic>;
-        final assignment = extraMap['assignment'] as StudentAssignmentModel;
-        final controller = extraMap['controller'] as StudentAssignmentController;
+        final assignment = extraMap['assignment'] as AsignacionEstudianteModel;
+        final controller =
+            extraMap['controller'] as AsignacionEstudianteController;
 
-        return AssignStudentFormScreen(
+        return FormularioAsignacionEstudianteScreen(
           assignment: assignment,
           controller: controller,
         );

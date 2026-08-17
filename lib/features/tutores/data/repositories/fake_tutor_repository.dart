@@ -1,8 +1,8 @@
-import 'package:bitacoras_app/features/admin/domain/models/practice_log_model.dart';
-import 'package:bitacoras_app/features/home/domain/models/user_role.dart';
-import '../../../home/domain/models/user_model.dart';
-import '../../domain/models/academic_visit_model.dart';
-import '../../domain/models/assigned_student_model.dart';
+import 'package:bitacoras_app/features/admin/domain/models/registro_practica_model.dart';
+import 'package:bitacoras_app/features/inicio/domain/models/rol_usuario_model.dart';
+import '../../../inicio/domain/models/usuario_model.dart';
+import '../../domain/models/visita_academica_model.dart';
+import '../../domain/models/estudiante_asignado_model.dart';
 import '../../domain/repositories/i_tutor_repository.dart';
 
 class FakeTutorRepository implements ITutorRepository {
@@ -10,15 +10,15 @@ class FakeTutorRepository implements ITutorRepository {
     await Future.delayed(const Duration(milliseconds: 300));
   }
 
-  final List<AssignedStudentModel> _mockAssignedStudents = [
-    const AssignedStudentModel(
-      student: UserModel(
+  final List<EstudianteAsignadoModel> _mockAssignedStudents = [
+    const EstudianteAsignadoModel(
+      student: UsuarioModel(
         id: '1',
         name: 'Santiago Orbe',
         email: 'santiago.orbe@est.itstena.edu.ec',
         phone: '0987654321',
         cedula: '1500123456',
-        role: UserRole.student,
+        role: RolUsuarioModel.student,
         company: 'Tech Solutions Tena',
         careerName: 'Desarrollo de Software',
         periodName: 'Mayo 2026 - Octubre 2026',
@@ -36,8 +36,8 @@ class FakeTutorRepository implements ITutorRepository {
     ),
   ];
 
-  final List<PracticeLogModel> _mockLogs = [
-    const PracticeLogModel(
+  final List<RegistroPracticaModel> _mockLogs = [
+    const RegistroPracticaModel(
       id: 'log_1',
       studentId: '1',
       studentName: 'Santiago Orbe',
@@ -48,7 +48,7 @@ class FakeTutorRepository implements ITutorRepository {
       activityDescription: 'Configuración e integración de endpoints en Django REST framework.',
       status: 'Aprobado',
     ),
-    const PracticeLogModel(
+    const RegistroPracticaModel(
       id: 'log_2',
       studentId: '1',
       studentName: 'Santiago Orbe',
@@ -61,10 +61,10 @@ class FakeTutorRepository implements ITutorRepository {
     ),
   ];
 
-  final List<AcademicVisitModel> _mockVisits = [];
+  final List<VisitaAcademicaModel> _mockVisits = [];
 
   @override
-  Future<List<AssignedStudentModel>> getAssignedStudents(String tutorId, {required bool isAcademic}) async {
+  Future<List<EstudianteAsignadoModel>> getAssignedStudents(String tutorId, {required bool isAcademic}) async {
     await _delay();
     return _mockAssignedStudents.where((item) {
       return isAcademic ? item.academicTutorId == tutorId : item.companyTutorId == tutorId;
@@ -72,20 +72,20 @@ class FakeTutorRepository implements ITutorRepository {
   }
 
   @override
-  Future<List<PracticeLogModel>> getStudentLogs(String studentId) async {
+  Future<List<RegistroPracticaModel>> getStudentLogs(String studentId) async {
     await _delay();
     return _mockLogs.where((log) => log.studentId == studentId).toList();
   }
 
   @override
-  Future<bool> saveAcademicVisit(AcademicVisitModel visit) async {
+  Future<bool> saveAcademicVisit(VisitaAcademicaModel visit) async {
     await _delay();
     _mockVisits.add(visit);
     return true;
   }
 
   @override
-  Future<List<AcademicVisitModel>> getAcademicVisits(String tutorId) async {
+  Future<List<VisitaAcademicaModel>> getAcademicVisits(String tutorId) async {
     await _delay();
     return _mockVisits;
   }

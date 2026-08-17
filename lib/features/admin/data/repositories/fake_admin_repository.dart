@@ -1,54 +1,52 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/drawer_item_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/practice_log_model.dart';
 
 
-List<DrawerSectionModel> getAdminDrawerSections() {
+List<SeccionMenuModel> getAdminDrawerSections() {
   return const [
-    DrawerSectionModel(
+    SeccionMenuModel(
       title: 'Panel de Control',
       items: [
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.dashboard_outlined,
           title: 'Inicio Administrador',
           route: AppRoutes.adminHome,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.people_outline,
           title: 'Gestión de Usuarios',
           route: AppRoutes.userManagement,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.school_outlined,
           title: 'Gestión de Carreras',
           route: AppRoutes.careerManagement,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.calendar_month_outlined,
           title: 'Periodos Lectivos',
           route: AppRoutes.periodManagement,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.layers_outlined,
           title: 'Ciclos / Cursos',
           route: AppRoutes.cycleManagement,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.grid_view_outlined,
           title: 'Paralelos y Jornadas',
           route: AppRoutes.parallelManagement,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.settings_suggest_outlined,
           title: 'Config. Carrera - Periodo',
           route: AppRoutes.careerPeriod,
         ),
       ],
     ),
-    DrawerSectionModel(
+    SeccionMenuModel(
       title: 'Auditoría y Prácticas',
       items: [
-        DrawerItemModel(
+        ItemMenuModel(
           icon: Icons.assignment_turned_in_outlined,
           title: 'Registro de Bitácoras',
           route: AppRoutes.adminPracticeLogs,
@@ -65,57 +63,57 @@ class FakeAdminRepository implements IAdminRepository {
   }
 
   // --- Datos Mock en memoria ---
-  final List<UserModel> _mockUsers = [
-    const UserModel(
+  final List<UsuarioModel> _mockUsers = [
+    const UsuarioModel(
       id: '1',
       name: 'Santiago Orbe',
       email: 'santiago@ejemplo.com',
       cedula: '1500123456',
-      role: UserRole.student,
+      role: RolUsuarioModel.student,
       isActive: true,
       company: 'Tech Solutions',
       careerName: 'Desarrollo de Software',
     ),
-    const UserModel(
+    const UsuarioModel(
       id: '2',
       name: 'Juan Pérez',
       email: 'juan.perez@ejemplo.com',
       cedula: '1500654321',
-      role: UserRole.teacher,
+      role: RolUsuarioModel.teacher,
       isActive: true,
     ),
-    const UserModel(
+    const UsuarioModel(
       id: '3',
       name: 'María López',
       email: 'maria.lopez@ejemplo.com',
       cedula: '1500987654',
-      role: UserRole.academicTutor,
+      role: RolUsuarioModel.academicTutor,
       isActive: true,
     ),
-    const UserModel(
+    const UsuarioModel(
       id: '4',
       name: 'Ana Morales',
       email: 'ana.morales@ejemplo.com',
       cedula: '1500112233',
-      role: UserRole.admin,
+      role: RolUsuarioModel.admin,
       isActive: true,
     ),
   ];
 
-  final List<CycleModel> _mockCycles = [
-    const CycleModel(
+  final List<CicloModel> _mockCycles = [
+    const CicloModel(
       id: 'cyc_1',
       name: 'Primer Semestre',
       level: 1,
       isActive: true,
     ),
-    const CycleModel(
+    const CicloModel(
       id: 'cyc_2',
       name: 'Segundo Semestre',
       level: 2,
       isActive: true,
     ),
-    const CycleModel(
+    const CicloModel(
       id: 'cyc_3',
       name: 'Tercer Semestre',
       level: 3,
@@ -123,22 +121,22 @@ class FakeAdminRepository implements IAdminRepository {
     ),
   ];
 
-  final List<ParallelModel> _mockParallels = [
-    const ParallelModel(
+  final List<ParaleloModel> _mockParallels = [
+    const ParaleloModel(
       id: 'par_1',
       cycleId: 'cyc_1',
       name: 'A',
       jornada: 'Matutina',
       isActive: true,
     ),
-    const ParallelModel(
+    const ParaleloModel(
       id: 'par_2',
       cycleId: 'cyc_1',
       name: 'B',
       jornada: 'Vespertina',
       isActive: true,
     ),
-    const ParallelModel(
+    const ParaleloModel(
       id: 'par_3',
       cycleId: 'cyc_2',
       name: 'A',
@@ -147,8 +145,8 @@ class FakeAdminRepository implements IAdminRepository {
     ),
   ];
 
-  final List<CareerModel> _mockCareers = [
-    const CareerModel(
+  final List<CarreraModel> _mockCareers = [
+    const CarreraModel(
       id: 'car_1',
       name: 'Desarrollo de Software',
       code: 'DSW',
@@ -158,7 +156,7 @@ class FakeAdminRepository implements IAdminRepository {
       isActive: true,
       totalSemesters: 5,
     ),
-    const CareerModel(
+    const CarreraModel(
       id: 'car_2',
       name: 'Administración',
       code: 'ADM',
@@ -168,7 +166,7 @@ class FakeAdminRepository implements IAdminRepository {
       isActive: true,
       totalSemesters: 5,
     ),
-    const CareerModel(
+    const CarreraModel(
       id: 'car_3',
       name: 'Enfermería',
       code: 'ENF',
@@ -180,15 +178,15 @@ class FakeAdminRepository implements IAdminRepository {
     ),
   ];
 
-  final List<PeriodModel> _mockPeriods = [
-    PeriodModel(
+  final List<PeriodoModel> _mockPeriods = [
+    PeriodoModel(
       id: 'per_1',
       name: 'Mayo 2026 - Octubre 2026',
       startDate: DateTime(2026, 5, 1),
       endDate: DateTime(2026, 10, 31),
       isActive: true,
     ),
-    PeriodModel(
+    PeriodoModel(
       id: 'per_2',
       name: 'Noviembre 2025 - Abril 2026',
       startDate: DateTime(2025, 11, 1),
@@ -197,8 +195,8 @@ class FakeAdminRepository implements IAdminRepository {
     ),
   ];
 
-  final List<PracticeLogModel> _mockLogs = [
-    const PracticeLogModel(
+  final List<RegistroPracticaModel> _mockLogs = [
+    const RegistroPracticaModel(
       id: 'log_1',
       studentId: '1',
       studentName: 'Santiago Orbe',
@@ -209,7 +207,7 @@ class FakeAdminRepository implements IAdminRepository {
       activityDescription: 'Configuración e integración de endpoints en Django REST framework.',
       status: 'Aprobado',
     ),
-    const PracticeLogModel(
+    const RegistroPracticaModel(
       id: 'log_2',
       studentId: '1',
       studentName: 'Santiago Orbe',
@@ -223,13 +221,13 @@ class FakeAdminRepository implements IAdminRepository {
   ];
 
   @override
-  Future<List<PracticeLogModel>> getPracticeLogs() async {
+  Future<List<RegistroPracticaModel>> getPracticeLogs() async {
     await _delay();
     return List.from(_mockLogs);
   }
 
-  final List<CareerPeriodConfig> _mockConfigs = [
-    const CareerPeriodConfig(
+  final List<ConfiguracionPeriodoCarreraModel> _mockConfigs = [
+    const ConfiguracionPeriodoCarreraModel(
       careerId: 'car_1',
       periodId: 'per_1',
       activeSemestersForPractices: [4, 5],
@@ -238,20 +236,20 @@ class FakeAdminRepository implements IAdminRepository {
 
   // --- Gestión de Usuarios ---
   @override
-  Future<List<UserModel>> getUsers() async {
+  Future<List<UsuarioModel>> getUsers() async {
     await _delay();
     return List.from(_mockUsers);
   }
 
   @override
-  Future<bool> createUser(UserModel user) async {
+  Future<bool> createUser(UsuarioModel user) async {
     await _delay();
     _mockUsers.add(user);
     return true;
   }
 
   @override
-  Future<bool> updateUser(UserModel user) async {
+  Future<bool> updateUser(UsuarioModel user) async {
     await _delay();
     final index = _mockUsers.indexWhere((u) => u.id == user.id);
     if (index != -1) {
@@ -270,20 +268,20 @@ class FakeAdminRepository implements IAdminRepository {
 
   // --- Gestión de Cursos / Ciclos ---
   @override
-  Future<List<CycleModel>> getCycles() async {
+  Future<List<CicloModel>> getCycles() async {
     await _delay();
     return List.from(_mockCycles);
   }
 
   @override
-  Future<bool> createCycle(CycleModel cycle) async {
+  Future<bool> createCycle(CicloModel cycle) async {
     await _delay();
     _mockCycles.add(cycle);
     return true;
   }
 
   @override
-  Future<bool> updateCycle(CycleModel cycle) async {
+  Future<bool> updateCycle(CicloModel cycle) async {
     await _delay();
     final index = _mockCycles.indexWhere((c) => c.id == cycle.id);
     if (index != -1) {
@@ -295,20 +293,20 @@ class FakeAdminRepository implements IAdminRepository {
 
   // --- Gestión de Paralelos ---
   @override
-  Future<List<ParallelModel>> getParallels() async {
+  Future<List<ParaleloModel>> getParallels() async {
     await _delay();
     return List.from(_mockParallels);
   }
 
   @override
-  Future<bool> createParallel(ParallelModel parallel) async {
+  Future<bool> createParallel(ParaleloModel parallel) async {
     await _delay();
     _mockParallels.add(parallel);
     return true;
   }
 
   @override
-  Future<bool> updateParallel(ParallelModel parallel) async {
+  Future<bool> updateParallel(ParaleloModel parallel) async {
     await _delay();
     final index = _mockParallels.indexWhere((p) => p.id == parallel.id);
     if (index != -1) {
@@ -320,13 +318,13 @@ class FakeAdminRepository implements IAdminRepository {
 
   // --- Gestión de Carreras ---
   @override
-  Future<List<CareerModel>> getCareers() async {
+  Future<List<CarreraModel>> getCareers() async {
     await _delay();
     return List.from(_mockCareers);
   }
 
   @override
-  Future<bool> createCareer(CareerModel career) async {
+  Future<bool> createCareer(CarreraModel career) async {
     await _delay();
     _mockCareers.add(career);
     return true;
@@ -334,20 +332,20 @@ class FakeAdminRepository implements IAdminRepository {
 
   // --- Gestión de Periodos Lectivos ---
   @override
-  Future<List<PeriodModel>> getPeriods() async {
+  Future<List<PeriodoModel>> getPeriods() async {
     await _delay();
     return List.from(_mockPeriods);
   }
 
   @override
-  Future<bool> createPeriod(PeriodModel period) async {
+  Future<bool> createPeriod(PeriodoModel period) async {
     await _delay();
     _mockPeriods.add(period);
     return true;
   }
 
   @override
-  Future<bool> updatePeriod(PeriodModel period) async {
+  Future<bool> updatePeriod(PeriodoModel period) async {
     await _delay();
     final index = _mockPeriods.indexWhere((p) => p.id == period.id);
     if (index != -1) {
@@ -359,13 +357,13 @@ class FakeAdminRepository implements IAdminRepository {
 
   // --- Configuración Carrera / Periodo ---
   @override
-  Future<List<CareerPeriodConfig>> getCareerPeriodConfigs() async {
+  Future<List<ConfiguracionPeriodoCarreraModel>> getConfiguracionPeriodoCarreraModels() async {
     await _delay();
     return List.from(_mockConfigs);
   }
 
   @override
-  Future<bool> saveCareerPeriodConfig(CareerPeriodConfig config) async {
+  Future<bool> saveConfiguracionPeriodoCarreraModel(ConfiguracionPeriodoCarreraModel config) async {
     await _delay();
     final index = _mockConfigs.indexWhere(
       (c) => c.careerId == config.careerId && c.periodId == config.periodId,

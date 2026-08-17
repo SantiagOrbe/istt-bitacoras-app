@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../../../app/apps.dart';
 
-List<DrawerSectionModel> getCoordinatorDrawerSections() {
+List<SeccionMenuModel> getCoordinatorDrawerSections() {
   return [
-    const DrawerSectionModel(
+    const SeccionMenuModel(
       title: 'MENÚ PRINCIPAL',
       items: [
-        DrawerItemModel(
+        ItemMenuModel(
           title: 'Carreras',
           icon: Icons.account_tree_rounded,
           route: AppRoutes.coordinatorCareers,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           title: 'Estudiantes',
           icon: Icons.school_rounded,
           route: AppRoutes.coordinatorStudents,
         ),
-        DrawerItemModel(
+        ItemMenuModel(
           title: 'Tutores',
           icon: Icons.badge_rounded,
           route: AppRoutes.coordinatorTutors,

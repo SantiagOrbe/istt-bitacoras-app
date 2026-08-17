@@ -19,7 +19,7 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<UserModel?> submitLogin() async {
+  Future<UsuarioModel?> submitLogin() async {
     final email = emailController.text;
     final password = passwordController.text;
 

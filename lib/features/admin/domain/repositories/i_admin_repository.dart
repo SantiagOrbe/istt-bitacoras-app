@@ -1,36 +1,36 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/practice_log_model.dart';
+import 'package:bitacoras_app/features/admin/domain/models/registro_practica_model.dart';
 
 
 abstract class IAdminRepository {
   // --- Gestión de Usuarios ---
-  Future<List<UserModel>> getUsers();
-  Future<bool> createUser(UserModel user);
-  Future<bool> updateUser(UserModel user);
+  Future<List<UsuarioModel>> getUsers();
+  Future<bool> createUser(UsuarioModel user);
+  Future<bool> updateUser(UsuarioModel user);
   Future<bool> deleteUser(String userId);
 
   // --- Gestión de Cursos / Ciclos ---
-  Future<List<CycleModel>> getCycles();
-  Future<bool> createCycle(CycleModel cycle);
-  Future<bool> updateCycle(CycleModel cycle);
+  Future<List<CicloModel>> getCycles();
+  Future<bool> createCycle(CicloModel cycle);
+  Future<bool> updateCycle(CicloModel cycle);
 
   // --- Gestión de Paralelos ---
-  Future<List<ParallelModel>> getParallels();
-  Future<bool> createParallel(ParallelModel parallel);
-  Future<bool> updateParallel(ParallelModel parallel);
+  Future<List<ParaleloModel>> getParallels();
+  Future<bool> createParallel(ParaleloModel parallel);
+  Future<bool> updateParallel(ParaleloModel parallel);
 
   // --- Gestión de Carreras ---
-  Future<List<CareerModel>> getCareers();
-  Future<bool> createCareer(CareerModel career);
+  Future<List<CarreraModel>> getCareers();
+  Future<bool> createCareer(CarreraModel career);
 
   // --- Gestión de Periodos Lectivos ---
-  Future<List<PeriodModel>> getPeriods();
-  Future<bool> createPeriod(PeriodModel period);
-  Future<bool> updatePeriod(PeriodModel period);
+  Future<List<PeriodoModel>> getPeriods();
+  Future<bool> createPeriod(PeriodoModel period);
+  Future<bool> updatePeriod(PeriodoModel period);
 
   // --- Configuración Carrera / Periodo ---
-  Future<List<CareerPeriodConfig>> getCareerPeriodConfigs();
-  Future<bool> saveCareerPeriodConfig(CareerPeriodConfig config);
+  Future<List<ConfiguracionPeriodoCarreraModel>> getConfiguracionPeriodoCarreraModels();
+  Future<bool> saveConfiguracionPeriodoCarreraModel(ConfiguracionPeriodoCarreraModel config);
 
-  Future<List<PracticeLogModel>> getPracticeLogs();
+  Future<List<RegistroPracticaModel>> getPracticeLogs();
 }

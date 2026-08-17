@@ -6,7 +6,7 @@ class AppRoutes {
   static const login = '/login';
 
   // Pantallas Principales por Rol
-  static const studentHome = '/student'; 
+  static const studentHome = '/student';
   static const tutorHome = '/tutor';
   static const adminHome = '/admin';
 
@@ -15,7 +15,7 @@ class AppRoutes {
   static const registerActivity = '/attendance/activity';
   static const history = '/history';
   static const reports = '/reports';
-  static const profile = '/profile';
+  static const perfil = '/perfil';
   static const String userManagement = '/admin/user-management';
   static const String userDetail = '/admin/user-detail';
   static const String careerManagement = '/admin/careers';
@@ -42,14 +42,19 @@ class AppRoutes {
   static const String companyTutorTracking = '/company-tutor/tracking';
   static const String visitActivityForm = '/tutor/visit-activity-form';
   static const String academicTutorTracking = '/academic-tutor/tracking';
-  static const String academicTutorRegisterDeparture = '/tutor/register-departure';
+  static const String academicTutorRegisterDeparture =
+      '/tutor/register-departure';
 
   // Responsable de Prácticas
   static const String responsablePracticasHome = '/responsable-practicas';
-  static const String responsablePracticasCompanies = '/responsable-practicas/empresas';
-  static const String responsablePracticasCompanyForm = '/responsable-practicas/empresas/formulario';
-  static const String responsablePracticasAssignStudents = '/responsable-practicas/asignaciones';
-  static const String responsablePracticasAssignStudentForm = '/responsable-practicas/asignaciones/formulario';
+  static const String responsablePracticasCompanies =
+      '/responsable-practicas/empresas';
+  static const String responsablePracticasCompanyForm =
+      '/responsable-practicas/empresas/formulario';
+  static const String responsablePracticasAssignStudents =
+      '/responsable-practicas/asignaciones';
+  static const String responsablePracticasAssignStudentForm =
+      '/responsable-practicas/asignaciones/formulario';
 
   //coordinador
   static const String coordinatorStudents = '/coordinator-students';

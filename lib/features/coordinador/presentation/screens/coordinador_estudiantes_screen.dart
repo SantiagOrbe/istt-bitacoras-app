@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../config/constants/app_colors.dart';
-import '../../../home/data/repositories/fake_user_repository.dart';
-import '../../../home/presentation/widgets/home_app_bar.dart';
+import '../../../inicio/data/repositories/fake_usuario_repository.dart';
+import '../../../inicio/presentation/widgets/inicio_app_bar.dart';
 import '../../data/repositories/fake_coordinador_repository.dart';
 import '../controllers/coordinador_consulta_controller.dart';
 import '../widgets/coordinador_info_card.dart';
@@ -32,8 +32,8 @@ class _CoordinadorEstudiantesScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: HomeAppBar(
-        user: FakeUserRepository.coordinator,
+      appBar: InicioAppBar(
+        user: FakeUsuarioRepository.coordinator,
         showBackButton: true,
         showDrawerButton: false,
         onBackPressed: () => context.pop(),

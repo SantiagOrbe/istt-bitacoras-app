@@ -1,13 +1,13 @@
 import '../../domain/repositories/i_auth_repository.dart';
 import 'package:bitacoras_app/shared/exports.dart';
-import 'package:bitacoras_app/features/home/data/repositories/fake_user_repository.dart';
+import 'package:bitacoras_app/features/inicio/data/repositories/fake_usuario_repository.dart';
 
 class AuthRepositoryImpl implements IAuthRepository {
-  final FakeUserRepository _userRepository = FakeUserRepository();
-  UserModel? _currentUser;
+  final FakeUsuarioRepository _userRepository = FakeUsuarioRepository();
+  UsuarioModel? _currentUser;
 
   @override
-  Future<UserModel?> login({
+  Future<UsuarioModel?> login({
     required String email,
     required String password,
   }) async {
@@ -29,7 +29,7 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<UserModel?> getCurrentUser() async {
+  Future<UsuarioModel?> getCurrentUser() async {
     return _currentUser ?? await _userRepository.getCurrentUser();
   }
 }

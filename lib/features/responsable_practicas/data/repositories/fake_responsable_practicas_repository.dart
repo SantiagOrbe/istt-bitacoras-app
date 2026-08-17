@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../app/apps.dart';
-import '../../domain/models/company_model.dart';
-import '../../domain/models/student_assignment_model.dart';
+import '../../domain/models/empresa_model.dart';
+import '../../domain/models/asignacion_estudiante_model.dart';
 import '../../domain/repositories/i_responsable_practicas_repository.dart';
 
 class FakeResponsablePracticasRepository implements IResponsablePracticasRepository {
-  final List<CompanyModel> _companies = [
-    const CompanyModel(
+  final List<EmpresaModel> _companies = [
+    const EmpresaModel(
       id: '1',
       name: 'GAD Municipal de Tena',
       ruc: '1560001160001',
@@ -17,7 +17,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       agreementNumber: 'CONV-2025-001',
       isActive: true,
     ),
-    const CompanyModel(
+    const EmpresaModel(
       id: '2',
       name: 'Ministerio de Educación (Distrito Tena)',
       ruc: '1560002280001',
@@ -28,7 +28,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       agreementNumber: 'CONV-2025-008',
       isActive: true,
     ),
-    const CompanyModel(
+    const EmpresaModel(
       id: '3',
       name: 'Empresa Eléctrica Ambato SA (EERSSA)',
       ruc: '1890001420001',
@@ -41,8 +41,8 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
     ),
   ];
 
-  final List<StudentAssignmentModel> _assignments = [
-    const StudentAssignmentModel(
+  final List<AsignacionEstudianteModel> _assignments = [
+    const AsignacionEstudianteModel(
       id: 'asg-101',
       studentId: 'std-001',
       studentName: 'Santiago Orbe',
@@ -56,7 +56,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       companyName: 'GAD Municipal de Tena',
       isAssigned: true,
     ),
-    const StudentAssignmentModel(
+    const AsignacionEstudianteModel(
       id: 'asg-102',
       studentId: 'std-002',
       studentName: 'Andres Orbe',
@@ -70,7 +70,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       companyName: null,
       isAssigned: false,
     ),
-    const StudentAssignmentModel(
+    const AsignacionEstudianteModel(
       id: 'asg-103',
       studentId: 'std-003',
       studentName: 'Andree Ramos',
@@ -84,7 +84,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       companyName: 'Ministerio de Educación',
       isAssigned: true,
     ),
-    const StudentAssignmentModel(
+    const AsignacionEstudianteModel(
       id: 'asg-104',
       studentId: 'std-004',
       studentName: 'Stalin López',
@@ -101,9 +101,9 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
   ];
 
   @override
-  List<QuickAction> responsablePracticasActions() {
+  List<AccionRapidaModel> responsablePracticasActions() {
     return [
-      QuickAction(
+      AccionRapidaModel(
         title: 'Gestión de Empresas',
         subtitle: 'Catálogo de instituciones y convenios',
         icon: Icons.business_rounded,
@@ -111,7 +111,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
         route: AppRoutes.responsablePracticasCompanies,
         onTap: () {},
       ),
-      QuickAction(
+      AccionRapidaModel(
         title: 'Asignación de Estudiantes',
         subtitle: 'Vincular tutores académicos y empresariales',
         icon: Icons.person_add_alt_1_rounded,
@@ -119,39 +119,39 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
         route: AppRoutes.responsablePracticasAssignStudents,
         onTap: () {},
       ),
-      QuickAction(
+      AccionRapidaModel(
         title: 'Mi perfil',
         subtitle: 'Datos personales y cuenta',
         icon: Icons.person_rounded,
         iconBackgroundColor: const Color(0xFF7B1FA2),
-        route: AppRoutes.profile,
+        route: AppRoutes.perfil,
         onTap: () {},
       ),
     ];
   }
 
   @override
-  Future<List<CompanyModel>> getCompanies({String? query}) async {
+  Future<List<EmpresaModel>> getCompanies({String? query}) async {
     await Future.delayed(const Duration(milliseconds: 200));
     return List.from(_companies);
   }
 
   @override
-  Future<CompanyModel?> getCompanyById(String id) async => null;
+  Future<EmpresaModel?> getCompanyById(String id) async => null;
 
   @override
-  Future<bool> saveCompany(CompanyModel company) async => true;
+  Future<bool> saveCompany(EmpresaModel company) async => true;
 
   @override
   Future<bool> toggleCompanyActiveStatus(String id, bool isActive) async => true;
 
   @override
-  Future<List<StudentAssignmentModel>> getStudentAssignments({
+  Future<List<AsignacionEstudianteModel>> getStudentAssignments({
     String? query,
     bool? pendingOnly,
   }) async {
     await Future.delayed(const Duration(milliseconds: 200));
-    var result = List<StudentAssignmentModel>.from(_assignments);
+    var result = List<AsignacionEstudianteModel>.from(_assignments);
 
     if (pendingOnly == true) {
       result = result.where((a) => !a.isAssigned).toList();
