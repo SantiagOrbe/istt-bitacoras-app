@@ -1,33 +1,44 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+# ===== Python / Django =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+env/
+.benv/
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*
+*.whl
+*.egg
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
+# Migrations locales (Django)
+db.sqlite3
+db.sqlite3-journal
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# ===== Entornos virtuales =====
+backend/venv/
 
-# Flutter/Dart/Pub related
+# ===== Variables de entorno / Secretos =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ===== Flutter / Dart =====
+# frontend/bitacoras_app/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins-dependencies
+.flutter-plugins
 .pub-cache/
 .pub/
 /build/
@@ -43,3 +54,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# ===== Archivos de sistema =====
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+*.log
+*.tmp
