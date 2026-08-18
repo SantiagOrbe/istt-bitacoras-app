@@ -36,6 +36,8 @@ ALLOWED_HOSTS = []
 # Temporal para desarrollo: permite la comunicación con el frontend Flutter.
 CORS_ALLOW_ALL_ORIGINS = True
 
+AUTH_USER_MODEL = 'usuarios.Usuario'
+
 # Rutas a las bibliotecas nativas GDAL/GEOS requeridas por PostGIS.
 GDAL_LIBRARY_PATH = os.getenv(
     'GDAL_LIBRARY_PATH', r'C:\Program Files\GDAL\gdal.dll'
@@ -57,6 +59,10 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'rest_framework',
     'corsheaders',
+    'gestion_academica',
+    'usuarios',
+    'empresas',
+    'bitacoras',
 ]
 
 MIDDLEWARE = [
