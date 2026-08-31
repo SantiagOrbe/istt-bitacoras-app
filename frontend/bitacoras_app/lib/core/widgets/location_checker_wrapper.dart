@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
-// Exports compartidos desde el archivo shared/exports.dart
 import 'package:bitacoras_app/shared/exports.dart';
 
-
+//Envoltorio que envuelve cualquier Widgets para pedir Ubicación
 class LocationCheckerWrapper extends StatefulWidget {
   final Widget child;
 

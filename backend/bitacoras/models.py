@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 
 from usuarios.models import Estudiante
+from .managers import RegistroPracticaManager
 
 
 class RegistroPractica(models.Model):
@@ -15,6 +16,8 @@ class RegistroPractica(models.Model):
     )
     estado = models.BooleanField(default=True)
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+
+    objects = RegistroPracticaManager()
 
     def __str__(self):
         return f'{self.estudiante} - {self.fecha}'

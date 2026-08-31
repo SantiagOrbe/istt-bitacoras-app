@@ -3,6 +3,7 @@ import 'package:bitacoras_app/features/inicio/presentation/widgets/drawer/opcion
 import 'package:bitacoras_app/features/screens.dart';
 import 'package:bitacoras_app/shared/exports.dart';
 
+//Pantalla de inicio que filtra por Roles y muestra la pantalla de inicio según Rol
 
 class InicioScreen extends StatelessWidget {
   final UsuarioModel user;

@@ -39,6 +39,19 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
+import os
+
+if os.name == 'nt':
+    # Ruta exacta a la carpeta bin de tu instalación de PostgreSQL 18
+    POSTGRES_BIN = r'C:\Program Files\PostgreSQL\18\bin'
+    
+    # Agregar la ruta al PATH del sistema para Python
+    os.environ['PATH'] = POSTGRES_BIN + os.pathsep + os.environ['PATH']
+
+    # Apuntar directamente a los archivos DLL firmados del sistema
+    GDAL_LIBRARY_PATH = os.path.join(POSTGRES_BIN, 'libgdal-35.dll')
+    GEOS_LIBRARY_PATH = os.path.join(POSTGRES_BIN, 'libgeos_c.dll')
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -50,12 +63,12 @@ SIMPLE_JWT = {
 }
 
 # Rutas a las bibliotecas nativas GDAL/GEOS requeridas por PostGIS.
-GDAL_LIBRARY_PATH = os.getenv(
-    'GDAL_LIBRARY_PATH', r'C:\Program Files\GDAL\gdal.dll'
-)
-GEOS_LIBRARY_PATH = os.getenv(
-    'GEOS_LIBRARY_PATH', r'C:\Program Files\GDAL\geos_c.dll'
-)
+#GDAL_LIBRARY_PATH = os.getenv(
+    #'GDAL_LIBRARY_PATH', r'C:\Program Files\GDAL\gdal.dll'
+#)
+#GEOS_LIBRARY_PATH = os.getenv(
+    #'GEOS_LIBRARY_PATH', r'C:\Program Files\GDAL\geos_c.dll'
+#)
 
 
 # Application definition

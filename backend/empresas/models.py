@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 
 
+""" Modelos de la Entidad Empresa """
 class Empresa(models.Model):
     nombre = models.CharField(max_length=150)
     direccion = models.CharField(max_length=255)

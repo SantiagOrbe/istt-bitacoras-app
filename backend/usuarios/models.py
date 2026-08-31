@@ -3,7 +3,7 @@ from django.db import models
 
 from empresas.models import Empresa
 from gestion_academica.models import Carrera, Ciclo, Paralelo
-
+""" Modelos de los usuarios y de todos los roles correspondientes de la app en Django."""
 
 class Usuario(AbstractUser):
     telefono = models.CharField(max_length=15, blank=True)

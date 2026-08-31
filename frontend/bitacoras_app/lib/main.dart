@@ -1,8 +1,8 @@
 import 'package:bitacoras_app/app/routes/app_router.dart';
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//Función Main de Flutter Usada para correr toda la App.
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
