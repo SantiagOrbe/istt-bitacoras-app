@@ -14,12 +14,15 @@ class PeriodoModel {
   });
 
   factory PeriodoModel.fromJson(Map<String, dynamic> json) {
+    final start = DateTime.tryParse(json['fecha_inicio'] as String? ?? '');
+    final end = DateTime.tryParse(json['fecha_fin'] as String? ?? '');
+
     return PeriodoModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      startDate: DateTime.parse(json['fecha_inicio'] as String),
-      endDate: DateTime.parse(json['fecha_fin'] as String),
-      isActive: json['is_active'] as bool? ?? true,
+      id: json['id']?.toString() ?? '',
+      name: json['nombre'] as String? ?? json['name'] as String? ?? '',
+      startDate: start ?? DateTime(1970),
+      endDate: end ?? DateTime(1970),
+      isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
     );
   }
 

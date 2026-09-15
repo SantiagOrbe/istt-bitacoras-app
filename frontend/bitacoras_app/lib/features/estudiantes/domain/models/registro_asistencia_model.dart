@@ -15,12 +15,16 @@
 
   // Deserialización desde Django API
   factory RegistroAsistenciaModel.fromJson(Map<String, dynamic> json) {
+    final rawStatus = json['estado'] ?? json['status'];
+
     return RegistroAsistenciaModel(
-      id: json['id'].toString(),
-      date: json['fecha'] ?? json['date'] ?? '',
-      entryTime: json['hora_entrada'] ?? json['horaEntrada'] ?? '',
-      exitTime: json['hora_salida'] ?? json['horaSalida'],
-      status: json['estado'] ?? json['status'] ?? 'En curso',
+      id: json['id']?.toString() ?? '',
+      date: (json['fecha'] ?? json['date']) as String? ?? '',
+      entryTime: (json['hora_entrada'] ?? json['horaEntrada']) as String? ?? '',
+      exitTime: (json['hora_salida'] ?? json['horaSalida']) as String?,
+      status: rawStatus is bool
+          ? (rawStatus ? 'En curso' : 'Completado')
+          : rawStatus as String? ?? 'En curso',
     );
   }
 

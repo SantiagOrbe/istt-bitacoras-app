@@ -21,14 +21,14 @@ class CarreraModel {
 
   factory CarreraModel.fromJson(Map<String, dynamic> json) {
     return CarreraModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      code: json['codigo_carrera'] as String,
-      shortName: json['sigla_carrera'] as String,
+      id: json['id']?.toString() ?? '',
+      name: json['nombre'] as String? ?? json['name'] as String? ?? '',
+      code: json['codigo_carrera'] as String? ?? '',
+      shortName: json['sigla_carrera'] as String? ?? '',
       description: json['descripcion'] as String? ?? '',
       modality: json['modalidad'] as String? ?? '',
-      isActive: json['estado'] as bool? ?? true,
-      totalSemesters: json['total_semesters'] as int,
+      isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
+      totalSemesters: (json['total_semesters'] as num?)?.toInt() ?? 0,
     );
   }
 

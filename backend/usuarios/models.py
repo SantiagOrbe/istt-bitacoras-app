@@ -51,11 +51,17 @@ class TutorEmpresarial(models.Model):
 
 class Estudiante(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    matricula = models.CharField(max_length=20)
-    cedula = models.CharField(max_length=10)
-    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
-    ciclo = models.ForeignKey(Ciclo, on_delete=models.CASCADE)
-    paralelo = models.ForeignKey(Paralelo, on_delete=models.CASCADE)
+    matricula = models.CharField(max_length=20, null=True, blank=True)
+    cedula = models.CharField(max_length=10, null=True, blank=True)
+    carrera = models.ForeignKey(
+        Carrera, on_delete=models.CASCADE, null=True, blank=True
+    )
+    ciclo = models.ForeignKey(
+        Ciclo, on_delete=models.CASCADE, null=True, blank=True
+    )
+    paralelo = models.ForeignKey(
+        Paralelo, on_delete=models.CASCADE, null=True, blank=True
+    )
     empresa = models.ForeignKey(
         Empresa, on_delete=models.CASCADE, null=True, blank=True
     )

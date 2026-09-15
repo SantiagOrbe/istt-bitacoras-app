@@ -13,10 +13,10 @@ class CicloModel {
 
   factory CicloModel.fromJson(Map<String, dynamic> json) {
     return CicloModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      level: json['level'] as int,
-      isActive: json['is_active'] as bool? ?? true,
+      id: json['id']?.toString() ?? '',
+      name: json['nombre'] as String? ?? json['name'] as String? ?? '',
+      level: (json['nivel'] as num?)?.toInt() ?? (json['level'] as num?)?.toInt() ?? 0,
+      isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
     );
   }
 

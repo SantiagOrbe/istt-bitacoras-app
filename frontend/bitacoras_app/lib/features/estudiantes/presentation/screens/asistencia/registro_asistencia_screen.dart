@@ -7,6 +7,7 @@ class RegistroAsistenciaScreen extends StatefulWidget {
   final String? dateLabel;
   final UsuarioModel currentUser;
   final IAsistenciaRepository attendanceRepository;
+  final BitacoraRepositoryImpl bitacoraRepository;
 
   const RegistroAsistenciaScreen({
     super.key,
@@ -15,6 +16,7 @@ class RegistroAsistenciaScreen extends StatefulWidget {
     this.dateLabel,
     required this.currentUser,
     required this.attendanceRepository,
+    required this.bitacoraRepository,
   });
 
   @override
@@ -70,6 +72,7 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
             builder: (context) => RegistroActividadScreen(
               currentUser: widget.currentUser,
               attendanceRepository: widget.attendanceRepository,
+              bitacoraRepository: widget.bitacoraRepository,
             ),
           ),
         );

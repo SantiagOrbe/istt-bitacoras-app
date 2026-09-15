@@ -28,8 +28,6 @@ class SaludoCard extends StatelessWidget {
         return "Módulo de docentes y evaluaciones";
       case RolUsuarioModel.admin:
         return "Consola de administración del sistema";
-      default:
-        return "Bienvenido al sistema de bitácoras";
     }
   }
 

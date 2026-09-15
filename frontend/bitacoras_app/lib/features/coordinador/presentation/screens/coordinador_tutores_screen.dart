@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../../../config/constants/app_colors.dart';
 import '../../../inicio/data/repositories/fake_usuario_repository.dart';
 import '../../../inicio/presentation/widgets/inicio_app_bar.dart';
-import '../../data/repositories/fake_coordinador_repository.dart';
 import '../controllers/coordinador_consulta_controller.dart';
+import '../../domain/repositories/i_coordinador_repository.dart';
 import '../widgets/coordinador_info_card.dart';
 
 class CoordinadorTutoresScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _CoordinadorTutoresScreenState
   void initState() {
     super.initState();
     _controller = CoordinadorConsultaController(
-      repository: FakeCoordinadorRepository(),
+      repository: context.read<ICoordinadorRepository>(),
     );
     _controller.cargarTutores();
   }

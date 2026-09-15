@@ -24,14 +24,16 @@ class RegistroPracticaModel {
   factory RegistroPracticaModel.fromJson(Map<String, dynamic> json) {
     return RegistroPracticaModel(
       id: json['id']?.toString() ?? '',
-      studentId: json['student_id']?.toString() ?? '',
-      studentName: json['student_name'] ?? '',
-      companyName: json['company_name'] ?? '',
-      date: json['fecha'] ?? '',
-      entryTime: json['hora_entrada'] ?? '',
-      exitTime: json['hora_salida'],
-      activityDescription: json['actividad_descripcion'] ?? '',
-      status: json['estado'] ?? 'Pendiente',
+      studentId: (json['student_id'] ?? json['estudiante'])?.toString() ?? '',
+      studentName: json['student_name'] as String? ?? '',
+      companyName: json['company_name'] as String? ?? '',
+      date: json['fecha'] as String? ?? '',
+      entryTime: json['hora_entrada'] as String? ?? '',
+      exitTime: json['hora_salida'] as String?,
+      activityDescription: json['actividad_descripcion'] as String? ?? '',
+      status: json['estado'] is bool
+          ? (json['estado'] as bool ? 'Aprobado' : 'Pendiente')
+          : json['estado'] as String? ?? 'Pendiente',
     );
   }
 

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/core/widgets/buttons/custom_button.dart';
 import 'package:bitacoras_app/shared/exports.dart';
 
 class LoginForm extends StatelessWidget {
@@ -7,6 +5,8 @@ class LoginForm extends StatelessWidget {
   final TextEditingController passwordController;
   final bool isPasswordVisible;
   final bool isLoading;
+  final String? emailError;
+  final String? passwordError;
   final VoidCallback onTogglePasswordVisibility;
   final VoidCallback onSubmit;
 
@@ -16,6 +16,8 @@ class LoginForm extends StatelessWidget {
     required this.passwordController,
     required this.isPasswordVisible,
     required this.isLoading,
+    this.emailError,
+    this.passwordError,
     required this.onTogglePasswordVisibility,
     required this.onSubmit,
   });
@@ -24,22 +26,24 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextField(
+        TextFormField(
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Correo Institucional',
-            hintText: 'ejemplo@itst.edu.ec',
-            prefixIcon: Icon(Icons.email_outlined),
+            hintText: 'ejemplo@est.itstena.edu.ec',
+            prefixIcon: const Icon(Icons.email_outlined),
+            errorText: emailError,
           ),
         ),
         AppSizes.gapV16,
-        TextField(
+        TextFormField(
           controller: passwordController,
           obscureText: !isPasswordVisible,
           decoration: InputDecoration(
             labelText: 'Contraseña',
             prefixIcon: const Icon(Icons.lock_outline_rounded),
+            errorText: passwordError,
             suffixIcon: IconButton(
               icon: Icon(
                 isPasswordVisible

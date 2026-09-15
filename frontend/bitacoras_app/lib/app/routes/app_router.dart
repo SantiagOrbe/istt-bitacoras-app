@@ -2,14 +2,23 @@ import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_carreras_screen.dart';
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_estudiantes_screen.dart';
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_tutores_screen.dart';
-
+import 'package:bitacoras_app/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:bitacoras_app/features/auth/presentation/screens/register_screen.dart';
+import 'package:provider/provider.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.login,
   routes: [
     GoRoute(
       path: AppRoutes.login,
-      builder: (context, state) =>
-          LoginScreen(authRepository: AuthRepositoryImpl()),
+      builder: (context, state) => LoginScreen(
+        authRepository: context.read<IAuthRepository>(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.register,
+      builder: (context, state) => RegisterScreen(
+        authRepository: context.read<IAuthRepository>(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.studentHome,
@@ -19,35 +28,37 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.registerExitAttendance,
       builder: (context, state) => RegistroSalidaScreen(
         currentUser: FakeUsuarioRepository.student,
-        attendanceRepository: FakeAsistenciaRepository(),
+        attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.attendance,
       builder: (context, state) => RegistroAsistenciaScreen(
         currentUser: FakeUsuarioRepository.student,
-        attendanceRepository: FakeAsistenciaRepository(),
+        attendanceRepository: context.read<IAsistenciaRepository>(),
+        bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.registerActivity,
       builder: (context, state) => RegistroActividadScreen(
         currentUser: FakeUsuarioRepository.student,
-        attendanceRepository: FakeAsistenciaRepository(),
+        attendanceRepository: context.read<IAsistenciaRepository>(),
+        bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.history,
       builder: (context, state) => HistorialScreen(
         currentUser: FakeUsuarioRepository.student,
-        attendanceRepository: FakeAsistenciaRepository(),
+        attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.reports,
       builder: (context, state) => ReportesScreen(
         currentUser: FakeUsuarioRepository.student,
-        attendanceRepository: FakeAsistenciaRepository(),
+        attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
@@ -63,7 +74,7 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.userManagement,
       builder: (context, state) => GestionUsuarioScreen(
         currentUser: FakeUsuarioRepository.admin,
-        adminRepository: FakeAdminRepository(),
+        adminRepository: context.read<IAdminRepository>(),
       ),
     ),
     GoRoute(
@@ -73,7 +84,7 @@ final GoRouter appRouter = GoRouter(
 
         return UsuarioDetailScreen(
           user: user ?? FakeUsuarioRepository.admin,
-          adminRepository: FakeAdminRepository(),
+          adminRepository: context.read<IAdminRepository>(),
         );
       },
     ),
@@ -81,7 +92,7 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.careerManagement,
       builder: (context, state) => GestionCarreraScreen(
         currentUser: FakeUsuarioRepository.admin,
-        adminRepository: FakeAdminRepository(),
+        adminRepository: context.read<IAdminRepository>(),
       ),
     ),
     GoRoute(
@@ -110,28 +121,28 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.careerPeriod,
       builder: (context, state) => CarreraPeriodoScreen(
         currentUser: FakeUsuarioRepository.admin,
-        adminRepository: FakeAdminRepository(),
+        adminRepository: context.read<IAdminRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.periodManagement,
       builder: (context, state) => GestionPeriodoScreen(
         currentUser: FakeUsuarioRepository.admin,
-        adminRepository: FakeAdminRepository(),
+        adminRepository: context.read<IAdminRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.cycleManagement,
       builder: (context, state) => GestionCicloScreen(
         currentUser: FakeUsuarioRepository.admin,
-        adminRepository: FakeAdminRepository(),
+        adminRepository: context.read<IAdminRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.parallelManagement,
       builder: (context, state) => GestionParaleloScreen(
         currentUser: FakeUsuarioRepository.admin,
-        adminRepository: FakeAdminRepository(),
+        adminRepository: context.read<IAdminRepository>(),
       ),
     ),
     GoRoute(

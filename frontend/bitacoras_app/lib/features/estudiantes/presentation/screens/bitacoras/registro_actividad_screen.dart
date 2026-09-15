@@ -1,18 +1,15 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import '../../../domain/repositories/i_asistencia_repository.dart';
-import '../../controllers/registro_actividad_controller.dart';
-import '../../widgets/bitacoras/registro_actividad_action_buttons.dart';
-import '../../widgets/bitacoras/registro_actividad_header.dart';
-import '../../widgets/bitacoras/registro_actividad_list.dart';
 
 class RegistroActividadScreen extends StatefulWidget {
   final UsuarioModel currentUser;
   final IAsistenciaRepository attendanceRepository;
+  final BitacoraRepositoryImpl bitacoraRepository;
 
   const RegistroActividadScreen({
     super.key,
     required this.currentUser,
     required this.attendanceRepository,
+    required this.bitacoraRepository,
   });
 
   @override
@@ -28,6 +25,7 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
     super.initState();
     _controller = RegistroActividadController(
       repository: widget.attendanceRepository,
+      bitacoraRepository: widget.bitacoraRepository,
     );
   }
 

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import '../../data/repositories/bitacora_repository_impl.dart';
 import '../../domain/repositories/i_asistencia_repository.dart';
 
 class RegistroActividadController extends ChangeNotifier {
   final IAsistenciaRepository repository;
+  final BitacoraRepositoryImpl bitacoraRepository;
 
-  RegistroActividadController({required this.repository});
+  RegistroActividadController({
+    required this.repository,
+    required this.bitacoraRepository,
+  });
 
   final List<TextEditingController> controllers = [TextEditingController()];
   bool isLoading = false;
@@ -32,11 +37,26 @@ class RegistroActividadController extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    // Simulación o llamada al repositorio para guardar actividades
-    await Future.delayed(const Duration(seconds: 1));
+    final currentRecord = await repository.getCurrentRecord();
+    if (currentRecord == null) {
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
 
-    isLoading = false;
-    notifyListeners();
+    try {
+      for (final controller in controllers) {
+        final description = controller.text.trim();
+        if (description.isEmpty) continue;
+        await bitacoraRepository.createActivity({
+          'descripcion': description,
+          'registro_practica': currentRecord.id,
+        });
+      }
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
 
     return true;
   }

@@ -15,11 +15,11 @@ class ParaleloModel {
 
   factory ParaleloModel.fromJson(Map<String, dynamic> json) {
     return ParaleloModel(
-      id: json['id'] as String,
-      cycleId: json['cycle_id'] as String,
-      name: json['name'] as String,
-      jornada: json['jornada'] as String,
-      isActive: json['is_active'] as bool? ?? true,
+      id: json['id']?.toString() ?? '',
+      cycleId: (json['ciclo'] ?? json['cycle_id'])?.toString() ?? '',
+      name: json['nombre'] as String? ?? json['name'] as String? ?? '',
+      jornada: json['jornada'] as String? ?? '',
+      isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
     );
   }
 

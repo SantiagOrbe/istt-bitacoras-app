@@ -18,7 +18,9 @@ export 'package:bitacoras_app/features/admin/domain/models/registro_practica_mod
 export 'package:bitacoras_app/features/admin/domain/models/usuario_gestionado_model.dart';
 
 // --- Repositories ---
-export 'package:bitacoras_app/features/admin/data/repositories/fake_admin_repository.dart';
+export 'package:bitacoras_app/features/admin/data/admin_drawer_options.dart';
+export 'package:bitacoras_app/features/admin/data/repositories/admin_repository_impl.dart';
+export 'package:bitacoras_app/features/admin/data/datasources/admin_remote_datasource.dart';
 export 'package:bitacoras_app/features/admin/domain/repositories/i_admin_repository.dart';
 
 // --- Controllers ---

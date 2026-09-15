@@ -1,5 +1,4 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/shared/exports.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import '../controllers/login_controller.dart';
 import '../widgets/login_form.dart';
@@ -94,8 +93,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       passwordController: _controller.passwordController,
                       isPasswordVisible: _controller.isPasswordVisible,
                       isLoading: _controller.isLoading,
+                      emailError: _controller.emailError,
+                      passwordError: _controller.passwordError,
                       onTogglePasswordVisibility: _controller.togglePasswordVisibility,
                       onSubmit: _handleLogin,
+                    ),
+                    AppSizes.gapV16,
+                    TextButton(
+                      onPressed: () => context.push(AppRoutes.register),
+                      child: const Text('¿No tienes cuenta? Regístrate aquí'),
                     ),
                   ],
                 ),

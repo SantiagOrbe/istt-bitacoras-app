@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
-import '../../../data/repositories/fake_admin_repository.dart';
-import '../../../domain/models/registro_practica_model.dart';
+import 'package:provider/provider.dart';
 
 class AdminBitacorasScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -15,7 +14,7 @@ class AdminBitacorasScreen extends StatefulWidget {
 }
 
 class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
-  final FakeAdminRepository _repository = FakeAdminRepository();
+  IAdminRepository get _repository => context.read<IAdminRepository>();
   List<RegistroPracticaModel> _logs = [];
   bool _isLoading = true;
   String _searchQuery = '';

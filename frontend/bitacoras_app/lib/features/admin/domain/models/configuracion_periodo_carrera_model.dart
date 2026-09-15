@@ -11,9 +11,12 @@ class ConfiguracionPeriodoCarreraModel {
 
   factory ConfiguracionPeriodoCarreraModel.fromJson(Map<String, dynamic> json) {
     return ConfiguracionPeriodoCarreraModel(
-      careerId: json['career_id'] as String,
-      periodId: json['period_id'] as String,
-      activeSemestersForPractices: List<int>.from(json['active_semesters'] ?? []),
+      careerId: (json['carrera'] ?? json['career_id'])?.toString() ?? '',
+      periodId: (json['periodo'] ?? json['period_id'])?.toString() ?? '',
+      activeSemestersForPractices: (json['active_semesters'] as List<dynamic>? ?? [])
+          .whereType<num>()
+          .map((value) => value.toInt())
+          .toList(),
     );
   }
 
