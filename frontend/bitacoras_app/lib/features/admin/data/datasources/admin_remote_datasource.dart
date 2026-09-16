@@ -72,6 +72,17 @@ class AdminRemoteDataSource {
     String id,
     Map<String, dynamic> data,
   ) => _map(apiClient.put('academica/paralelos/$id/', body: data));
+  Future<List<Map<String, dynamic>>> getParallelStudents(String parallelId) =>
+      _list('academica/paralelos/$parallelId/estudiantes/');
+  Future<Map<String, dynamic>> assignParallelStudents(
+    String parallelId,
+    List<int> studentIds,
+  ) => _map(apiClient.post(
+    'academica/paralelos/$parallelId/estudiantes/',
+    body: {'estudiante_ids': studentIds},
+  ));
+  Future<Map<String, dynamic>> removeParallelStudents(String parallelId) =>
+      _map(apiClient.delete('academica/paralelos/$parallelId/estudiantes/'));
 
   Future<List<Map<String, dynamic>>> getCareers() =>
       _list('academica/carreras/');

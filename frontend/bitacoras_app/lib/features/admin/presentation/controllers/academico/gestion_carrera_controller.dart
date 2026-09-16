@@ -29,6 +29,13 @@ class GestionCarreraController extends ChangeNotifier {
 
   bool get hasCareers => _careers.isNotEmpty;
 
+  void updateCareerLocally(CarreraModel career) {
+    final index = _careers.indexWhere((item) => item.id == career.id);
+    if (index == -1) return;
+    _careers[index] = career;
+    notifyListeners();
+  }
+
   Future<void> loadCareers() async {
     _setLoading(true);
     _clearError();

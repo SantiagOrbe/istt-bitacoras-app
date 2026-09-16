@@ -5,6 +5,7 @@ import 'package:bitacoras_app/features/admin/presentation/widgets/admin_empty_st
 import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_search_bar.dart';
 import 'package:bitacoras_app/features/admin/presentation/widgets/academico/paralelo_card.dart';
 import 'package:bitacoras_app/features/admin/presentation/widgets/academico/paralelo_form_sheet.dart';
+import 'package:bitacoras_app/features/admin/presentation/widgets/academico/estudiante_paralelo_card.dart';
 
 class GestionParaleloScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -114,6 +115,91 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
     }
   }
 
+  Future<void> _assignStudents(ParaleloModel parallel) async {
+    try {
+      final students = await widget.adminRepository.getParallelStudents(
+        parallel.id,
+      );
+      final selected = students
+          .where((student) => student['seleccionado'] == true)
+          .map((student) => student['id'] as int)
+          .toSet();
+      if (!mounted) return;
+      final result = await showDialog<Set<int>>(
+        context: context,
+        builder: (context) => _StudentAssignmentDialog(
+          students: students,
+          selected: selected,
+          parallelName: parallel.name,
+        ),
+      );
+      if (result == null || !mounted) return;
+      await widget.adminRepository.assignParallelStudents(
+        parallel.id,
+        result.toList(),
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Estudiantes asignados correctamente.')),
+        );
+      }
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _removeAllStudents(ParaleloModel parallel) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Retirar estudiantes'),
+        content: Text(
+          '¿Quieres retirar todos los estudiantes del paralelo ${parallel.name}? '
+          'Luego podrás asignarlos a otro semestre.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton.icon(
+            onPressed: () => Navigator.pop(context, true),
+            icon: const Icon(Icons.delete_outline),
+            label: const Text('Retirar todos'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await widget.adminRepository.removeParallelStudents(parallel.id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Estudiantes retirados correctamente.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -216,6 +302,9 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                                 onTap: () =>
                                     _openParallelForm(parallel: parallel),
                                 onToggleStatus: () => _toggleStatus(parallel),
+                                onAssignStudents: () => _assignStudents(parallel),
+                                onRemoveStudents: () =>
+                                    _removeAllStudents(parallel),
                               );
                             },
                           ),
@@ -226,6 +315,200 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _StudentAssignmentDialog extends StatefulWidget {
+  final List<Map<String, dynamic>> students;
+  final Set<int> selected;
+  final String parallelName;
+
+  const _StudentAssignmentDialog({
+    required this.students,
+    required this.selected,
+    required this.parallelName,
+  });
+
+  @override
+  State<_StudentAssignmentDialog> createState() =>
+      _StudentAssignmentDialogState();
+}
+
+class _StudentAssignmentDialogState extends State<_StudentAssignmentDialog> {
+  final _searchController = TextEditingController();
+  late final Set<int> _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = {...widget.selected};
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final query = _searchController.text.trim().toLowerCase();
+    final visibleStudents = widget.students.where((student) {
+      final text = '${student['nombre'] ?? ''} ${student['email'] ?? ''} '
+          '${student['cedula'] ?? ''}'.toLowerCase();
+      return query.isEmpty || text.contains(query);
+    }).toList();
+      final assignedStudents = visibleStudents
+        .where((student) => student['seleccionado'] == true)
+        .toList();
+      final availableStudents = visibleStudents
+        .where(
+          (student) =>
+            student['seleccionado'] != true && student['bloqueado'] != true,
+        )
+        .toList();
+      final blockedStudents = visibleStudents
+        .where((student) => student['bloqueado'] == true)
+        .toList();
+
+    return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      title: Text('Asignar estudiantes al paralelo ${widget.parallelName}'),
+      content: SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.sizeOf(context).height * 0.52,
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              onChanged: (_) => setState(() {}),
+              decoration: const InputDecoration(
+                labelText: 'Buscar estudiante',
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+            AppSizes.gapV12,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${_selected.length} seleccionados de ${widget.students.length}',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            AppSizes.gapV8,
+            Expanded(
+              child: visibleStudents.isEmpty
+                  ? const Center(child: Text('No hay estudiantes disponibles.'))
+                  : ListView(
+                      children: [
+                        _sectionHeader(
+                          'Ya pertenecen a este paralelo',
+                          assignedStudents.length,
+                          Icons.check_circle_outline,
+                        ),
+                        if (assignedStudents.isEmpty)
+                          const _AssignmentMessage(
+                            text: 'Todavía no hay estudiantes asignados.',
+                          )
+                        else
+                          ...assignedStudents.map(
+                            (student) => _studentCard(student, blocked: false),
+                          ),
+                        _sectionHeader(
+                          'Estudiantes disponibles',
+                          availableStudents.length,
+                          Icons.person_add_alt_1_outlined,
+                        ),
+                        if (availableStudents.isEmpty)
+                          const _AssignmentMessage(
+                            text: 'No hay estudiantes disponibles para asignar.',
+                          )
+                        else
+                          ...availableStudents.map(
+                            (student) => _studentCard(student, blocked: false),
+                          ),
+                        if (blockedStudents.isNotEmpty) ...[
+                          _sectionHeader(
+                            'Ya pertenecen a otro paralelo',
+                            blockedStudents.length,
+                            Icons.lock_outline,
+                          ),
+                          ...blockedStudents.map(
+                            (student) => _studentCard(student, blocked: true),
+                          ),
+                        ],
+                      ],
+                    ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton.icon(
+          onPressed: () => Navigator.pop(context, _selected),
+          icon: const Icon(Icons.check),
+          label: const Text('Guardar asignación'),
+        ),
+      ],
+    );
+  }
+
+  Widget _studentCard(
+    Map<String, dynamic> student, {
+    required bool blocked,
+  }) {
+    final id = student['id'] as int;
+    return EstudianteParaleloCard(
+      student: student,
+      selected: _selected.contains(id),
+      blocked: blocked,
+      onChanged: (value) => setState(() {
+        value == true ? _selected.add(id) : _selected.remove(id);
+      }),
+    );
+  }
+
+  Widget _sectionHeader(String title, int count, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSizes.sm, bottom: AppSizes.xs),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: AppColors.primary),
+          AppSizes.gapH8,
+          Expanded(
+            child: Text(
+              '$title ($count)',
+              style: AppTextStyles.bodyBold.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AssignmentMessage extends StatelessWidget {
+  final String text;
+
+  const _AssignmentMessage({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
+      child: Text(
+        text,
+        style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+      ),
     );
   }
 }

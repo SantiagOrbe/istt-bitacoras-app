@@ -103,6 +103,20 @@ class GestionCicloController extends ChangeNotifier {
         return false;
       }
 
+      final career = _careers.cast<CarreraModel?>().firstWhere(
+        (item) => item?.id == careerId,
+        orElse: () => null,
+      );
+      if (career == null) {
+        _errorMessage = 'La carrera seleccionada no es válida.';
+        return false;
+      }
+      if (level > career.totalSemesters) {
+        _errorMessage =
+            'El nivel no puede superar los ${career.totalSemesters} semestres configurados.';
+        return false;
+      }
+
       final duplicate = _cycles.any((semester) {
         if (semester.id == cycleId) return false;
         return semester.level == level ||

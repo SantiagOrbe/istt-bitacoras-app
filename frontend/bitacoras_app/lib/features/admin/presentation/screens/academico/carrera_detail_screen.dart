@@ -1,14 +1,18 @@
 import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
+import 'package:bitacoras_app/features/admin/domain/repositories/i_admin_repository.dart';
+import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_form_sheet.dart';
 
 class CarreraDetailScreen extends StatelessWidget {
   final UsuarioModel currentUser;
   final CarreraModel career;
+  final IAdminRepository adminRepository;
 
   const CarreraDetailScreen({
     super.key,
     required this.currentUser,
     required this.career,
+    required this.adminRepository,
   });
 
   @override
@@ -35,10 +39,43 @@ class CarreraDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.account_tree_rounded,
-                  color: AppColors.primary,
-                  size: 36,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Icon(
+                      Icons.account_tree_rounded,
+                      color: AppColors.primary,
+                      size: 36,
+                    ),
+                    IconButton(
+                      tooltip: 'Editar carrera',
+                      icon: const Icon(Icons.edit_outlined),
+                      color: AppColors.primary,
+                      onPressed: () async {
+                        final updated = await showModalBottomSheet<CarreraModel>(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => CarreraFormSheet(
+                            career: career,
+                            existingCareers: [career],
+                          ),
+                        );
+                        if (updated == null || !context.mounted) return;
+                        try {
+                          await adminRepository.updateCareer(updated);
+                          if (context.mounted) {
+                            context.pop(updated);
+                          }
+                        } catch (error) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(error.toString())),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 AppSizes.gapV12,
                 Text(

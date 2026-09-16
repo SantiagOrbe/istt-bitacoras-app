@@ -110,6 +110,7 @@ final GoRouter appRouter = GoRouter(
 
         return CarreraDetailScreen(
           currentUser: FakeUsuarioRepository.admin,
+          adminRepository: context.read<IAdminRepository>(),
           career:
               career ??
               const CarreraModel(

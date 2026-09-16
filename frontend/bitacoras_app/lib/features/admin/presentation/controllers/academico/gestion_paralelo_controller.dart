@@ -66,7 +66,8 @@ class GestionParaleloController extends ChangeNotifier {
         ..clear()
         ..addAll(loadedParallels);
 
-      _selectedCycleId ??= _cycles.isNotEmpty ? _cycles.first.id : null;
+        _selectedCycleId = _semesterId ??
+          (_selectedCycleId ??= _cycles.isNotEmpty ? _cycles.first.id : null);
     } catch (error) {
       _errorMessage = error is ApiException
           ? error.message

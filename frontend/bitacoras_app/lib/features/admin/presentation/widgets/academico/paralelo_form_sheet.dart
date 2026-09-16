@@ -40,7 +40,11 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
   late String _selectedJornada;
   late bool _isActive;
 
-  static const List<String> _jornadas = ['Matutina', 'Vespertina', 'Nocturna'];
+  static const Map<String, String> _jornadas = {
+    'matutina': 'Matutina',
+    'vespertina': 'Vespertina',
+    'nocturna': 'Nocturna',
+  };
 
   @override
   void initState() {
@@ -50,7 +54,8 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
         widget.fixedCycleId ??
         widget.parallel?.cycleId ??
         (widget.cycles.isNotEmpty ? widget.cycles.first.id : '');
-    _selectedJornada = widget.parallel?.jornada ?? _jornadas.first;
+    _selectedJornada =
+      widget.parallel?.jornada.toLowerCase() ?? _jornadas.keys.first;
     _isActive = widget.parallel?.isActive ?? true;
   }
 
@@ -168,11 +173,11 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                 DropdownButtonFormField<String>(
                   initialValue: _selectedJornada,
                   decoration: const InputDecoration(labelText: 'Jornada'),
-                  items: _jornadas
-                      .map(
-                        (jornada) => DropdownMenuItem<String>(
-                          value: jornada,
-                          child: Text(jornada),
+                    items: _jornadas.entries
+                        .map(
+                          (entry) => DropdownMenuItem<String>(
+                            value: entry.key,
+                            child: Text(entry.value),
                         ),
                       )
                       .toList(),

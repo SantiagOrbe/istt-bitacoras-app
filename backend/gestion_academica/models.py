@@ -7,6 +7,13 @@ class Periodo(models.Model):
     fecha_fin = models.DateField()
     estado = models.BooleanField(default=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['nombre'], name='unique_periodo_nombre'
+            ),
+        ]
+
     def __str__(self):
         return self.nombre
 
@@ -19,6 +26,19 @@ class Carrera(models.Model):
     modalidad = models.CharField(max_length=50)
     total_semestres = models.PositiveIntegerField(default=0)
     estado = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['nombre'], name='unique_carrera_nombre'
+            ),
+            models.UniqueConstraint(
+                fields=['codigo_carrera'], name='unique_carrera_codigo'
+            ),
+            models.UniqueConstraint(
+                fields=['sigla_carrera'], name='unique_carrera_sigla'
+            ),
+        ]
 
     def __str__(self):
         return self.nombre
@@ -45,6 +65,16 @@ class Semestre(models.Model):
     estado = models.BooleanField(default=True)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['carrera', 'nombre'], name='unique_semestre_nombre_carrera'
+            ),
+            models.UniqueConstraint(
+                fields=['carrera', 'nivel'], name='unique_semestre_nivel_carrera'
+            ),
+        ]
+
     def __str__(self):
         return self.nombre
 
@@ -54,6 +84,14 @@ class Paralelo(models.Model):
     jornada = models.CharField(max_length=50)
     estado = models.BooleanField(default=True)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['semestre', 'nombre', 'jornada'],
+                name='unique_paralelo_semestre_nombre_jornada',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.semestre} - {self.nombre}'

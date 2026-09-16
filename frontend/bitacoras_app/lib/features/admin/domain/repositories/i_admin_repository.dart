@@ -29,6 +29,9 @@ abstract class IAdminRepository {
   });
   Future<bool> createParallel(ParaleloModel parallel);
   Future<bool> updateParallel(ParaleloModel parallel);
+  Future<List<Map<String, dynamic>>> getParallelStudents(String parallelId);
+  Future<bool> assignParallelStudents(String parallelId, List<int> studentIds);
+  Future<bool> removeParallelStudents(String parallelId);
 
   // --- Gestión de Carreras ---
   Future<List<CarreraModel>> getCareers();

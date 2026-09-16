@@ -121,10 +121,15 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
                               final career = _controller.filteredCareers[index];
                               return CarreraCard(
                                 career: career,
-                                onTap: () => context.push(
-                                  AppRoutes.careerDetail,
-                                  extra: career,
-                                ),
+                                onTap: () async {
+                                  final updated = await context.push<CarreraModel>(
+                                    AppRoutes.careerDetail,
+                                    extra: career,
+                                  );
+                                  if (updated != null) {
+                                    _controller.updateCareerLocally(updated);
+                                  }
+                                },
                               );
                             },
                           ),

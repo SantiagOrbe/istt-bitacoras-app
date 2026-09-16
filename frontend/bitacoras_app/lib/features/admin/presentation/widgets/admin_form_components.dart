@@ -89,6 +89,25 @@ class AdminValidators {
       : '$label solo puede contener letras sin tildes ni símbolos.';
   }
 
+  static String? lettersWithAccents(
+    String? value, {
+    String label = 'El nombre',
+  }) {
+    final required = requiredText(value, label: label);
+    if (required != null) return required;
+    return RegExp(r'^[\p{L} ]+$', unicode: true).hasMatch(value!.trim())
+        ? null
+        : '$label solo puede contener letras, tildes y espacios.';
+  }
+
+  static String? careerCode(String? value, {String label = 'El código'}) {
+    final required = requiredText(value, label: label);
+    if (required != null) return required;
+    return RegExp(r'^[A-Za-z0-9._-]+$').hasMatch(value!.trim())
+        ? null
+        : '$label solo puede contener letras, números, puntos, guiones y guiones bajos.';
+  }
+
   static String? positiveInteger(String? value, {String label = 'El valor'}) {
     final number = int.tryParse(value?.trim() ?? '');
     return number != null && number > 0

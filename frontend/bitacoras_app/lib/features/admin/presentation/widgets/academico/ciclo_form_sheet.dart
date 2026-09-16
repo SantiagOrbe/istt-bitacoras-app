@@ -40,6 +40,13 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
   late String _selectedCareerId;
   late bool _isActive;
 
+  CarreraModel? get _selectedCareer {
+    for (final career in widget.careers) {
+      if (career.id == _selectedCareerId) return career;
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -159,11 +166,21 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                 TextFormField(
                   controller: _levelController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Nivel'),
+                  decoration: InputDecoration(
+                    labelText: 'Nivel',
+                    helperText: _selectedCareer == null
+                        ? null
+                        : 'Máximo permitido: ${_selectedCareer!.totalSemesters}',
+                    errorMaxLines: 2,
+                  ),
                   validator: (value) {
                     final parsed = int.tryParse(value ?? '');
                     if (parsed == null || parsed <= 0) {
                       return 'Ingresa un nivel válido';
+                    }
+                    final maximum = _selectedCareer?.totalSemesters;
+                    if (maximum != null && parsed > maximum) {
+                      return 'El nivel no puede superar los $maximum semestres configurados.';
                     }
                     return null;
                   },

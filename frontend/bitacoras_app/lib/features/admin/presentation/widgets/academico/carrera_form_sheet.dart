@@ -4,8 +4,13 @@ import '../admin_form_components.dart';
 
 class CarreraFormSheet extends StatefulWidget {
   final List<CarreraModel> existingCareers;
+  final CarreraModel? career;
 
-  const CarreraFormSheet({super.key, this.existingCareers = const []});
+  const CarreraFormSheet({
+    super.key,
+    this.existingCareers = const [],
+    this.career,
+  });
 
   @override
   State<CarreraFormSheet> createState() => _CarreraFormSheetState();
@@ -13,18 +18,39 @@ class CarreraFormSheet extends StatefulWidget {
 
 class _CarreraFormSheetState extends State<CarreraFormSheet> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _codeController = TextEditingController();
-  final _shortNameController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _semestersController = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _codeController;
+  late final TextEditingController _shortNameController;
+  late final TextEditingController _modalityController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _semestersController;
   bool _isActive = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final career = widget.career;
+    _nameController = TextEditingController(text: career?.name ?? '');
+    _codeController = TextEditingController(text: career?.code ?? '');
+    _shortNameController = TextEditingController(
+      text: career?.shortName ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: career?.description ?? '',
+    );
+    _semestersController = TextEditingController(
+      text: career?.totalSemesters.toString() ?? '',
+    );
+    _modalityController = TextEditingController(text: career?.modality ?? '');
+    _isActive = career?.isActive ?? true;
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
     _codeController.dispose();
     _shortNameController.dispose();
+    _modalityController.dispose();
     _descriptionController.dispose();
     _semestersController.dispose();
     super.dispose();
@@ -36,12 +62,12 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
     }
 
     final career = CarreraModel(
-      id: '',
+      id: widget.career?.id ?? '',
       name: _nameController.text.trim(),
       code: _codeController.text.trim(),
       shortName: _shortNameController.text.trim(),
       description: _descriptionController.text.trim(),
-      modality: '',
+      modality: _modalityController.text.trim(),
       isActive: _isActive,
       totalSemesters: int.parse(_semestersController.text.trim()),
     );
@@ -78,8 +104,12 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                 ),
                 AppSizes.gapV20,
                 AdminFormHeader(
-                  title: 'Nueva carrera',
-                  subtitle: 'Registra la información académica de la carrera.',
+                    title: widget.career == null
+                      ? 'Nueva carrera'
+                      : 'Editar carrera',
+                    subtitle: widget.career == null
+                      ? 'Registra la información académica de la carrera.'
+                      : 'Actualiza la información académica de la carrera.',
                   icon: Icons.school_outlined,
                 ),
                 const AdminFormSectionLabel('Información general'),
@@ -90,13 +120,15 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                     labelText: 'Nombre de la carrera',
                   ),
                   validator: (value) {
-                    return AdminValidators.letters(
+                    return AdminValidators.lettersWithAccents(
                           value,
                           label: 'El nombre de la carrera',
                         ) ??
                         AdminValidators.unique(
                           value,
-                          widget.existingCareers.map((career) => career.name),
+                          widget.existingCareers
+                              .where((career) => career.id != widget.career?.id)
+                              .map((career) => career.name),
                           label: 'La carrera',
                         );
                   },
@@ -109,13 +141,15 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                     labelText: 'Código de carrera',
                   ),
                   validator: (value) {
-                    return AdminValidators.requiredText(
+                    return AdminValidators.careerCode(
                           value,
                           label: 'El código de la carrera',
                         ) ??
                         AdminValidators.unique(
                           value,
-                          widget.existingCareers.map((career) => career.code),
+                          widget.existingCareers
+                              .where((career) => career.id != widget.career?.id)
+                              .map((career) => career.code),
                           label: 'El código',
                         );
                   },
@@ -132,7 +166,9 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                         ) ??
                         AdminValidators.unique(
                           value,
-                          widget.existingCareers.map(
+                          widget.existingCareers
+                              .where((career) => career.id != widget.career?.id)
+                              .map(
                             (career) => career.shortName,
                           ),
                           label: 'La sigla',
@@ -146,11 +182,25 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                   textCapitalization: TextCapitalization.sentences,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                   validator: (value) {
-                    return AdminValidators.requiredText(
+                    return AdminValidators.lettersWithAccents(
                       value,
                       label: 'La descripción',
                     );
                   },
+                ),
+                AppSizes.gapV12,
+                TextFormField(
+                  controller: _modalityController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: const InputDecoration(
+                    labelText: 'Modalidad',
+                    hintText: 'Ej: Presencial',
+                    errorMaxLines: 2,
+                  ),
+                  validator: (value) => AdminValidators.letters(
+                    value,
+                    label: 'La modalidad',
+                  ),
                 ),
                 const AdminFormSectionLabel('Configuración académica'),
                 SwitchListTile.adaptive(

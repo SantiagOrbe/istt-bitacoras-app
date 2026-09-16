@@ -7,6 +7,8 @@ class ParaleloCard extends StatelessWidget {
   final String cycleName;
   final VoidCallback onTap;
   final VoidCallback onToggleStatus;
+  final VoidCallback onAssignStudents;
+  final VoidCallback onRemoveStudents;
 
   const ParaleloCard({
     super.key,
@@ -14,6 +16,8 @@ class ParaleloCard extends StatelessWidget {
     required this.cycleName,
     required this.onTap,
     required this.onToggleStatus,
+    required this.onAssignStudents,
+    required this.onRemoveStudents,
   });
 
   @override
@@ -75,6 +79,17 @@ class ParaleloCard extends StatelessWidget {
                     value: parallel.isActive,
                     onChanged: (_) => onToggleStatus(),
                     activeColor: AppColors.primary,
+                  ),
+                  IconButton(
+                    tooltip: 'Agregar estudiantes',
+                    icon: const Icon(Icons.person_add_alt_1_outlined),
+                    onPressed: onAssignStudents,
+                  ),
+                  IconButton(
+                    tooltip: 'Retirar todos los estudiantes',
+                    icon: const Icon(Icons.person_remove_outlined),
+                    color: AppColors.error,
+                    onPressed: onRemoveStudents,
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,

@@ -114,6 +114,25 @@ class AdminRepositoryImpl implements IAdminRepository {
   }
 
   @override
+  Future<List<Map<String, dynamic>>> getParallelStudents(String parallelId) =>
+      remoteDataSource.getParallelStudents(parallelId);
+
+  @override
+  Future<bool> assignParallelStudents(
+    String parallelId,
+    List<int> studentIds,
+  ) async {
+    await remoteDataSource.assignParallelStudents(parallelId, studentIds);
+    return true;
+  }
+
+  @override
+  Future<bool> removeParallelStudents(String parallelId) async {
+    await remoteDataSource.removeParallelStudents(parallelId);
+    return true;
+  }
+
+  @override
   Future<List<CarreraModel>> getCareers() async =>
       (await remoteDataSource.getCareers()).map(CarreraModel.fromJson).toList();
 
