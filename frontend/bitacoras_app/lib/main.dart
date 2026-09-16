@@ -1,5 +1,6 @@
 import 'package:bitacoras_app/app/routes/app_router.dart';
 import 'package:bitacoras_app/app/providers.dart';
+import 'package:bitacoras_app/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,10 +22,7 @@ class BitacorasApp extends StatelessWidget {
         title: 'IST Tena Prácticas',
         debugShowCheckedModeBanner: false,
         routerConfig: appRouter,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0F4C81)),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.lightTheme,
       ),
     );
   }

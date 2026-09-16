@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
 class CarreraPeriodoBody extends StatelessWidget {
   final List<PeriodoModel> periods;
   final List<CarreraModel> careers;

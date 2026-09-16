@@ -1,6 +1,8 @@
 import logging
 
 from django.db import DatabaseError, IntegrityError
+from django.db.models import Q
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,16 +11,20 @@ from .models import (
     Coordinador,
     Docente,
     Estudiante,
+    ResponsablePracticas,
     TutorAcademico,
     TutorEmpresarial,
+    Usuario,
 )
 from .serializers import (
     CoordinadorSerializer,
     DocenteSerializer,
     EstudianteSerializer,
+    ResponsablePracticasSerializer,
     TutorAcademicoSerializer,
     TutorEmpresarialSerializer,
     RegistroSerializer,
+    UsuarioAdminSerializer,
     UsuarioSerializer,
 )
 
@@ -71,6 +77,43 @@ class RegistroView(APIView):
         )
 
 
+class UsuarioViewSet(viewsets.ModelViewSet):
+    queryset = Usuario.objects.all().order_by('id')
+    serializer_class = UsuarioAdminSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        is_active = self.request.query_params.get('is_active')
+        role = self.request.query_params.get('rol')
+        search = self.request.query_params.get('search', '').strip()
+
+        if is_active is not None:
+            normalized = is_active.lower()
+            if normalized in {'true', '1', 'si', 'sí'}:
+                queryset = queryset.filter(estado=True, is_active=True)
+            elif normalized in {'false', '0', 'no'}:
+                queryset = queryset.filter(estado=False, is_active=False)
+
+        if role and role.lower() != 'todos':
+            queryset = queryset.filter(rol__iexact=role.strip())
+
+        if search:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search)
+                | Q(last_name__icontains=search)
+                | Q(email__icontains=search)
+            )
+        return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        usuario.estado = False
+        usuario.is_active = False
+        usuario.save(update_fields=['estado', 'is_active'])
+        return Response(status=204)
+
+
 class PerfilView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -82,6 +125,10 @@ class PerfilView(APIView):
             'estudiante': (Estudiante, EstudianteSerializer),
             'docente': (Docente, DocenteSerializer),
             'coordinador': (Coordinador, CoordinadorSerializer),
+            'responsable_practicas': (
+                ResponsablePracticas,
+                ResponsablePracticasSerializer,
+            ),
             'tutor_academico': (TutorAcademico, TutorAcademicoSerializer),
             'tutor_empresarial': (
                 TutorEmpresarial,

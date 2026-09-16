@@ -16,8 +16,5 @@ class SeccionMenuModel {
   final String? title;
   final List<ItemMenuModel> items;
 
-  const SeccionMenuModel({
-    this.title,
-    required this.items,
-  });
+  const SeccionMenuModel({this.title, required this.items});
 }

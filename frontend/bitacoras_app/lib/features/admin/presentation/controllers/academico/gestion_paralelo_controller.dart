@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/core/network/api_client.dart';
 
 class GestionParaleloController extends ChangeNotifier {
   final IAdminRepository repository;
@@ -9,6 +10,8 @@ class GestionParaleloController extends ChangeNotifier {
   final List<ParaleloModel> _parallels = [];
   String _searchQuery = '';
   String? _selectedCycleId;
+  String? _careerId;
+  String? _semesterId;
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;
@@ -25,7 +28,9 @@ class GestionParaleloController extends ChangeNotifier {
     var result = parallels;
 
     if (_selectedCycleId != null && _selectedCycleId!.isNotEmpty) {
-      result = result.where((parallel) => parallel.cycleId == _selectedCycleId).toList();
+      result = result
+          .where((parallel) => parallel.cycleId == _selectedCycleId)
+          .toList();
     }
 
     if (_searchQuery.isNotEmpty) {
@@ -40,13 +45,18 @@ class GestionParaleloController extends ChangeNotifier {
     return result;
   }
 
-  Future<void> loadData() async {
+  Future<void> loadData({String? careerId, String? semesterId}) async {
+    _careerId = careerId ?? _careerId;
+    _semesterId = semesterId ?? _semesterId;
     _setLoading(true);
     _clearMessages();
 
     try {
-      final loadedCycles = await repository.getCycles();
-      final loadedParallels = await repository.getParallels();
+      final loadedCycles = await repository.getCycles(careerId: _careerId);
+      final loadedParallels = await repository.getParallels(
+        careerId: _careerId,
+        semesterId: _semesterId,
+      );
 
       _cycles
         ..clear()
@@ -57,8 +67,10 @@ class GestionParaleloController extends ChangeNotifier {
         ..addAll(loadedParallels);
 
       _selectedCycleId ??= _cycles.isNotEmpty ? _cycles.first.id : null;
-    } catch (_) {
-      _errorMessage = 'No se pudieron cargar los paralelos.';
+    } catch (error) {
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'No se pudieron cargar los paralelos.';
     } finally {
       _setLoading(false);
     }
@@ -75,10 +87,12 @@ class GestionParaleloController extends ChangeNotifier {
   }
 
   String getCycleName(String cycleId) {
-    return _cycles.firstWhere(
-      (cycle) => cycle.id == cycleId,
-      orElse: () => const CicloModel(id: '', name: '', level: 0),
-    ).name;
+    return _cycles
+        .firstWhere(
+          (cycle) => cycle.id == cycleId,
+          orElse: () => const CicloModel(id: '', name: '', level: 0),
+        )
+        .name;
   }
 
   Future<bool> saveParallel({
@@ -109,6 +123,15 @@ class GestionParaleloController extends ChangeNotifier {
         return false;
       }
 
+      final duplicate = _parallels.any((item) {
+        if (item.id == parallelId || item.cycleId != cycleId) return false;
+        return item.name.trim().toLowerCase() == normalizedName.toLowerCase();
+      });
+      if (duplicate) {
+        _errorMessage = 'Ese paralelo ya existe en el semestre seleccionado.';
+        return false;
+      }
+
       final parallel = ParaleloModel(
         id: parallelId ?? DateTime.now().millisecondsSinceEpoch.toString(),
         cycleId: cycleId,
@@ -128,14 +151,16 @@ class GestionParaleloController extends ChangeNotifier {
         return false;
       }
 
-      await loadData();
+      await loadData(careerId: _careerId, semesterId: _semesterId);
       _successMessage = parallelId == null
           ? 'Paralelo creado correctamente.'
           : 'Paralelo actualizado correctamente.';
       notifyListeners();
       return true;
-    } catch (_) {
-      _errorMessage = 'Ocurrió un error al guardar el paralelo.';
+    } catch (error) {
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'Ocurrió un error al guardar el paralelo.';
       notifyListeners();
       return false;
     } finally {

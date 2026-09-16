@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     CarreraPeriodoViewSet,
     CarreraViewSet,
-    CicloViewSet,
+    SemestreViewSet,
     ParaleloViewSet,
     PeriodoViewSet,
     ResultadoAprendizajeViewSet,
@@ -14,7 +14,7 @@ router = DefaultRouter()
 router.register('periodos', PeriodoViewSet)
 router.register('carreras', CarreraViewSet)
 router.register('carreras-periodos', CarreraPeriodoViewSet)
-router.register('ciclos', CicloViewSet)
+router.register('semestres', SemestreViewSet)
 router.register('paralelos', ParaleloViewSet)
 router.register('resultados-aprendizaje', ResultadoAprendizajeViewSet)
 

@@ -9,6 +9,8 @@ class GestionUsuarioController extends ChangeNotifier {
   List<UsuarioModel> filteredUsers = [];
   bool isLoading = true;
   String searchQuery = '';
+  bool? activeFilter;
+  String? roleFilter;
 
   Future<void> fetchUsers() async {
     isLoading = true;
@@ -27,15 +29,49 @@ class GestionUsuarioController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void applyFilter() {
-    if (searchQuery.isEmpty) {
-      filteredUsers = List.from(_allUsers);
-    } else {
-      final query = searchQuery.toLowerCase();
-      filteredUsers = _allUsers.where((u) {
-        return u.name.toLowerCase().contains(query) ||
-            (u.cedula?.contains(query) ?? false);
-      }).toList();
-    }
+  Future<void> setActiveFilter(bool? value) async {
+    activeFilter = value;
+    await fetchUsers();
   }
+
+  Future<void> setRoleFilter(String? value) async {
+    roleFilter = value;
+    await fetchUsers();
+  }
+
+  void updateUserLocally(UsuarioModel user) {
+    final index = _allUsers.indexWhere((item) => item.id == user.id);
+    if (index == -1) return;
+    _allUsers[index] = user;
+    applyFilter();
+    notifyListeners();
+  }
+
+  void applyFilter() {
+    final query = searchQuery.trim().toLowerCase();
+    filteredUsers = _allUsers.where((user) {
+      final matchesStatus =
+          activeFilter == null || user.isActive == activeFilter;
+      final matchesRole =
+          roleFilter == null || user.role.apiValue == roleFilter;
+      final matchesSearch =
+          query.isEmpty ||
+          user.name.toLowerCase().contains(query) ||
+          user.email.toLowerCase().contains(query) ||
+          (user.cedula?.contains(query) ?? false);
+      return matchesStatus && matchesRole && matchesSearch;
+    }).toList();
+  }
+
+  int get totalUsers => _allUsers.length;
+
+  int get totalStudents =>
+      _allUsers.where((user) => user.role == RolUsuarioModel.student).length;
+
+  int get totalTutors => _allUsers.where((user) {
+    return user.role == RolUsuarioModel.academicTutor ||
+        user.role == RolUsuarioModel.companyTutor;
+  }).length;
+
+  int get totalActive => _allUsers.where((user) => user.isActive).length;
 }

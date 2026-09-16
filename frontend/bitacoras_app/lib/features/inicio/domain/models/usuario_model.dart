@@ -2,20 +2,28 @@ import 'package:bitacoras_app/shared/exports.dart'; // O tus enums de RolUsuario
 
 class UsuarioModel {
   final String id;
+  final String username;
   final String name;
   final String email;
   final String? company;
   final RolUsuarioModel role;
-  
+
   // Nuevos campos para detalle y backend Django
   final bool isActive;
   final String? phone;
   final String? cedula;
   final String? careerName;
   final String? periodName;
+  final String? password;
+  final String? tutorAcademico;
+  final String? tutorEmpresarial;
+  final String? cargo;
+  final String? companyId;
+  final String? carreraId;
 
   const UsuarioModel({
     required this.id,
+    this.username = '',
     required this.name,
     required this.email,
     this.company,
@@ -25,11 +33,18 @@ class UsuarioModel {
     this.cedula,
     this.careerName,
     this.periodName,
+    this.password,
+    this.tutorAcademico,
+    this.tutorEmpresarial,
+    this.cargo,
+    this.companyId,
+    this.carreraId,
   });
 
   // Método copyWith fundamental para la lógica del Controller
   UsuarioModel copyWith({
     String? id,
+    String? username,
     String? name,
     String? email,
     String? company,
@@ -39,9 +54,16 @@ class UsuarioModel {
     String? cedula,
     String? careerName,
     String? periodName,
+    String? password,
+    String? tutorAcademico,
+    String? tutorEmpresarial,
+    String? cargo,
+    String? companyId,
+    String? carreraId,
   }) {
     return UsuarioModel(
       id: id ?? this.id,
+      username: username ?? this.username,
       name: name ?? this.name,
       email: email ?? this.email,
       company: company ?? this.company,
@@ -51,6 +73,12 @@ class UsuarioModel {
       cedula: cedula ?? this.cedula,
       careerName: careerName ?? this.careerName,
       periodName: periodName ?? this.periodName,
+      password: password ?? this.password,
+      tutorAcademico: tutorAcademico ?? this.tutorAcademico,
+      tutorEmpresarial: tutorEmpresarial ?? this.tutorEmpresarial,
+      cargo: cargo ?? this.cargo,
+      companyId: companyId ?? this.companyId,
+      carreraId: carreraId ?? this.carreraId,
     );
   }
 
@@ -59,23 +87,32 @@ class UsuarioModel {
     final profile = json['perfil'] as Map<String, dynamic>?;
     final user = profile?['usuario'] as Map<String, dynamic>? ?? json;
     final roleName = (user['rol'] ?? json['role']) as String? ?? '';
-    final fullName = [user['first_name'], user['last_name']]
-        .whereType<String>()
-        .where((value) => value.trim().isNotEmpty)
-        .join(' ');
+    final fullName = [
+      user['first_name'],
+      user['last_name'],
+    ].whereType<String>().where((value) => value.trim().isNotEmpty).join(' ');
 
     return UsuarioModel(
       id: user['id']?.toString() ?? '',
-      name: (user['name'] as String?) ??
+      username: user['username']?.toString() ?? '',
+      name:
+          (user['name'] as String?) ??
           (fullName.isEmpty ? user['username'] as String? ?? '' : fullName),
       email: user['email'] as String? ?? '',
-      company: user['company'] as String?,
+      company: (user['company_name'] ?? user['company'])?.toString(),
       role: _roleFromName(roleName),
       isActive: user['estado'] as bool? ?? user['is_active'] as bool? ?? true,
-      phone: user['telefono'] as String? ?? user['phone'] as String?,
-      cedula: profile?['cedula'] as String? ?? user['cedula'] as String?,
-      careerName: profile?['carrera']?.toString() ?? user['career_name'] as String?,
+      phone: user['telefono']?.toString() ?? user['phone']?.toString(),
+      cedula: profile?['cedula']?.toString() ?? user['cedula']?.toString(),
+      careerName:
+          profile?['carrera']?.toString() ?? user['career_name'] as String?,
       periodName: user['period_name'] as String?,
+      password: null,
+      tutorAcademico: profile?['tutor_academico']?.toString(),
+      tutorEmpresarial: profile?['tutor_empresarial']?.toString(),
+      cargo: user['cargo']?.toString(),
+      companyId: (user['empresa_id'] ?? user['empresa'])?.toString(),
+      carreraId: user['carrera_id']?.toString(),
     );
   }
 
@@ -86,30 +123,36 @@ class UsuarioModel {
       'tutor_academico' || 'academictutor' => RolUsuarioModel.academicTutor,
       'tutor_empresarial' || 'companytutor' => RolUsuarioModel.companyTutor,
       'coordinador' || 'coordinator' => RolUsuarioModel.coordinator,
-      'responsable_practicas' || 'practicemanager' => RolUsuarioModel.practiceManager,
+      'responsable_practicas' ||
+      'practicemanager' => RolUsuarioModel.practiceManager,
       'admin' || 'administrador' => RolUsuarioModel.admin,
       _ => RolUsuarioModel.student,
     };
   }
 
   Map<String, dynamic> toJson() {
+    final names = name.trim().split(RegExp(r'\s+'));
     return {
-      'id': id,
-      'name': name,
       'email': email,
-      'company': company,
-      'role': role.name,
+      'first_name': names.first,
+      'last_name': names.length > 1 ? names.sublist(1).join(' ') : '',
+      'telefono': phone ?? '',
+      'rol': role.apiValue,
+      'estado': isActive,
       'is_active': isActive,
-      'phone': phone,
-      'cedula': cedula,
-      'career_name': careerName,
-      'period_name': periodName,
+      if (cedula != null && cedula!.isNotEmpty) 'cedula': cedula,
+      if (cargo != null && cargo!.isNotEmpty) 'cargo': cargo,
+      if (companyId != null && companyId!.isNotEmpty)
+        'empresa_id': int.tryParse(companyId!) ?? companyId,
+      if (carreraId != null && carreraId!.isNotEmpty)
+        'carrera_id': int.tryParse(carreraId!) ?? carreraId,
+      if (password != null && password!.isNotEmpty) 'password': password,
     };
   }
 
-    String get initials {
+  String get initials {
     if (name.trim().isEmpty) return 'U';
-    
+
     final parts = name.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) {
       return '${parts[0][0]}${parts[1][0]}'.toUpperCase();

@@ -3,10 +3,7 @@ import 'package:bitacoras_app/shared/exports.dart';
 class PeriodoEmptyState extends StatelessWidget {
   final bool hasSearchQuery;
 
-  const PeriodoEmptyState({
-    super.key,
-    required this.hasSearchQuery,
-  });
+  const PeriodoEmptyState({super.key, required this.hasSearchQuery});
 
   @override
   Widget build(BuildContext context) {

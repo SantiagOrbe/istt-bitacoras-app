@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/core/network/api_client.dart';
 
 class GestionCicloController extends ChangeNotifier {
   final IAdminRepository repository;
@@ -6,16 +7,35 @@ class GestionCicloController extends ChangeNotifier {
   GestionCicloController({required this.repository});
 
   final List<CicloModel> _cycles = [];
+  final List<CarreraModel> _careers = [];
   String _searchQuery = '';
+  String? _careerId;
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;
 
   List<CicloModel> get cycles => List.unmodifiable(_cycles);
+  List<CarreraModel> get careers => List.unmodifiable(_careers);
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get successMessage => _successMessage;
   String get searchQuery => _searchQuery;
+  String? get careerId => _careerId;
+  String get careerName => _careers
+      .firstWhere(
+        (career) => career.id == _careerId,
+        orElse: () => const CarreraModel(
+          id: '',
+          name: 'Todas las carreras',
+          code: '',
+          shortName: '',
+          description: '',
+          modality: '',
+          isActive: true,
+          totalSemesters: 0,
+        ),
+      )
+      .name;
 
   List<CicloModel> get filteredCycles {
     if (_searchQuery.isEmpty) {
@@ -29,16 +49,23 @@ class GestionCicloController extends ChangeNotifier {
     }).toList();
   }
 
-  Future<void> loadCycles() async {
+  Future<void> loadCycles({String? careerId}) async {
+    _careerId = careerId ?? _careerId;
     _setLoading(true);
     _clearMessages();
 
     try {
+      final loadedCareers = await repository.getCareers();
+      _careers
+        ..clear()
+        ..addAll(loadedCareers.where((career) => career.isActive));
       _cycles
         ..clear()
-        ..addAll(await repository.getCycles());
-    } catch (_) {
-      _errorMessage = 'No se pudieron cargar los cursos.';
+        ..addAll(await repository.getCycles(careerId: _careerId));
+    } catch (error) {
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'No se pudieron cargar los semestres.';
     } finally {
       _setLoading(false);
     }
@@ -51,6 +78,7 @@ class GestionCicloController extends ChangeNotifier {
 
   Future<bool> saveCycle({
     required String? cycleId,
+    required String careerId,
     required String name,
     required int level,
     required bool isActive,
@@ -61,7 +89,7 @@ class GestionCicloController extends ChangeNotifier {
     try {
       final normalizedName = name.trim();
       if (normalizedName.isEmpty) {
-        _errorMessage = 'El nombre del curso es obligatorio.';
+        _errorMessage = 'El nombre del semestre es obligatorio.';
         return false;
       }
 
@@ -70,8 +98,25 @@ class GestionCicloController extends ChangeNotifier {
         return false;
       }
 
+      if (careerId.isEmpty) {
+        _errorMessage = 'Selecciona una carrera.';
+        return false;
+      }
+
+      final duplicate = _cycles.any((semester) {
+        if (semester.id == cycleId) return false;
+        return semester.level == level ||
+            semester.name.trim().toLowerCase() == normalizedName.toLowerCase();
+      });
+      if (duplicate) {
+        _errorMessage =
+            'El nivel o nombre del semestre ya existe en esta carrera.';
+        return false;
+      }
+
       final cycle = CicloModel(
         id: cycleId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        careerId: careerId,
         name: normalizedName,
         level: level,
         isActive: isActive,
@@ -83,19 +128,21 @@ class GestionCicloController extends ChangeNotifier {
 
       if (!success) {
         _errorMessage = cycleId == null
-            ? 'No se pudo crear el curso.'
-            : 'No se pudo actualizar el curso.';
+            ? 'No se pudo crear el semestre.'
+            : 'No se pudo actualizar el semestre.';
         return false;
       }
 
-      await loadCycles();
+      await loadCycles(careerId: _careerId);
       _successMessage = cycleId == null
-          ? 'Curso creado correctamente.'
-          : 'Curso actualizado correctamente.';
+          ? 'Semestre creado correctamente.'
+          : 'Semestre actualizado correctamente.';
       notifyListeners();
       return true;
-    } catch (_) {
-      _errorMessage = 'Ocurrió un error al guardar el curso.';
+    } catch (error) {
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'Ocurrió un error al guardar el curso.';
       notifyListeners();
       return false;
     } finally {
@@ -106,6 +153,7 @@ class GestionCicloController extends ChangeNotifier {
   Future<bool> toggleStatus(CicloModel cycle) async {
     return saveCycle(
       cycleId: cycle.id,
+      careerId: cycle.careerId,
       name: cycle.name,
       level: cycle.level,
       isActive: !cycle.isActive,

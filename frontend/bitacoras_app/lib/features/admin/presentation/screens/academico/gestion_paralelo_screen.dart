@@ -9,16 +9,22 @@ import 'package:bitacoras_app/features/admin/presentation/widgets/academico/para
 class GestionParaleloScreen extends StatefulWidget {
   final UsuarioModel currentUser;
   final IAdminRepository adminRepository;
+  final String? careerId;
+  final String? semesterId;
 
   const GestionParaleloScreen({
     super.key,
     required this.currentUser,
     required this.adminRepository,
+    this.careerId,
+    this.semesterId,
   });
 
   @override
   State<GestionParaleloScreen> createState() => _GestionParaleloScreenState();
 }
+
+typedef ParalelosManagementScreen = GestionParaleloScreen;
 
 class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
   late final GestionParaleloController _controller;
@@ -27,7 +33,10 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
   void initState() {
     super.initState();
     _controller = GestionParaleloController(repository: widget.adminRepository);
-    _controller.loadData();
+    _controller.loadData(
+      careerId: widget.careerId,
+      semesterId: widget.semesterId,
+    );
   }
 
   @override
@@ -40,7 +49,7 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
     if (_controller.cycles.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Primero crea al menos un curso.'),
+          content: Text('Primero crea al menos un semestre.'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -54,6 +63,7 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
       builder: (context) => ParaleloFormSheet(
         cycles: _controller.cycles,
         parallel: parallel,
+        fixedCycleId: widget.semesterId,
       ),
     );
 
@@ -138,6 +148,13 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                       color: AppColors.textPrimary,
                     ),
                   ),
+                  if (widget.semesterId != null)
+                    Text(
+                      'Semestre: ${_controller.getCycleName(widget.semesterId!)}',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   AppSizes.gapV12,
                   CarreraSearchBar(
                     onChanged: _controller.setSearchQuery,
@@ -147,12 +164,12 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                   DropdownButtonFormField<String?>(
                     value: _controller.selectedCycleId,
                     decoration: const InputDecoration(
-                      labelText: 'Filtrar por curso',
+                      labelText: 'Filtrar por semestre',
                     ),
                     items: [
                       const DropdownMenuItem<String?>(
                         value: null,
-                        child: Text('Todos los cursos'),
+                        child: Text('Todos los semestres'),
                       ),
                       ..._controller.cycles.map(
                         (cycle) => DropdownMenuItem<String?>(
@@ -186,13 +203,18 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                         : ListView.separated(
                             physics: const BouncingScrollPhysics(),
                             itemCount: _controller.filteredParallels.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: AppSizes.sm),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: AppSizes.sm),
                             itemBuilder: (context, index) {
-                              final parallel = _controller.filteredParallels[index];
+                              final parallel =
+                                  _controller.filteredParallels[index];
                               return ParaleloCard(
                                 parallel: parallel,
-                                cycleName: _controller.getCycleName(parallel.cycleId),
-                                onTap: () => _openParallelForm(parallel: parallel),
+                                cycleName: _controller.getCycleName(
+                                  parallel.cycleId,
+                                ),
+                                onTap: () =>
+                                    _openParallelForm(parallel: parallel),
                                 onToggleStatus: () => _toggleStatus(parallel),
                               );
                             },

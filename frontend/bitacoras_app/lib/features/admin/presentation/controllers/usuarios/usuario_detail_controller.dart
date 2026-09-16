@@ -1,9 +1,8 @@
 import 'package:bitacoras_app/app/apps.dart';
 
-
 class UsuarioDetailController extends ChangeNotifier {
   final IAdminRepository repository;
-  
+
   late UsuarioModel user;
   bool isEditing = false;
   bool isLoading = false;
@@ -15,22 +14,73 @@ class UsuarioDetailController extends ChangeNotifier {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController cedulaController = TextEditingController();
-  final TextEditingController companyController = TextEditingController();
+  final TextEditingController cargoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  late RolUsuarioModel selectedRole;
+  String? selectedCompanyId;
+  String? selectedCareerId;
+  List<EmpresaModel> companies = [];
+  List<CarreraModel> careers = [];
 
   UsuarioDetailController({
     required this.repository,
     required UsuarioModel initialUser,
   }) {
     user = initialUser;
+    selectedRole = user.role;
+    selectedCompanyId = user.companyId;
+    selectedCareerId = user.carreraId;
     _initControllers();
+    _loadOptions();
   }
 
   void _initControllers() {
+    selectedRole = user.role;
+    selectedCompanyId = user.companyId;
+    selectedCareerId = user.carreraId;
     nameController.text = user.name;
     emailController.text = user.email;
     phoneController.text = user.phone ?? '';
     cedulaController.text = user.cedula ?? '';
-    companyController.text = user.company ?? '';
+    cargoController.text = user.cargo ?? '';
+    passwordController.clear();
+  }
+
+  Future<void> _loadOptions() async {
+    try {
+      companies = await repository.getCompanies();
+      careers = await repository.getCareers();
+      notifyListeners();
+    } catch (_) {
+      // Los campos de texto siguen disponibles aunque falle la carga.
+    }
+  }
+
+  void setRole(RolUsuarioModel role) {
+    selectedRole = role;
+    if (role != RolUsuarioModel.student &&
+      role != RolUsuarioModel.coordinator &&
+      role != RolUsuarioModel.academicTutor) {
+      selectedCareerId = null;
+    }
+    if (role != RolUsuarioModel.student &&
+        role != RolUsuarioModel.companyTutor) {
+      selectedCompanyId = null;
+    }
+    if (role != RolUsuarioModel.companyTutor) {
+      cargoController.clear();
+    }
+    notifyListeners();
+  }
+
+  void setCompany(String? companyId) {
+    selectedCompanyId = companyId;
+    notifyListeners();
+  }
+
+  void setCareer(String? careerId) {
+    selectedCareerId = careerId;
+    notifyListeners();
   }
 
   void toggleEditMode() {
@@ -52,13 +102,13 @@ class UsuarioDetailController extends ChangeNotifier {
     clearMessages();
 
     try {
-      final updatedUser = user.copyWith(isActive: !user.isActive);
-      final success = await repository.updateUser(updatedUser);
+      final nextStatus = !user.isActive;
+      final success = await repository.setUserActive(user.id, nextStatus);
 
       if (success) {
-        user = updatedUser;
-        successMessage = user.isActive 
-            ? 'Usuario activado correctamente' 
+        user = user.copyWith(isActive: nextStatus);
+        successMessage = user.isActive
+            ? 'Usuario activado correctamente'
             : 'Usuario desactivado correctamente';
       } else {
         errorMessage = 'No se pudo cambiar el estado del usuario.';
@@ -73,8 +123,39 @@ class UsuarioDetailController extends ChangeNotifier {
   }
 
   Future<bool> saveChanges() async {
-    if (nameController.text.trim().isEmpty || emailController.text.trim().isEmpty) {
+    if (nameController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty) {
       errorMessage = 'El nombre y el correo son obligatorios.';
+      notifyListeners();
+      return false;
+    }
+    final emailError = AdminValidators.email(emailController.text);
+    if (emailError != null) {
+      errorMessage = emailError;
+      notifyListeners();
+      return false;
+    }
+    final phoneError = AdminValidators.ecuadorianPhone(
+      phoneController.text,
+      required: false,
+    );
+    if (phoneError != null) {
+      errorMessage = phoneError;
+      notifyListeners();
+      return false;
+    }
+    if (passwordController.text.isNotEmpty &&
+        passwordController.text.length < 8) {
+      errorMessage = 'La nueva contraseña debe tener al menos 8 caracteres.';
+      notifyListeners();
+      return false;
+    }
+    final cedula = cedulaController.text.trim();
+    final cedulaError = cedula.isEmpty
+        ? null
+        : AdminValidators.ecuadorianId(cedula);
+    if (cedulaError != null) {
+      errorMessage = cedulaError;
       notifyListeners();
       return false;
     }
@@ -86,9 +167,21 @@ class UsuarioDetailController extends ChangeNotifier {
       final updatedUser = user.copyWith(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
-        phone: phoneController.text.trim().isEmpty ? null : phoneController.text.trim(),
-        cedula: cedulaController.text.trim().isEmpty ? null : cedulaController.text.trim(),
-        company: companyController.text.trim().isEmpty ? null : companyController.text.trim(),
+        phone: phoneController.text.trim().isEmpty
+            ? null
+            : phoneController.text.trim(),
+        cedula: cedulaController.text.trim().isEmpty
+            ? null
+            : cedulaController.text.trim(),
+        role: selectedRole,
+        cargo: cargoController.text.trim().isEmpty
+            ? null
+            : cargoController.text.trim(),
+        companyId: selectedCompanyId,
+        carreraId: selectedCareerId,
+        password: passwordController.text.trim().isEmpty
+            ? null
+            : passwordController.text.trim(),
       );
 
       final success = await repository.updateUser(updatedUser);
@@ -116,6 +209,10 @@ class UsuarioDetailController extends ChangeNotifier {
 
     try {
       final success = await repository.deleteUser(user.id);
+      if (success) {
+        user = user.copyWith(isActive: false);
+        successMessage = 'Usuario desactivado correctamente';
+      }
       isLoading = false;
       notifyListeners();
       return success;
@@ -133,7 +230,8 @@ class UsuarioDetailController extends ChangeNotifier {
     emailController.dispose();
     phoneController.dispose();
     cedulaController.dispose();
-    companyController.dispose();
+    cargoController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 }

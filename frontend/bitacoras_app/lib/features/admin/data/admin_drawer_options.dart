@@ -26,18 +26,13 @@ List<SeccionMenuModel> getAdminDrawerSections() {
           route: AppRoutes.periodManagement,
         ),
         ItemMenuModel(
-          icon: Icons.layers_outlined,
-          title: 'Ciclos / Cursos',
-          route: AppRoutes.cycleManagement,
-        ),
-        ItemMenuModel(
-          icon: Icons.grid_view_outlined,
-          title: 'Paralelos y Jornadas',
-          route: AppRoutes.parallelManagement,
+          icon: Icons.business_outlined,
+          title: 'Empresas e instituciones',
+          route: AppRoutes.companyManagement,
         ),
         ItemMenuModel(
           icon: Icons.settings_suggest_outlined,
-          title: 'Config. Carrera - Periodo',
+          title: 'Carreras y periodos',
           route: AppRoutes.careerPeriod,
         ),
       ],

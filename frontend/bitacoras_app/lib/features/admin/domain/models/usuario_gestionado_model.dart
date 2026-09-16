@@ -19,7 +19,9 @@ class UsuarioGestionadoModel {
     if (names.length >= 2 && names[0].isNotEmpty && names[1].isNotEmpty) {
       return '${names[0][0]}${names[1][0]}'.toUpperCase();
     }
-    return names.isNotEmpty && names[0].isNotEmpty ? names[0][0].toUpperCase() : 'U';
+    return names.isNotEmpty && names[0].isNotEmpty
+        ? names[0][0].toUpperCase()
+        : 'U';
   }
 
   factory UsuarioGestionadoModel.fromJson(Map<String, dynamic> json) {

@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/core/network/api_client.dart';
 
 class GestionCarreraController extends ChangeNotifier {
   final IAdminRepository repository;
@@ -59,7 +60,9 @@ class GestionCarreraController extends ChangeNotifier {
       }
       return success;
     } catch (error) {
-      _errorMessage = 'No se pudo crear la carrera.';
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'No se pudo crear la carrera.';
       notifyListeners();
       return false;
     } finally {

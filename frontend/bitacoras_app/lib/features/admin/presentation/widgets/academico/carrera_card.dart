@@ -5,11 +5,7 @@ class CarreraCard extends StatelessWidget {
   final CarreraModel career;
   final VoidCallback onTap;
 
-  const CarreraCard({
-    super.key,
-    required this.career,
-    required this.onTap,
-  });
+  const CarreraCard({super.key, required this.career, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +71,15 @@ class CarreraCard extends StatelessWidget {
                 child: Text(
                   career.isActive ? 'Activa' : 'Inactiva',
                   style: AppTextStyles.caption.copyWith(
-                    color: career.isActive ? AppColors.success : AppColors.error,
+                    color: career.isActive
+                        ? AppColors.success
+                        : AppColors.error,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
               AppSizes.gapH8,
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.outline,
-              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.outline),
             ],
           ),
         ),

@@ -2,14 +2,16 @@ import 'package:bitacoras_app/app/apps.dart';
 
 class UsuarioDetailActionButtons extends StatelessWidget {
   final bool isEditing;
+  final bool isActive;
   final VoidCallback onSave;
-  final VoidCallback onDelete;
+  final VoidCallback onToggleStatus;
 
   const UsuarioDetailActionButtons({
     super.key,
     required this.isEditing,
+    required this.isActive,
     required this.onSave,
-    required this.onDelete,
+    required this.onToggleStatus,
   });
 
   @override
@@ -36,19 +38,17 @@ class UsuarioDetailActionButtons extends StatelessWidget {
 
     return OutlinedButton.icon(
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.error,
-        side: const BorderSide(color: AppColors.error),
+        foregroundColor: isActive ? AppColors.error : AppColors.success,
+        side: BorderSide(color: isActive ? AppColors.error : AppColors.success),
         minimumSize: const Size.fromHeight(50),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      icon: const Icon(Icons.delete_outline),
-      label: const Text(
-        'Eliminar Usuario',
+      icon: Icon(isActive ? Icons.block_outlined : Icons.check_circle_outline),
+      label: Text(
+        isActive ? 'Desactivar Usuario' : 'Activar Usuario',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
-      onPressed: onDelete,
+      onPressed: onToggleStatus,
     );
   }
 }

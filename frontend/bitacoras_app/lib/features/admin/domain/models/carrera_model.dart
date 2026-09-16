@@ -28,20 +28,24 @@ class CarreraModel {
       description: json['descripcion'] as String? ?? '',
       modality: json['modalidad'] as String? ?? '',
       isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
-      totalSemesters: (json['total_semesters'] as num?)?.toInt() ?? 0,
+      totalSemesters:
+          (json['total_semestres'] ?? json['total_semesters'] as num?) is num
+          ? ((json['total_semestres'] ?? json['total_semesters']) as num)
+                .toInt()
+          : 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
+      'nombre': name,
       'codigo_carrera': code,
       'sigla_carrera': shortName,
       'descripcion': description,
       'modalidad': modality,
+      'total_semestres': totalSemesters,
       'estado': isActive,
-      'total_semesters': totalSemesters,
     };
   }
 }

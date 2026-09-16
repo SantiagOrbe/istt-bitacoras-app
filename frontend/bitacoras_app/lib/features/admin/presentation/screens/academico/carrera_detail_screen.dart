@@ -55,20 +55,25 @@ class CarreraDetailScreen extends StatelessWidget {
                   ),
                 ),
                 AppSizes.gapV16,
-                _InfoRow(
-                  label: 'Código',
-                  value: career.code,
+                _InfoRow(label: 'Código', value: career.code),
+                AppSizes.gapV16,
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => context.push(
+                      AppRoutes.semesterManagement.replaceFirst(
+                        ':carreraId',
+                        career.id,
+                      ),
+                    ),
+                    icon: const Icon(Icons.layers_outlined),
+                    label: const Text('Semestres'),
+                  ),
                 ),
                 AppSizes.gapV8,
-                _InfoRow(
-                  label: 'Sigla',
-                  value: career.shortName,
-                ),
+                _InfoRow(label: 'Sigla', value: career.shortName),
                 AppSizes.gapV8,
-                _InfoRow(
-                  label: 'Modalidad',
-                  value: career.modality,
-                ),
+                _InfoRow(label: 'Modalidad', value: career.modality),
                 AppSizes.gapV8,
                 _InfoRow(
                   label: 'Semestres totales',
@@ -99,10 +104,7 @@ class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {

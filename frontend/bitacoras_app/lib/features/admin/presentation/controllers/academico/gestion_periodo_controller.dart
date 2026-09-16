@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/core/network/api_client.dart';
 
 class GestionPeriodoController extends ChangeNotifier {
   final IAdminRepository repository;
@@ -38,8 +39,10 @@ class GestionPeriodoController extends ChangeNotifier {
       _periods
         ..clear()
         ..addAll(await repository.getPeriods());
-    } catch (_) {
-      _errorMessage = 'No se pudieron cargar los períodos lectivos.';
+    } catch (error) {
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'No se pudieron cargar los períodos lectivos.';
     } finally {
       _setLoading(false);
     }
@@ -68,7 +71,17 @@ class GestionPeriodoController extends ChangeNotifier {
       }
 
       if (endDate.isBefore(startDate)) {
-        _errorMessage = 'La fecha fin no puede ser menor que la fecha de inicio.';
+        _errorMessage =
+            'La fecha fin no puede ser menor que la fecha de inicio.';
+        return false;
+      }
+
+      final duplicateName = _periods.any((period) {
+        if (period.id == periodId) return false;
+        return period.name.trim().toLowerCase() == normalizedName.toLowerCase();
+      });
+      if (duplicateName) {
+        _errorMessage = 'El nombre del período ya existe.';
         return false;
       }
 
@@ -120,8 +133,10 @@ class GestionPeriodoController extends ChangeNotifier {
           : 'Período lectivo actualizado correctamente.';
       notifyListeners();
       return true;
-    } catch (_) {
-      _errorMessage = 'Ocurrió un error al guardar el período lectivo.';
+    } catch (error) {
+      _errorMessage = error is ApiException
+          ? error.message
+          : 'Ocurrió un error al guardar el período lectivo.';
       notifyListeners();
       return false;
     } finally {

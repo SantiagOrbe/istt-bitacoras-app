@@ -29,12 +29,17 @@ class PeriodoModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'fecha_inicio': startDate.toIso8601String(),
-      'fecha_fin': endDate.toIso8601String(),
-      'is_active': isActive,
+      'nombre': name,
+      'fecha_inicio': _formatDate(startDate),
+      'fecha_fin': _formatDate(endDate),
+      'estado': isActive,
     };
   }
+
+  static String _formatDate(DateTime date) =>
+      '${date.year.toString().padLeft(4, '0')}-'
+      '${date.month.toString().padLeft(2, '0')}-'
+      '${date.day.toString().padLeft(2, '0')}';
 
   PeriodoModel copyWith({
     String? id,

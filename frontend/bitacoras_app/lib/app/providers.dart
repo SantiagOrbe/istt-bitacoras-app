@@ -1,6 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'auth_session.dart';
 import '../core/network/api_client.dart';
 import '../core/network/token_storage.dart';
 import '../features/admin/data/datasources/admin_remote_datasource.dart';
@@ -20,6 +21,7 @@ import '../features/estudiantes/domain/repositories/i_asistencia_repository.dart
 import '../features/estudiantes/presentation/controllers/asistencia_provider.dart';
 
 List<SingleChildWidget> get appProviders => [
+  ChangeNotifierProvider<AuthSession>(create: (_) => AuthSession()),
       Provider<TokenStorage>(create: (_) => TokenStorage()),
       Provider<ApiClient>(
         create: (context) => ApiClient(

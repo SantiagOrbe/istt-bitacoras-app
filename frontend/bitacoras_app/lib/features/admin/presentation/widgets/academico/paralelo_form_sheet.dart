@@ -1,6 +1,7 @@
 import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
 import 'package:bitacoras_app/features/admin/domain/models/paralelo_model.dart';
 import 'package:bitacoras_app/shared/exports.dart';
+import '../admin_form_components.dart';
 
 class ParaleloFormResult {
   final String cycleId;
@@ -19,11 +20,13 @@ class ParaleloFormResult {
 class ParaleloFormSheet extends StatefulWidget {
   final List<CicloModel> cycles;
   final ParaleloModel? parallel;
+  final String? fixedCycleId;
 
   const ParaleloFormSheet({
     super.key,
     required this.cycles,
     this.parallel,
+    this.fixedCycleId,
   });
 
   @override
@@ -43,7 +46,10 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.parallel?.name ?? '');
-    _selectedCycleId = widget.parallel?.cycleId ?? (widget.cycles.isNotEmpty ? widget.cycles.first.id : '');
+    _selectedCycleId =
+        widget.fixedCycleId ??
+        widget.parallel?.cycleId ??
+        (widget.cycles.isNotEmpty ? widget.cycles.first.id : '');
     _selectedJornada = widget.parallel?.jornada ?? _jornadas.first;
     _isActive = widget.parallel?.isActive ?? true;
   }
@@ -69,6 +75,13 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
     );
   }
 
+  String get _selectedSemesterName {
+    for (final cycle in widget.cycles) {
+      if (cycle.id == _selectedCycleId) return cycle.name;
+    }
+    return 'Semestre seleccionado';
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,7 +94,7 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
         ),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
+          child: AdminFormSheetBody(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,36 +110,46 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                   ),
                 ),
                 AppSizes.gapV20,
-                Text(
-                  widget.parallel == null ? 'Nuevo paralelo' : 'Editar paralelo',
-                  style: AppTextStyles.heading.copyWith(color: AppColors.textPrimary),
+                AdminFormHeader(
+                  title: widget.parallel == null
+                      ? 'Nuevo paralelo'
+                      : 'Editar paralelo',
+                  subtitle: 'Asocia una jornada y un semestre al paralelo.',
+                  icon: Icons.grid_view_outlined,
                 ),
-                AppSizes.gapV20,
-                DropdownButtonFormField<String>(
-                  value: _selectedCycleId.isEmpty ? null : _selectedCycleId,
-                  decoration: const InputDecoration(labelText: 'Curso'),
-                  items: widget.cycles
-                      .map(
-                        (cycle) => DropdownMenuItem<String>(
-                          value: cycle.id,
-                          child: Text('${cycle.name} (Nivel ${cycle.level})'),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      _selectedCycleId = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Selecciona un curso';
-                    }
-                    return null;
-                  },
-                ),
-                AppSizes.gapV16,
+                const AdminFormSectionLabel('Asignación académica'),
+                if (widget.fixedCycleId == null)
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedCycleId.isEmpty
+                        ? null
+                        : _selectedCycleId,
+                    decoration: const InputDecoration(labelText: 'Semestre'),
+                    items: widget.cycles
+                        .map(
+                          (cycle) => DropdownMenuItem<String>(
+                            value: cycle.id,
+                            child: Text('${cycle.name} (Nivel ${cycle.level})'),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        _selectedCycleId = value;
+                      });
+                    },
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Selecciona un semestre'
+                        : null,
+                  )
+                else
+                  Text(
+                    'Semestre: $_selectedSemesterName',
+                    style: AppTextStyles.bodyBold.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                AppSizes.gapV12,
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.characters,
@@ -135,15 +158,15 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                     hintText: 'A, B, C...',
                   ),
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Ingresa el nombre del paralelo';
-                    }
-                    return null;
+                    return AdminValidators.letters(
+                      value,
+                      label: 'El nombre del paralelo',
+                    );
                   },
                 ),
-                AppSizes.gapV16,
+                AppSizes.gapV12,
                 DropdownButtonFormField<String>(
-                  value: _selectedJornada,
+                  initialValue: _selectedJornada,
                   decoration: const InputDecoration(labelText: 'Jornada'),
                   items: _jornadas
                       .map(
@@ -160,7 +183,7 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                     });
                   },
                 ),
-                AppSizes.gapV16,
+                const AdminFormSectionLabel('Estado'),
                 SwitchListTile.adaptive(
                   value: _isActive,
                   onChanged: (value) {
@@ -171,13 +194,12 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                   title: const Text('Paralelo activo'),
                   contentPadding: EdgeInsets.zero,
                 ),
-                AppSizes.gapV24,
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submit,
-                    child: Text(widget.parallel == null ? 'Guardar paralelo' : 'Actualizar paralelo'),
-                  ),
+                AppSizes.gapV20,
+                AdminFormActionButton(
+                  label: widget.parallel == null
+                      ? 'Guardar paralelo'
+                      : 'Actualizar paralelo',
+                  onPressed: _submit,
                 ),
               ],
             ),

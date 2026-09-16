@@ -1,7 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
 
-
-
 class UsuarioDetailScreen extends StatefulWidget {
   final UsuarioModel user;
   final IAdminRepository adminRepository;
@@ -53,38 +51,43 @@ class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
     }
   }
 
-  Future<void> _confirmDelete() async {
+  Future<void> _confirmToggleStatus() async {
+    final isActive = _controller.user.isActive;
+    final action = isActive ? 'desactivar' : 'activar';
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Eliminar Usuario', style: TextStyle(color: AppColors.textPrimary)),
+        title: Text(
+          '${isActive ? 'Desactivar' : 'Activar'} Usuario',
+          style: const TextStyle(color: AppColors.textPrimary),
+        ),
         content: Text(
-          '¿Está seguro de eliminar a ${_controller.user.name}? Esta acción no se puede deshacer.',
+          '¿Está seguro de $action a ${_controller.user.name}?',
           style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancelar', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
+              backgroundColor: isActive ? AppColors.error : AppColors.success,
               foregroundColor: AppColors.surface,
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(isActive ? 'Desactivar' : 'Activar'),
           ),
         ],
       ),
     );
 
     if (confirm == true && mounted) {
-      final success = await _controller.deleteUser();
-      if (success && mounted) {
-        Navigator.of(context).pop(true);
-      }
+      await _controller.toggleUserStatus();
     }
   }
 
@@ -104,37 +107,36 @@ class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
           appBar: InicioAppBar(
             user: _controller.user,
             showBackButton: true,
-            onBackPressed: () => context.pop(),
+            onBackPressed: () => context.pop(_controller.user),
           ),
           backgroundColor: AppColors.background,
           body: _controller.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
-                  ),
+                  child: CircularProgressIndicator(color: AppColors.primary),
                 )
               : SafeArea(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        
                         const SizedBox(height: 12),
                         UsuarioDetailHeader(
                           user: _controller.user,
-                          onToggleStatus: _controller.toggleUserStatus,
+                          onToggleStatus: _confirmToggleStatus,
                           isLoading: _controller.isLoading,
                         ),
                         const SizedBox(height: 16),
-                        UsuarioInfoCard(
-                          controller: _controller,
-                        ),
+                        UsuarioInfoCard(controller: _controller),
                         const SizedBox(height: 24),
                         UsuarioDetailActionButtons(
                           isEditing: _controller.isEditing,
+                          isActive: _controller.user.isActive,
                           onSave: _controller.saveChanges,
-                          onDelete: _confirmDelete,
+                          onToggleStatus: _confirmToggleStatus,
                         ),
                         const SizedBox(height: 16),
                       ],

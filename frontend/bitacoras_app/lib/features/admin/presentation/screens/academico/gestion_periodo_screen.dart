@@ -147,7 +147,8 @@ class _GestionPeriodoScreenState extends State<GestionPeriodoScreen> {
                         : ListView.separated(
                             physics: const BouncingScrollPhysics(),
                             itemCount: _controller.filteredPeriods.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: AppSizes.sm),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: AppSizes.sm),
                             itemBuilder: (context, index) {
                               final period = _controller.filteredPeriods[index];
                               return PeriodoCard(

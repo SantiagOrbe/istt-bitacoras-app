@@ -1,13 +1,17 @@
 import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
+import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
 import 'package:bitacoras_app/shared/exports.dart';
+import '../admin_form_components.dart';
 
 class CicloFormResult {
   final String name;
+  final String careerId;
   final int level;
   final bool isActive;
 
   const CicloFormResult({
     required this.name,
+    required this.careerId,
     required this.level,
     required this.isActive,
   });
@@ -15,10 +19,14 @@ class CicloFormResult {
 
 class CicloFormSheet extends StatefulWidget {
   final CicloModel? cycle;
+  final List<CarreraModel> careers;
+  final String? fixedCareerId;
 
   const CicloFormSheet({
     super.key,
     this.cycle,
+    required this.careers,
+    this.fixedCareerId,
   });
 
   @override
@@ -29,13 +37,20 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _levelController;
+  late String _selectedCareerId;
   late bool _isActive;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.cycle?.name ?? '');
-    _levelController = TextEditingController(text: widget.cycle?.level.toString() ?? '');
+    _levelController = TextEditingController(
+      text: widget.cycle?.level.toString() ?? '',
+    );
+    _selectedCareerId =
+        widget.fixedCareerId ??
+        widget.cycle?.careerId ??
+        (widget.careers.isNotEmpty ? widget.careers.first.id : '');
     _isActive = widget.cycle?.isActive ?? true;
   }
 
@@ -54,6 +69,7 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
     Navigator.of(context).pop(
       CicloFormResult(
         name: _nameController.text.trim(),
+        careerId: _selectedCareerId,
         level: int.parse(_levelController.text.trim()),
         isActive: _isActive,
       ),
@@ -72,7 +88,7 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
         ),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
+          child: AdminFormSheetBody(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,31 +104,62 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                   ),
                 ),
                 AppSizes.gapV20,
-                Text(
-                  widget.cycle == null ? 'Nuevo curso' : 'Editar curso',
-                  style: AppTextStyles.heading.copyWith(color: AppColors.textPrimary),
+                AdminFormHeader(
+                  title: widget.cycle == null
+                      ? 'Nuevo semestre'
+                      : 'Editar semestre',
+                  subtitle: 'Define el nivel y estado del semestre académico.',
+                  icon: Icons.layers_outlined,
                 ),
-                AppSizes.gapV20,
+                const AdminFormSectionLabel('Información del semestre'),
+                if (widget.fixedCareerId == null)
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedCareerId.isEmpty
+                        ? null
+                        : _selectedCareerId,
+                    decoration: const InputDecoration(labelText: 'Carrera'),
+                    items: widget.careers
+                        .map(
+                          (career) => DropdownMenuItem<String>(
+                            value: career.id,
+                            child: Text(career.name),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) =>
+                        setState(() => _selectedCareerId = value ?? ''),
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Selecciona una carrera'
+                        : null,
+                  )
+                else
+                  Text(
+                    widget.careers.isNotEmpty
+                        ? widget.careers.first.name
+                        : 'Carrera seleccionada',
+                    style: AppTextStyles.bodyBold.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                AppSizes.gapV12,
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
-                    labelText: 'Nombre del curso',
+                    labelText: 'Nombre del semestre',
                   ),
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Ingresa el nombre del curso';
-                    }
-                    return null;
+                    return AdminValidators.letters(
+                      value,
+                      label: 'El nombre del semestre',
+                    );
                   },
                 ),
-                AppSizes.gapV16,
+                const AdminFormSectionLabel('Estado'),
                 TextFormField(
                   controller: _levelController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Nivel',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Nivel'),
                   validator: (value) {
                     final parsed = int.tryParse(value ?? '');
                     if (parsed == null || parsed <= 0) {
@@ -129,16 +176,15 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                       _isActive = value;
                     });
                   },
-                  title: const Text('Curso activo'),
+                  title: const Text('Semestre activo'),
                   contentPadding: EdgeInsets.zero,
                 ),
-                AppSizes.gapV24,
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submit,
-                    child: Text(widget.cycle == null ? 'Guardar curso' : 'Actualizar curso'),
-                  ),
+                AppSizes.gapV20,
+                AdminFormActionButton(
+                  label: widget.cycle == null
+                      ? 'Guardar semestre'
+                      : 'Actualizar semestre',
+                  onPressed: _submit,
                 ),
               ],
             ),

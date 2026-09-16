@@ -1,7 +1,5 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
-
 class CarreraPeriodoController extends ChangeNotifier {
   final IAdminRepository repository;
 
@@ -10,26 +8,36 @@ class CarreraPeriodoController extends ChangeNotifier {
   List<PeriodoModel> periods = [];
   List<CarreraModel> careers = [];
   bool isLoading = true;
+  String? errorMessage;
 
   String selectedPeriodId = '';
   final Map<String, Set<int>> configs = {};
 
   Future<void> loadData() async {
     isLoading = true;
+    errorMessage = null;
     notifyListeners();
 
-    periods = await repository.getPeriods();
-    careers = await repository.getCareers();
-    final configsList = await repository.getConfiguracionPeriodoCarreraModels();
+    try {
+      periods = await repository.getPeriods();
+      careers = await repository.getCareers();
+      final configsList = await repository
+          .getConfiguracionPeriodoCarreraModels();
 
-    configs.clear();
-    for (final config in configsList) {
-      final key = '${config.careerId}_${config.periodId}';
-      configs[key] = config.activeSemestersForPractices.toSet();
-    }
+      configs.clear();
+      for (final config in configsList) {
+        final key = '${config.careerId}_${config.periodId}';
+        configs[key] = {
+          ...configs[key] ?? {},
+          ...config.activeSemestersForPractices,
+        };
+      }
 
-    if (periods.isNotEmpty) {
-      selectedPeriodId = periods.first.id;
+      if (periods.isNotEmpty) {
+        selectedPeriodId = periods.first.id;
+      }
+    } catch (_) {
+      errorMessage = 'No se pudieron cargar las carreras y periodos.';
     }
 
     isLoading = false;

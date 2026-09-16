@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // Exports compartidos desde el archivo shared/exports.dart
 import 'package:bitacoras_app/shared/exports.dart';
@@ -43,6 +42,12 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surface,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.md,
+          vertical: 15,
+        ),
+        labelStyle: const TextStyle(color: AppColors.textSecondary),
+        floatingLabelStyle: const TextStyle(color: AppColors.primary),
         hintStyle: const TextStyle(
           color: AppColors.textHint,
         ),
@@ -75,6 +80,17 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.radiusMd),
           ),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(double.infinity, 54),
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          textStyle: AppTextStyles.button,
         ),
       ),
       cardTheme: CardThemeData(

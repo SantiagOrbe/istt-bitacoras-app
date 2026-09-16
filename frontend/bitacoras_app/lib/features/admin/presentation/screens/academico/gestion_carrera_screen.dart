@@ -20,6 +20,8 @@ class GestionCarreraScreen extends StatefulWidget {
   State<GestionCarreraScreen> createState() => _GestionCarreraScreenState();
 }
 
+typedef CarrerasManagementScreen = GestionCarreraScreen;
+
 class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
   late final GestionCarreraController _controller;
 
@@ -41,7 +43,8 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const CarreraFormSheet(),
+      builder: (context) =>
+          CarreraFormSheet(existingCareers: _controller.careers),
     );
 
     if (newCareer == null || !mounted) {
@@ -112,7 +115,8 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
                         : ListView.separated(
                             physics: const BouncingScrollPhysics(),
                             itemCount: _controller.filteredCareers.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: AppSizes.sm),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: AppSizes.sm),
                             itemBuilder: (context, index) {
                               final career = _controller.filteredCareers[index];
                               return CarreraCard(

@@ -23,7 +23,11 @@ class UsuarioMetricasHeader extends StatelessWidget {
       child: Row(
         children: [
           _buildMetricChip('Total', '$totalUsers', AppColors.primary),
-          _buildMetricChip('Estudiantes', '$totalStudents', AppColors.textSecondary),
+          _buildMetricChip(
+            'Estudiantes',
+            '$totalStudents',
+            AppColors.textSecondary,
+          ),
           _buildMetricChip('Tutores', '$totalTutors', AppColors.secondary),
           _buildMetricChip('Activos', '$totalActive', AppColors.success),
         ],
@@ -56,10 +60,7 @@ class UsuarioMetricasHeader extends StatelessWidget {
           ),
           AppSizes.gapH8,
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 6,
-              vertical: 2,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
               color: accentColor,
               borderRadius: BorderRadius.circular(AppSizes.radiusSm),

@@ -25,6 +25,10 @@ class AppRoutes {
   static const String periodManagement = '/admin/periods';
   static const String cycleManagement = '/admin/cycles';
   static const String parallelManagement = '/admin/parallels';
+    static const String semesterManagement = '/admin/careers/:carreraId/semestres';
+    static const String nestedParallelManagement =
+            '/admin/careers/:carreraId/semestres/:semestreId/paralelos';
+    static const String companyManagement = '/admin/companies';
   static const String registerExitAttendance = '/attendance/exit-attendance';
 
   // Homes

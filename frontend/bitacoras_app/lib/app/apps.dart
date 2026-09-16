@@ -1,4 +1,5 @@
 export 'package:go_router/go_router.dart';
+export 'auth_session.dart';
 
 // Barrel global de la app: re-exporta configuración, temas, módulos y auth.
 export 'package:bitacoras_app/shared/exports.dart';
@@ -10,7 +11,7 @@ export 'package:bitacoras_app/features/admin/admin.dart';
 export 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 export 'package:bitacoras_app/features/inicio/inicio.dart';
 export 'package:bitacoras_app/features/perfiles/perfiles.dart';
-export 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart' hide EmpresaCard;
+export 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart' hide EmpresaCard, EmpresaModel;
 export 'package:bitacoras_app/features/tutores/tutores.dart';
 
 // Auth (sin barrel propio)

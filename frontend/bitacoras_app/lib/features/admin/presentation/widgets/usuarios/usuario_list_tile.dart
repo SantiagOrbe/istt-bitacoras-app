@@ -4,11 +4,7 @@ class UsuarioListTile extends StatelessWidget {
   final UsuarioModel user;
   final VoidCallback onTap;
 
-  const UsuarioListTile({
-    super.key,
-    required this.user,
-    required this.onTap,
-  });
+  const UsuarioListTile({super.key, required this.user, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +46,7 @@ class UsuarioListTile extends StatelessWidget {
                   ),
                   AppSizes.gapV4,
                   Text(
-                    'CI: ${user.cedula} • ${user.role}',
+                    'CI: ${user.cedula ?? 'No registrada'} • ${user.role.label}',
                     style: AppTextStyles.caption.copyWith(
                       color: Theme.of(context).hintColor,
                     ),

@@ -26,11 +26,7 @@ class AdminEmptyState extends StatelessWidget {
               color: accentColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              size: 40,
-              color: accentColor,
-            ),
+            child: Icon(icon, size: 40, color: accentColor),
           ),
           AppSizes.gapV16,
           Text(

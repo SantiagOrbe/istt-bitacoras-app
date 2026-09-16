@@ -1,5 +1,6 @@
 import 'package:bitacoras_app/features/admin/domain/models/periodo_model.dart';
 import 'package:bitacoras_app/shared/exports.dart';
+import '../admin_form_components.dart';
 
 class PeriodoFormResult {
   final String name;
@@ -18,10 +19,7 @@ class PeriodoFormResult {
 class PeriodoFormSheet extends StatefulWidget {
   final PeriodoModel? period;
 
-  const PeriodoFormSheet({
-    super.key,
-    this.period,
-  });
+  const PeriodoFormSheet({super.key, this.period});
 
   @override
   State<PeriodoFormSheet> createState() => _PeriodoFormSheetState();
@@ -41,7 +39,8 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
     super.initState();
     _nameController = TextEditingController(text: widget.period?.name ?? '');
     _startDate = widget.period?.startDate ?? DateTime.now();
-    _endDate = widget.period?.endDate ?? DateTime.now().add(const Duration(days: 180));
+    _endDate =
+        widget.period?.endDate ?? DateTime.now().add(const Duration(days: 180));
     _isActive = widget.period?.isActive ?? true;
     _startDateController = TextEditingController(text: _formatDate(_startDate));
     _endDateController = TextEditingController(text: _formatDate(_endDate));
@@ -109,7 +108,7 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
         ),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
+          child: AdminFormSheetBody(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,11 +124,14 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                   ),
                 ),
                 AppSizes.gapV20,
-                Text(
-                  widget.period == null ? 'Nuevo período lectivo' : 'Editar período lectivo',
-                  style: AppTextStyles.heading.copyWith(color: AppColors.textPrimary),
+                AdminFormHeader(
+                  title: widget.period == null
+                      ? 'Nuevo período lectivo'
+                      : 'Editar período lectivo',
+                  subtitle: 'Define las fechas y vigencia del período.',
+                  icon: Icons.calendar_month_outlined,
                 ),
-                AppSizes.gapV20,
+                const AdminFormSectionLabel('Datos del período'),
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
@@ -137,16 +139,19 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                     labelText: 'Nombre del período',
                   ),
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Ingresa el nombre del período';
-                    }
-                    return null;
+                    return AdminValidators.requiredText(
+                      value,
+                      label: 'El nombre del período',
+                    );
                   },
                 ),
-                AppSizes.gapV16,
+                AppSizes.gapV12,
                 TextFormField(
                   readOnly: true,
                   controller: _startDateController,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Selecciona la fecha de inicio'
+                      : null,
                   decoration: InputDecoration(
                     labelText: 'Fecha de inicio',
                     suffixIcon: IconButton(
@@ -156,10 +161,13 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                   ),
                   onTap: () => _pickDate(isStartDate: true),
                 ),
-                AppSizes.gapV16,
+                AppSizes.gapV12,
                 TextFormField(
                   readOnly: true,
                   controller: _endDateController,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Selecciona la fecha de fin'
+                      : null,
                   decoration: InputDecoration(
                     labelText: 'Fecha de fin',
                     suffixIcon: IconButton(
@@ -169,7 +177,7 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                   ),
                   onTap: () => _pickDate(isStartDate: false),
                 ),
-                AppSizes.gapV16,
+                const AdminFormSectionLabel('Estado'),
                 SwitchListTile.adaptive(
                   value: _isActive,
                   onChanged: (value) {
@@ -180,13 +188,12 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                   title: const Text('Período activo'),
                   contentPadding: EdgeInsets.zero,
                 ),
-                AppSizes.gapV24,
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submit,
-                    child: Text(widget.period == null ? 'Guardar período' : 'Actualizar período'),
-                  ),
+                AppSizes.gapV20,
+                AdminFormActionButton(
+                  label: widget.period == null
+                      ? 'Guardar período'
+                      : 'Actualizar período',
+                  onPressed: _submit,
                 ),
               ],
             ),

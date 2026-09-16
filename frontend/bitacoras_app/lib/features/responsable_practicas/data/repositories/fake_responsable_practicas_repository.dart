@@ -1,12 +1,9 @@
-import 'package:flutter/material.dart';
 import '../../../../app/apps.dart';
-import '../../domain/models/empresa_model.dart';
-import '../../domain/models/asignacion_estudiante_model.dart';
-import '../../domain/repositories/i_responsable_practicas_repository.dart';
+import '../../domain/models/empresa_model.dart' as rp_models;
 
 class FakeResponsablePracticasRepository implements IResponsablePracticasRepository {
-  final List<EmpresaModel> _companies = [
-    const EmpresaModel(
+  final List<rp_models.EmpresaModel> _companies = [
+    const rp_models.EmpresaModel(
       id: '1',
       name: 'GAD Municipal de Tena',
       ruc: '1560001160001',
@@ -17,7 +14,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       agreementNumber: 'CONV-2025-001',
       isActive: true,
     ),
-    const EmpresaModel(
+    const rp_models.EmpresaModel(
       id: '2',
       name: 'Ministerio de Educación (Distrito Tena)',
       ruc: '1560002280001',
@@ -28,7 +25,7 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       agreementNumber: 'CONV-2025-008',
       isActive: true,
     ),
-    const EmpresaModel(
+    const rp_models.EmpresaModel(
       id: '3',
       name: 'Empresa Eléctrica Ambato SA (EERSSA)',
       ruc: '1890001420001',
@@ -131,16 +128,16 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
   }
 
   @override
-  Future<List<EmpresaModel>> getCompanies({String? query}) async {
+  Future<List<rp_models.EmpresaModel>> getCompanies({String? query}) async {
     await Future.delayed(const Duration(milliseconds: 200));
     return List.from(_companies);
   }
 
   @override
-  Future<EmpresaModel?> getCompanyById(String id) async => null;
+  Future<rp_models.EmpresaModel?> getCompanyById(String id) async => null;
 
   @override
-  Future<bool> saveCompany(EmpresaModel company) async => true;
+  Future<bool> saveCompany(rp_models.EmpresaModel company) async => true;
 
   @override
   Future<bool> toggleCompanyActiveStatus(String id, bool isActive) async => true;

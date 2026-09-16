@@ -13,17 +13,18 @@ class ConfiguracionPeriodoCarreraModel {
     return ConfiguracionPeriodoCarreraModel(
       careerId: (json['carrera'] ?? json['career_id'])?.toString() ?? '',
       periodId: (json['periodo'] ?? json['period_id'])?.toString() ?? '',
-      activeSemestersForPractices: (json['active_semesters'] as List<dynamic>? ?? [])
-          .whereType<num>()
-          .map((value) => value.toInt())
-          .toList(),
+      activeSemestersForPractices:
+          (json['active_semesters'] as List<dynamic>? ?? [])
+              .whereType<num>()
+              .map((value) => value.toInt())
+              .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'career_id': careerId,
-      'period_id': periodId,
+      'carrera': careerId,
+      'periodo': periodId,
       'active_semesters': activeSemestersForPractices,
     };
   }

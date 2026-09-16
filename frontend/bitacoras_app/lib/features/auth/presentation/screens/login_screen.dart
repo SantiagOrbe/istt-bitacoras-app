@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/app/apps.dart';
+import 'package:provider/provider.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import '../controllers/login_controller.dart';
 import '../widgets/login_form.dart';
@@ -38,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (user != null) {
+      context.read<AuthSession>().setUser(user);
       switch (user.role) {
         case RolUsuarioModel.student:
           context.go(AppRoutes.studentHome);
@@ -47,10 +49,13 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         case RolUsuarioModel.companyTutor:
           context.go(AppRoutes.companyTutorHome);
+          break;
         case RolUsuarioModel.admin:
           context.go(AppRoutes.adminHome);
+          break;
         case RolUsuarioModel.practiceManager:
           context.go(AppRoutes.practiceManagerHome);
+          break;
         case RolUsuarioModel.coordinator:
           context.go(AppRoutes.coordinatorHome);
           break;

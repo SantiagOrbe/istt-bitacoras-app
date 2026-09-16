@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
 
 from empresas.models import Empresa
-from gestion_academica.models import Carrera, Ciclo, Paralelo
+from gestion_academica.models import Carrera, Paralelo, Semestre
 """ Modelos de los usuarios y de todos los roles correspondientes de la app en Django."""
 
 class Usuario(AbstractUser):
@@ -10,6 +11,17 @@ class Usuario(AbstractUser):
     rol = models.CharField(max_length=30)
     estado = models.BooleanField(default=True)
     email = models.EmailField(unique=True)
+
+    class Meta:
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['telefono'],
+                condition=~Q(telefono=''),
+                name='unique_usuario_telefono',
+            ),
+        ]
 
     def __str__(self):
         return self.username
@@ -23,9 +35,20 @@ class Docente(models.Model):
         return self.usuario.username
 
 
+class ResponsablePracticas(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    cedula = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.usuario.username
+
+
 class Coordinador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     cedula = models.CharField(max_length=10)
+    carrera = models.ForeignKey(
+        Carrera, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self):
         return self.usuario.username
@@ -34,6 +57,12 @@ class Coordinador(models.Model):
 class TutorAcademico(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     cedula = models.CharField(max_length=10)
+    carrera = models.ForeignKey(
+        Carrera, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    empresa = models.ForeignKey(
+        Empresa, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return self.usuario.username
@@ -56,8 +85,8 @@ class Estudiante(models.Model):
     carrera = models.ForeignKey(
         Carrera, on_delete=models.CASCADE, null=True, blank=True
     )
-    ciclo = models.ForeignKey(
-        Ciclo, on_delete=models.CASCADE, null=True, blank=True
+    semestre = models.ForeignKey(
+        Semestre, on_delete=models.CASCADE, null=True, blank=True
     )
     paralelo = models.ForeignKey(
         Paralelo, on_delete=models.CASCADE, null=True, blank=True

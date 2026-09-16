@@ -13,10 +13,18 @@ class ParaleloModel {
     this.isActive = true,
   });
 
+  String get semesterId => cycleId;
+
   factory ParaleloModel.fromJson(Map<String, dynamic> json) {
     return ParaleloModel(
       id: json['id']?.toString() ?? '',
-      cycleId: (json['ciclo'] ?? json['cycle_id'])?.toString() ?? '',
+      cycleId:
+          (json['semestre'] ??
+                  json['semester_id'] ??
+                  json['ciclo'] ??
+                  json['cycle_id'])
+              ?.toString() ??
+          '',
       name: json['nombre'] as String? ?? json['name'] as String? ?? '',
       jornada: json['jornada'] as String? ?? '',
       isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
@@ -26,10 +34,10 @@ class ParaleloModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'cycle_id': cycleId,
-      'name': name,
+      'semestre': cycleId,
+      'nombre': name,
       'jornada': jornada,
-      'is_active': isActive,
+      'estado': isActive,
     };
   }
 

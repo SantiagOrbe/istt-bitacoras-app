@@ -18,7 +18,9 @@ class PeriodoSelectorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Validación de seguridad para el valor seleccionado en el Dropdown
     final bool valueExists = periods.any((p) => p.id == selectedPeriodId);
-    final String? effectiveValue = valueExists ? selectedPeriodId : (periods.isNotEmpty ? periods.first.id : null);
+    final String? effectiveValue = valueExists
+        ? selectedPeriodId
+        : (periods.isNotEmpty ? periods.first.id : null);
 
     return Padding(
       padding: const EdgeInsets.symmetric(

@@ -17,6 +17,7 @@ class Carrera(models.Model):
     codigo_carrera = models.CharField(max_length=50)
     sigla_carrera = models.CharField(max_length=20)
     modalidad = models.CharField(max_length=50)
+    total_semestres = models.PositiveIntegerField(default=0)
     estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -26,13 +27,19 @@ class Carrera(models.Model):
 class CarreraPeriodo(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
+    semestre = models.ForeignKey(
+        'Semestre', on_delete=models.CASCADE, null=True, blank=True
+    )
+    paralelo = models.ForeignKey(
+        'Paralelo', on_delete=models.CASCADE, null=True, blank=True
+    )
     estado = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.carrera} - {self.periodo}'
 
 
-class Ciclo(models.Model):
+class Semestre(models.Model):
     nombre = models.CharField(max_length=50)
     nivel = models.IntegerField()
     estado = models.BooleanField(default=True)
@@ -46,10 +53,10 @@ class Paralelo(models.Model):
     nombre = models.CharField(max_length=50)
     jornada = models.CharField(max_length=50)
     estado = models.BooleanField(default=True)
-    ciclo = models.ForeignKey(Ciclo, on_delete=models.CASCADE)
+    semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.ciclo} - {self.nombre}'
+        return f'{self.semestre} - {self.nombre}'
 
 
 class ResultadoAprendizaje(models.Model):

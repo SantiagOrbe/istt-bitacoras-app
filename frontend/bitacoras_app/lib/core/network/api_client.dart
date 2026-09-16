@@ -72,6 +72,19 @@ class ApiClient {
     );
   }
 
+  Future<dynamic> patch(
+    String endpoint, {
+    Map<String, dynamic>? body,
+    bool requiresAuth = true,
+  }) async {
+    return _send(
+      method: 'PATCH',
+      endpoint: endpoint,
+      body: body,
+      requiresAuth: requiresAuth,
+    );
+  }
+
   Future<dynamic> delete(
     String endpoint, {
     Map<String, dynamic>? body,
@@ -113,6 +126,7 @@ class ApiClient {
         'GET' => await _client.get(uri, headers: headers),
         'POST' => await _client.post(uri, headers: headers, body: encodedBody),
         'PUT' => await _client.put(uri, headers: headers, body: encodedBody),
+        'PATCH' => await _client.patch(uri, headers: headers, body: encodedBody),
         'DELETE' => await _client.delete(uri, headers: headers, body: encodedBody),
         _ => throw ArgumentError('Método HTTP no soportado: $method'),
       };
@@ -176,10 +190,40 @@ class ApiClient {
     if (body is Map<String, dynamic>) {
       final detail = body['detail'] ?? body['message'] ?? body['error'];
       if (detail != null) return detail.toString();
+
+      final fieldErrors = body.entries
+          .map((entry) {
+            final value = entry.value;
+            final messages = value is List ? value : [value];
+            return messages
+                .map((message) => '${_fieldLabel(entry.key)}: $message')
+                .join(' ');
+          })
+          .where((message) => message.isNotEmpty)
+          .join(' ');
+      if (fieldErrors.isNotEmpty) return fieldErrors;
     }
     if (statusCode >= 500) {
       return 'El servidor no pudo completar la solicitud.';
     }
-    return reasonPhrase ?? 'La solicitud fue rechazada por el servidor';
+    return switch (statusCode) {
+      400 => 'Los datos enviados no son válidos.',
+      401 => 'La sesión ha expirado. Inicia sesión nuevamente.',
+      403 => 'No tienes permisos para realizar esta acción.',
+      404 => 'No se encontró el recurso solicitado.',
+      409 => 'Los datos entran en conflicto con un registro existente.',
+      _ => 'La solicitud fue rechazada por el servidor.',
+    };
+  }
+
+  String _fieldLabel(String field) {
+    return switch (field) {
+      'telefono' => 'Teléfono',
+      'cedula' => 'Cédula',
+      'carrera_id' => 'Carrera',
+      'empresa_id' => 'Empresa',
+      'non_field_errors' => 'Datos',
+      _ => field,
+    };
   }
 }

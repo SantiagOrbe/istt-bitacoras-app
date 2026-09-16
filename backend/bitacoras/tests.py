@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from empresas.models import Empresa
-from gestion_academica.models import Carrera, Ciclo, Paralelo
+from gestion_academica.models import Carrera, Paralelo, Semestre
 from usuarios.models import Estudiante, TutorAcademico, TutorEmpresarial, Usuario
 from bitacoras.models import Actividad, RegistroPractica
 
@@ -18,7 +18,7 @@ class BitacorasGeofencingTests(APITestCase):
             sigla_carrera='SW',
             modalidad='Presencial'
         )
-        self.ciclo = Ciclo.objects.create(
+        self.semestre = Semestre.objects.create(
             nombre='Octavo',
             nivel=8,
             carrera=self.carrera
@@ -26,7 +26,7 @@ class BitacorasGeofencingTests(APITestCase):
         self.paralelo = Paralelo.objects.create(
             nombre='A',
             jornada='Matutina',
-            ciclo=self.ciclo
+            semestre=self.semestre
         )
 
         # Create Empresa with location (Quito center) and 100m radius
@@ -53,7 +53,7 @@ class BitacorasGeofencingTests(APITestCase):
             matricula='M001',
             cedula='3333333333',
             carrera=self.carrera,
-            ciclo=self.ciclo,
+                semestre=self.semestre,
             paralelo=self.paralelo,
             empresa=self.empresa,
             tutor_academico=self.tutor_acad,

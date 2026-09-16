@@ -7,7 +7,6 @@ import 'package:bitacoras_app/shared/exports.dart';
 import '../../../domain/repositories/i_admin_repository.dart';
 import '../../controllers/academico/carrera_periodo_controller.dart';
 
-
 class CarreraPeriodoScreen extends StatefulWidget {
   final UsuarioModel currentUser;
   final IAdminRepository adminRepository;
@@ -68,6 +67,8 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
           ),
           body: _controller.isLoading
               ? const Center(child: CircularProgressIndicator())
+              : _controller.errorMessage != null
+              ? Center(child: Text(_controller.errorMessage!))
               : CarreraPeriodoBody(
                   periods: _controller.periods,
                   careers: _controller.careers,

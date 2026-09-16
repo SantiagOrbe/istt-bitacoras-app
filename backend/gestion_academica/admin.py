@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import (
     Carrera,
     CarreraPeriodo,
-    Ciclo,
+    Semestre,
     Paralelo,
     Periodo,
     ResultadoAprendizaje,
@@ -12,6 +12,6 @@ from .models import (
 admin.site.register(Periodo)
 admin.site.register(Carrera)
 admin.site.register(CarreraPeriodo)
-admin.site.register(Ciclo)
+admin.site.register(Semestre)
 admin.site.register(Paralelo)
 admin.site.register(ResultadoAprendizaje)

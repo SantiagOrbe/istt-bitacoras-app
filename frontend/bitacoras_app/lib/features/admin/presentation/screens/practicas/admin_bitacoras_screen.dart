@@ -4,10 +4,7 @@ import 'package:provider/provider.dart';
 class AdminBitacorasScreen extends StatefulWidget {
   final UsuarioModel currentUser;
 
-  const AdminBitacorasScreen({
-    super.key,
-    required this.currentUser,
-  });
+  const AdminBitacorasScreen({super.key, required this.currentUser});
 
   @override
   State<AdminBitacorasScreen> createState() => _AdminBitacorasScreenState();
@@ -37,9 +34,13 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
   @override
   Widget build(BuildContext context) {
     final filteredLogs = _logs.where((log) {
-      return log.studentName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             log.companyName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             log.activityDescription.toLowerCase().contains(_searchQuery.toLowerCase());
+      return log.studentName.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ) ||
+          log.companyName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          log.activityDescription.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          );
     }).toList();
 
     return Scaffold(
@@ -65,7 +66,10 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
                 prefixIcon: const Icon(Icons.search, color: AppColors.primary),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 16,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(color: AppColors.divider),
@@ -80,16 +84,22 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
             const SizedBox(height: 16),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    )
                   : filteredLogs.isEmpty
-                      ? const Center(child: Text('No hay registros de bitácoras encontrados.'))
-                      : ListView.builder(
-                          itemCount: filteredLogs.length,
-                          itemBuilder: (context, index) {
-                            final log = filteredLogs[index];
-                            return _buildLogCard(log);
-                          },
-                        ),
+                  ? const Center(
+                      child: Text('No hay registros de bitácoras encontrados.'),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredLogs.length,
+                      itemBuilder: (context, index) {
+                        final log = filteredLogs[index];
+                        return _buildLogCard(log);
+                      },
+                    ),
             ),
           ],
         ),
@@ -133,7 +143,10 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(8),
@@ -153,16 +166,27 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
             const SizedBox(height: 4),
             Text(
               'Empresa: ${log.companyName}',
-              style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
             ),
             const Divider(height: 16),
             Row(
               children: [
-                const Icon(Icons.calendar_today_outlined, size: 14, color: AppColors.textSecondary),
+                const Icon(
+                  Icons.calendar_today_outlined,
+                  size: 14,
+                  color: AppColors.textSecondary,
+                ),
                 const SizedBox(width: 4),
                 Text(log.date, style: const TextStyle(fontSize: 12)),
                 const SizedBox(width: 16),
-                const Icon(Icons.access_time, size: 14, color: AppColors.textSecondary),
+                const Icon(
+                  Icons.access_time,
+                  size: 14,
+                  color: AppColors.textSecondary,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${log.entryTime} - ${log.exitTime ?? 'En curso'}',
@@ -173,7 +197,10 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
             const SizedBox(height: 8),
             Text(
               log.activityDescription,
-              style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textPrimary,
+              ),
             ),
           ],
         ),

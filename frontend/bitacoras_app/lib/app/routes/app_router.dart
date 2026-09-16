@@ -4,6 +4,7 @@ import 'package:bitacoras_app/features/coordinador/presentation/screens/coordina
 import 'package:bitacoras_app/features/coordinador/presentation/screens/coordinador_tutores_screen.dart';
 import 'package:bitacoras_app/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:bitacoras_app/features/auth/presentation/screens/register_screen.dart';
+import 'package:bitacoras_app/features/responsable_practicas/domain/models/empresa_model.dart' as rp;
 import 'package:provider/provider.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.login,
@@ -22,7 +23,9 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.studentHome,
-      builder: (context, state) => const InicioEstudianteScreen(),
+      builder: (context, state) => InicioEstudianteScreen(
+        currentUser: context.read<AuthSession>().currentUser,
+      ),
     ),
     GoRoute(
       path: AppRoutes.registerExitAttendance,
@@ -63,12 +66,17 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.perfil,
-      builder: (context, state) =>
-          const PerfilScreen(currentUser: FakeUsuarioRepository.student),
+      builder: (context, state) => PerfilScreen(
+        currentUser: context.read<AuthSession>().currentUser ??
+            FakeUsuarioRepository.student,
+      ),
     ),
     GoRoute(
       path: AppRoutes.adminHome,
-      builder: (context, state) => const InicioAdminScreen(),
+      builder: (context, state) => AdminDashboardScreen(
+        currentUser: context.read<AuthSession>().currentUser ??
+            FakeUsuarioRepository.admin,
+      ),
     ),
     GoRoute(
       path: AppRoutes.userManagement,
@@ -118,6 +126,23 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: AppRoutes.semesterManagement,
+      builder: (context, state) => GestionCicloScreen(
+        currentUser: FakeUsuarioRepository.admin,
+        adminRepository: context.read<IAdminRepository>(),
+        careerId: state.pathParameters['carreraId'],
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.nestedParallelManagement,
+      builder: (context, state) => GestionParaleloScreen(
+        currentUser: FakeUsuarioRepository.admin,
+        adminRepository: context.read<IAdminRepository>(),
+        careerId: state.pathParameters['carreraId'],
+        semesterId: state.pathParameters['semestreId'],
+      ),
+    ),
+    GoRoute(
       path: AppRoutes.careerPeriod,
       builder: (context, state) => CarreraPeriodoScreen(
         currentUser: FakeUsuarioRepository.admin,
@@ -141,6 +166,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.parallelManagement,
       builder: (context, state) => GestionParaleloScreen(
+        currentUser: FakeUsuarioRepository.admin,
+        adminRepository: context.read<IAdminRepository>(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.companyManagement,
+      builder: (context, state) => GestionEmpresaScreen(
         currentUser: FakeUsuarioRepository.admin,
         adminRepository: context.read<IAdminRepository>(),
       ),
@@ -237,7 +269,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         // Recibe un mapa o un extra si viene en modo edición
         final extraMap = state.extra as Map<String, dynamic>?;
-        final company = extraMap?['company'] as EmpresaModel?;
+        final company = extraMap?['company'] as rp.EmpresaModel?;
         final controller =
             extraMap?['controller'] as GestionEmpresaController? ??
             GestionEmpresaController(

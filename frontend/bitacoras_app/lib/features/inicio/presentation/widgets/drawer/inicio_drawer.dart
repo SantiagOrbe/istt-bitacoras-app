@@ -1,5 +1,6 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/item_menu_model.dart';
+import 'package:bitacoras_app/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:provider/provider.dart';
 
 class InicioDrawer extends StatelessWidget {
   final UsuarioModel user;
@@ -73,7 +74,7 @@ class InicioDrawer extends StatelessWidget {
             accountEmail: Text(
               user.email,
               style: TextStyle(
-                color: AppColors.surface.withOpacity(0.85),
+                color: AppColors.surface.withValues(alpha: 0.85),
                 fontSize: 13,
               ),
             ),
@@ -84,7 +85,7 @@ class InicioDrawer extends StatelessWidget {
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: sections.length,
-              separatorBuilder: (_, __) => const Divider(
+              separatorBuilder: (context, index) => const Divider(
                 color: AppColors.divider,
                 indent: 16,
                 endIndent: 16,
@@ -168,6 +169,8 @@ class InicioDrawer extends StatelessWidget {
             horizontalTitleGap: 0,
             onTap: () {
               Navigator.pop(context);
+              context.read<AuthSession>().clear();
+              context.read<IAuthRepository>().logout();
               context.go(AppRoutes.login);
             },
           ),

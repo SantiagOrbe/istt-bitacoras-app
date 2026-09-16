@@ -9,6 +9,25 @@ enum RolUsuarioModel {
 }
 
 extension RolUsuarioExtension on RolUsuarioModel {
+  String get apiValue {
+    switch (this) {
+      case RolUsuarioModel.student:
+        return 'estudiante';
+      case RolUsuarioModel.teacher:
+        return 'docente';
+      case RolUsuarioModel.academicTutor:
+        return 'tutor_academico';
+      case RolUsuarioModel.companyTutor:
+        return 'tutor_empresarial';
+      case RolUsuarioModel.coordinator:
+        return 'coordinador';
+      case RolUsuarioModel.practiceManager:
+        return 'responsable_practicas';
+      case RolUsuarioModel.admin:
+        return 'admin';
+    }
+  }
+
   String get label {
     switch (this) {
       case RolUsuarioModel.student:

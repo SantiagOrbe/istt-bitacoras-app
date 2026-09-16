@@ -1,13 +1,16 @@
 import 'package:bitacoras_app/core/widgets/location_checker_wrapper.dart';
 import 'package:bitacoras_app/features/inicio/data/repositories/fake_tablero_repository.dart';
 import 'package:bitacoras_app/features/inicio/data/repositories/fake_usuario_repository.dart';
+import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../inicio_screen.dart';
 
 class InicioEstudianteScreen extends StatelessWidget {
-  const InicioEstudianteScreen({super.key});
+  final UsuarioModel? currentUser;
+
+  const InicioEstudianteScreen({super.key, this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class InicioEstudianteScreen extends StatelessWidget {
           await SystemNavigator.pop();
         },
         child: InicioScreen(
-          user: FakeUsuarioRepository.student,
+          user: currentUser ?? FakeUsuarioRepository.student,
           actions: FakeTableroRepository().studentActions(),
         ),
       ),

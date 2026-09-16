@@ -64,7 +64,7 @@ class UsuarioDetailHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Chip(
-                label: Text(user.role.name.toUpperCase()),
+                label: Text(user.role.label),
                 backgroundColor: theme.colorScheme.primaryContainer,
                 labelStyle: TextStyle(
                   color: theme.colorScheme.onPrimaryContainer,

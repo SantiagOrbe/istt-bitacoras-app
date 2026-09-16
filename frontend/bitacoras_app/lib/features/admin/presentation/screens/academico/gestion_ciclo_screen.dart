@@ -9,16 +9,20 @@ import 'package:bitacoras_app/features/admin/presentation/widgets/academico/cicl
 class GestionCicloScreen extends StatefulWidget {
   final UsuarioModel currentUser;
   final IAdminRepository adminRepository;
+  final String? careerId;
 
   const GestionCicloScreen({
     super.key,
     required this.currentUser,
     required this.adminRepository,
+    this.careerId,
   });
 
   @override
   State<GestionCicloScreen> createState() => _GestionCicloScreenState();
 }
+
+typedef SemestresManagementScreen = GestionCicloScreen;
 
 class _GestionCicloScreenState extends State<GestionCicloScreen> {
   late final GestionCicloController _controller;
@@ -27,7 +31,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
   void initState() {
     super.initState();
     _controller = GestionCicloController(repository: widget.adminRepository);
-    _controller.loadCycles();
+    _controller.loadCycles(careerId: widget.careerId);
   }
 
   @override
@@ -41,7 +45,15 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => CicloFormSheet(cycle: cycle),
+      builder: (context) => CicloFormSheet(
+        cycle: cycle,
+        careers: widget.careerId == null
+            ? _controller.careers
+            : _controller.careers
+                  .where((career) => career.id == widget.careerId)
+                  .toList(),
+        fixedCareerId: widget.careerId,
+      ),
     );
 
     if (result == null || !mounted) {
@@ -50,6 +62,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
 
     final success = await _controller.saveCycle(
       cycleId: cycle?.id,
+      careerId: result.careerId,
       name: result.name,
       level: result.level,
       isActive: result.isActive,
@@ -107,7 +120,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
             backgroundColor: AppColors.primary,
             icon: const Icon(Icons.add_rounded, color: AppColors.surface),
             label: Text(
-              'Nuevo curso',
+              'Nuevo semestre',
               style: AppTextStyles.bodyBold.copyWith(color: AppColors.surface),
             ),
           ),
@@ -119,9 +132,15 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
                 children: [
                   AppSizes.gapV12,
                   Text(
-                    'Gestión de Cursos',
+                    'Semestres de la carrera',
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    'Carrera: ${_controller.careerName}',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   AppSizes.gapV12,
@@ -131,7 +150,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
                   ),
                   AppSizes.gapV12,
                   Text(
-                    '${_controller.filteredCycles.length} cursos registrados',
+                    '${_controller.filteredCycles.length} semestres registrados',
                     style: AppTextStyles.caption.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -141,23 +160,40 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
                     child: _controller.filteredCycles.isEmpty
                         ? AdminEmptyState(
                             title: _controller.searchQuery.isNotEmpty
-                                ? 'No se encontraron cursos'
-                                : 'Aún no hay cursos registrados',
+                                ? 'No se encontraron semestres'
+                                : 'Aún no hay semestres registrados',
                             subtitle: _controller.searchQuery.isNotEmpty
                                 ? 'Prueba con otro criterio de búsqueda.'
-                                : 'Crea el primer curso para comenzar.',
+                                : 'Crea el primer semestre para comenzar.',
                             icon: Icons.school_rounded,
                             accentColor: AppColors.primary,
                           )
                         : ListView.separated(
                             physics: const BouncingScrollPhysics(),
                             itemCount: _controller.filteredCycles.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: AppSizes.sm),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: AppSizes.sm),
                             itemBuilder: (context, index) {
                               final cycle = _controller.filteredCycles[index];
                               return CicloCard(
                                 cycle: cycle,
-                                onTap: () => _openCycleForm(cycle: cycle),
+                                onTap: () {
+                                  if (widget.careerId != null) {
+                                    context.push(
+                                      AppRoutes.nestedParallelManagement
+                                          .replaceFirst(
+                                            ':carreraId',
+                                            widget.careerId!,
+                                          )
+                                          .replaceFirst(
+                                            ':semestreId',
+                                            cycle.id,
+                                          ),
+                                    );
+                                  } else {
+                                    _openCycleForm(cycle: cycle);
+                                  }
+                                },
                                 onToggleStatus: () => _toggleStatus(cycle),
                               );
                             },

@@ -17,7 +17,9 @@ class CarreraSearchBar extends StatelessWidget {
       style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+        hintStyle: AppTextStyles.caption.copyWith(
+          color: AppColors.textSecondary,
+        ),
         prefixIcon: const Icon(
           Icons.search_rounded,
           color: AppColors.secondary,

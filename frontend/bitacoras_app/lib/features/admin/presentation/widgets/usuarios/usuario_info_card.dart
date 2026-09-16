@@ -1,13 +1,12 @@
 import 'package:bitacoras_app/features/admin/presentation/controllers/usuarios/usuario_detail_controller.dart';
+import 'package:bitacoras_app/features/admin/presentation/widgets/admin_form_components.dart';
+import 'package:bitacoras_app/features/inicio/domain/models/rol_usuario_model.dart';
 import 'package:flutter/material.dart';
 
 class UsuarioInfoCard extends StatelessWidget {
   final UsuarioDetailController controller;
 
-  const UsuarioInfoCard({
-    super.key,
-    required this.controller,
-  });
+  const UsuarioInfoCard({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -52,41 +51,139 @@ class UsuarioInfoCard extends StatelessWidget {
           if (controller.isEditing) ...[
             TextFormField(
               controller: controller.nameController,
+              validator: (value) =>
+                  AdminValidators.letters(value, label: 'El nombre completo'),
               decoration: const InputDecoration(
                 labelText: 'Nombre Completo',
                 prefixIcon: Icon(Icons.person_outline),
+                errorMaxLines: 2,
               ),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: controller.emailController,
+              validator: AdminValidators.email,
               decoration: const InputDecoration(
                 labelText: 'Correo Electrónico',
                 prefixIcon: Icon(Icons.email_outlined),
+                errorMaxLines: 2,
               ),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<RolUsuarioModel>(
+              initialValue: controller.selectedRole,
+              isExpanded: true,
+              decoration: const InputDecoration(
+                labelText: 'Rol',
+                prefixIcon: Icon(Icons.badge_outlined),
+              ),
+              items: RolUsuarioModel.values
+                  .map(
+                    (role) =>
+                        DropdownMenuItem(value: role, child: Text(role.label)),
+                  )
+                  .toList(),
+              onChanged: (role) {
+                if (role != null) controller.setRole(role);
+              },
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: controller.phoneController,
+              keyboardType: TextInputType.phone,
+              validator: (value) => AdminValidators.ecuadorianPhone(
+                value,
+                required: false,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Teléfono / Celular',
                 prefixIcon: Icon(Icons.phone_outlined),
+                errorMaxLines: 2,
               ),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: controller.cedulaController,
+              keyboardType: TextInputType.number,
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? null
+                  : AdminValidators.ecuadorianId(value),
               decoration: const InputDecoration(
                 labelText: 'Cédula de Identidad',
                 prefixIcon: Icon(Icons.badge_outlined),
+                errorMaxLines: 2,
               ),
             ),
             const SizedBox(height: 12),
+            if (controller.selectedRole == RolUsuarioModel.companyTutor) ...[
+              TextFormField(
+                controller: controller.cargoController,
+                validator: (value) =>
+                    AdminValidators.letters(value, label: 'El cargo'),
+                decoration: const InputDecoration(
+                  labelText: 'Cargo',
+                  prefixIcon: Icon(Icons.work_outline),
+                  errorMaxLines: 2,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (controller.selectedRole == RolUsuarioModel.student ||
+                controller.selectedRole == RolUsuarioModel.companyTutor) ...[
+              DropdownButtonFormField<String?>(
+                initialValue: controller.selectedCompanyId,
+                decoration: const InputDecoration(
+                  labelText: 'Empresa / Institución',
+                  prefixIcon: Icon(Icons.business_outlined),
+                ),
+                items: [
+                  const DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text('Sin empresa asignada'),
+                  ),
+                  ...controller.companies.map(
+                    (company) => DropdownMenuItem<String?>(
+                      value: company.id,
+                      child: Text(company.name),
+                    ),
+                  ),
+                ],
+                onChanged: controller.setCompany,
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (controller.selectedRole == RolUsuarioModel.student ||
+              controller.selectedRole == RolUsuarioModel.coordinator ||
+              controller.selectedRole == RolUsuarioModel.academicTutor) ...[
+              DropdownButtonFormField<String?>(
+                initialValue: controller.selectedCareerId,
+                decoration: const InputDecoration(
+                  labelText: 'Carrera',
+                  prefixIcon: Icon(Icons.school_outlined),
+                ),
+                items: [
+                  const DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text('Sin carrera asignada'),
+                  ),
+                  ...controller.careers.map(
+                    (career) => DropdownMenuItem<String?>(
+                      value: career.id,
+                      child: Text(career.name),
+                    ),
+                  ),
+                ],
+                onChanged: controller.setCareer,
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
-              controller: controller.companyController,
+              controller: controller.passwordController,
+              obscureText: true,
               decoration: const InputDecoration(
-                labelText: 'Empresa / Institución',
-                prefixIcon: Icon(Icons.business_outlined),
+                labelText: 'Nueva contraseña (opcional)',
+                prefixIcon: Icon(Icons.lock_outline),
+                helperText: 'Déjalo vacío para conservar la actual.',
               ),
             ),
           ] else ...[
@@ -100,26 +197,32 @@ class UsuarioInfoCard extends StatelessWidget {
               label: 'Cédula',
               value: controller.user.cedula ?? 'No registrada',
             ),
-            _InfoTile(
-              icon: Icons.business_outlined,
-              label: 'Empresa / Institución',
-              value: controller.user.company ?? 'Sin empresa asignada',
-            ),
-            _InfoTile(
-              icon: Icons.school_outlined,
-              label: 'Carrera',
-              value: controller.user.careerName ?? 'No asignada',
-            ),
-            _InfoTile(
-              icon: Icons.calendar_today_outlined,
-              label: 'Período',
-              value: controller.user.periodName ?? 'No asignado',
-            ),
+            if (_hasCompanyRole(controller.user.role))
+              _InfoTile(
+                icon: Icons.business_outlined,
+                label: 'Empresa / Institución',
+                value: controller.user.company ?? 'Sin empresa asignada',
+              ),
+            if (_hasCareerRole(controller.user.role))
+              _InfoTile(
+                icon: Icons.school_outlined,
+                label: 'Carrera',
+                value: controller.user.careerName ?? 'No asignada',
+              ),
           ],
         ],
       ),
     );
   }
+
+  bool _hasCompanyRole(RolUsuarioModel role) =>
+      role == RolUsuarioModel.student ||
+      role == RolUsuarioModel.companyTutor;
+
+  bool _hasCareerRole(RolUsuarioModel role) =>
+      role == RolUsuarioModel.student ||
+      role == RolUsuarioModel.coordinator ||
+      role == RolUsuarioModel.academicTutor;
 }
 
 class _InfoTile extends StatelessWidget {
@@ -146,10 +249,7 @@ class _InfoTile extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
               Text(
                 value,

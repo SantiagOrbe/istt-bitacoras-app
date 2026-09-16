@@ -73,7 +73,9 @@ class PeriodoCard extends StatelessWidget {
                       child: Text(
                         period.isActive ? 'Activo' : 'Inactivo',
                         style: AppTextStyles.caption.copyWith(
-                          color: period.isActive ? AppColors.success : AppColors.error,
+                          color: period.isActive
+                              ? AppColors.success
+                              : AppColors.error,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

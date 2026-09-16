@@ -3,14 +3,13 @@ import 'package:bitacoras_app/shared/exports.dart';
 class CarreraEmptyState extends StatelessWidget {
   final bool hasSearchQuery;
 
-  const CarreraEmptyState({
-    super.key,
-    required this.hasSearchQuery,
-  });
+  const CarreraEmptyState({super.key, required this.hasSearchQuery});
 
   @override
   Widget build(BuildContext context) {
-    final title = hasSearchQuery ? 'No se encontraron carreras' : 'Aún no hay carreras registradas';
+    final title = hasSearchQuery
+        ? 'No se encontraron carreras'
+        : 'Aún no hay carreras registradas';
     final subtitle = hasSearchQuery
         ? 'Intenta con otro criterio de búsqueda.'
         : 'Agrega la primera carrera para comenzar con la gestión.';
