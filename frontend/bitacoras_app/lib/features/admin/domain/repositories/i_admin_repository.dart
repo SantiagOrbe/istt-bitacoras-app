@@ -15,7 +15,8 @@ abstract class IAdminRepository {
   Future<List<EmpresaModel>> getCompanies();
   Future<bool> createCompany(EmpresaModel company);
   Future<bool> updateCompany(EmpresaModel company);
-  Future<bool> deactivateCompany(String companyId);
+  Future<bool> deactivateCompany(String companyId, {bool unlinkStudents = false});
+  Future<List<Map<String, String>>> getCompanyLinkedStudents(String companyId);
 
   // --- Gestión de Cursos / Ciclos ---
   Future<List<CicloModel>> getCycles({String? careerId});
@@ -36,12 +37,15 @@ abstract class IAdminRepository {
   // --- Gestión de Carreras ---
   Future<List<CarreraModel>> getCareers();
   Future<bool> createCareer(CarreraModel career);
-  Future<bool> updateCareer(CarreraModel career);
+  Future<bool> updateCareer(CarreraModel career, {bool confirmDesactivate = false});
 
   // --- Gestión de Periodos Lectivos ---
   Future<List<PeriodoModel>> getPeriods();
   Future<bool> createPeriod(PeriodoModel period);
-  Future<bool> updatePeriod(PeriodoModel period);
+  Future<bool> updatePeriod(
+    PeriodoModel period, {
+    bool confirmDesactivate = false,
+  });
 
   // --- Configuración Carrera / Periodo ---
   Future<List<ConfiguracionPeriodoCarreraModel>>

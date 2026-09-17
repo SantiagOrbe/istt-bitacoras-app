@@ -10,6 +10,7 @@ class GestionCicloController extends ChangeNotifier {
   final List<CarreraModel> _careers = [];
   String _searchQuery = '';
   String? _careerId;
+  String _statusFilter = 'all';
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;
@@ -37,13 +38,23 @@ class GestionCicloController extends ChangeNotifier {
       )
       .name;
 
+  String get statusFilter => _statusFilter;
+
   List<CicloModel> get filteredCycles {
+    var result = cycles;
+
+    if (_statusFilter == 'active') {
+      result = result.where((cycle) => cycle.isActive).toList();
+    } else if (_statusFilter == 'inactive') {
+      result = result.where((cycle) => !cycle.isActive).toList();
+    }
+
     if (_searchQuery.isEmpty) {
-      return cycles;
+      return result;
     }
 
     final query = _searchQuery.toLowerCase();
-    return cycles.where((cycle) {
+    return result.where((cycle) {
       return cycle.name.toLowerCase().contains(query) ||
           cycle.level.toString().contains(query);
     }).toList();
@@ -58,10 +69,11 @@ class GestionCicloController extends ChangeNotifier {
       final loadedCareers = await repository.getCareers();
       _careers
         ..clear()
-        ..addAll(loadedCareers.where((career) => career.isActive));
+        ..addAll(loadedCareers);
+      final loadedCycles = await repository.getCycles(careerId: _careerId);
       _cycles
         ..clear()
-        ..addAll(await repository.getCycles(careerId: _careerId));
+        ..addAll(loadedCycles);
     } catch (error) {
       _errorMessage = error is ApiException
           ? error.message
@@ -73,6 +85,11 @@ class GestionCicloController extends ChangeNotifier {
 
   void setSearchQuery(String value) {
     _searchQuery = value;
+    notifyListeners();
+  }
+
+  void setStatusFilter(String value) {
+    _statusFilter = value;
     notifyListeners();
   }
 

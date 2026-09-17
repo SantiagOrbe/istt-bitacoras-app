@@ -20,6 +20,8 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
+  // Android emulator: 10.0.2.2
+  // Physical device: replace with your machine LAN IP, e.g. http://192.168.1.39:8000/api/
   static const defaultBaseUrl = 'http://192.168.1.39:8000/api/';
 
   final String baseUrl;

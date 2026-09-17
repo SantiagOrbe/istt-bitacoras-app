@@ -39,9 +39,25 @@ class AdminRemoteDataSource {
     String id,
     Map<String, dynamic> data,
   ) => _map(apiClient.put('empresas/empresas/$id/', body: data));
-  Future<void> deactivateCompany(String id) => apiClient
-      .patch('empresas/empresas/$id/', body: {'estado': false})
+  Future<void> deactivateCompany(String id, {bool unlinkStudents = false}) => apiClient
+      .patch(
+        'empresas/empresas/$id/',
+        body: {'estado': false, 'unlink_students': unlinkStudents},
+      )
       .then((_) {});
+
+  Future<List<Map<String, String>>> getCompanyLinkedStudents(String id) async {
+    final response = await apiClient.get('empresas/empresas/$id/estudiantes-vinculados/');
+    if (response is! List) return const [];
+    return response
+        .whereType<Map<String, dynamic>>()
+        .map((item) => {
+              'id': item['id']?.toString() ?? '',
+              'nombre': item['nombre']?.toString() ?? '',
+              'email': item['email']?.toString() ?? '',
+            })
+        .toList();
+  }
 
   Future<List<Map<String, dynamic>>> getCycles({String? careerId}) => _list(
     'academica/semestres/',
@@ -90,8 +106,17 @@ class AdminRemoteDataSource {
       _map(apiClient.post('academica/carreras/', body: data));
   Future<Map<String, dynamic>> updateCareer(
     String id,
-    Map<String, dynamic> data,
-  ) => _map(apiClient.put('academica/carreras/$id/', body: data));
+    Map<String, dynamic> data, {
+    bool confirmDesactivate = false,
+  }) => _map(
+    apiClient.put(
+      'academica/carreras/$id/',
+      body: {
+        ...data,
+        if (confirmDesactivate) 'confirm_desactivate': true,
+      },
+    ),
+  );
 
   Future<List<Map<String, dynamic>>> getPeriods() =>
       _list('academica/periodos/');
@@ -99,8 +124,17 @@ class AdminRemoteDataSource {
       _map(apiClient.post('academica/periodos/', body: data));
   Future<Map<String, dynamic>> updatePeriod(
     String id,
-    Map<String, dynamic> data,
-  ) => _map(apiClient.put('academica/periodos/$id/', body: data));
+    Map<String, dynamic> data, {
+    bool confirmDesactivate = false,
+  }) => _map(
+    apiClient.put(
+      'academica/periodos/$id/',
+      body: {
+        ...data,
+        if (confirmDesactivate) 'confirm_desactivate': true,
+      },
+    ),
+  );
 
   Future<List<Map<String, dynamic>>> getCareerPeriodConfigurations() =>
       _list('academica/carreras-periodos/');

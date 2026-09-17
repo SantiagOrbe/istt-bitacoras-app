@@ -9,6 +9,7 @@ class GestionParaleloController extends ChangeNotifier {
   final List<CicloModel> _cycles = [];
   final List<ParaleloModel> _parallels = [];
   String _searchQuery = '';
+  String _statusFilter = 'all';
   String? _selectedCycleId;
   String? _careerId;
   String? _semesterId;
@@ -22,6 +23,7 @@ class GestionParaleloController extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get successMessage => _successMessage;
   String get searchQuery => _searchQuery;
+  String get statusFilter => _statusFilter;
   String? get selectedCycleId => _selectedCycleId;
 
   List<ParaleloModel> get filteredParallels {
@@ -31,6 +33,12 @@ class GestionParaleloController extends ChangeNotifier {
       result = result
           .where((parallel) => parallel.cycleId == _selectedCycleId)
           .toList();
+    }
+
+    if (_statusFilter == 'active') {
+      result = result.where((parallel) => parallel.isActive).toList();
+    } else if (_statusFilter == 'inactive') {
+      result = result.where((parallel) => !parallel.isActive).toList();
     }
 
     if (_searchQuery.isNotEmpty) {
@@ -79,6 +87,11 @@ class GestionParaleloController extends ChangeNotifier {
 
   void setSearchQuery(String value) {
     _searchQuery = value;
+    notifyListeners();
+  }
+
+  void setStatusFilter(String value) {
+    _statusFilter = value;
     notifyListeners();
   }
 

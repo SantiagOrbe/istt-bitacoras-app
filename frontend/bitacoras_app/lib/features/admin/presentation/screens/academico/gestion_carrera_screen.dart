@@ -1,10 +1,4 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
-import 'package:bitacoras_app/features/admin/presentation/controllers/academico/gestion_carrera_controller.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_card.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_empty_state.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_form_sheet.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_search_bar.dart';
 
 class GestionCarreraScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -127,7 +121,7 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
                                     extra: career,
                                   );
                                   if (updated != null) {
-                                    _controller.updateCareerLocally(updated);
+                                    await _controller.loadCareers();
                                   }
                                 },
                               );

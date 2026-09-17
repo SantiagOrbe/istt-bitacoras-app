@@ -69,9 +69,14 @@ class AdminRepositoryImpl implements IAdminRepository {
   }
 
   @override
-  Future<bool> deactivateCompany(String companyId) async {
-    await remoteDataSource.deactivateCompany(companyId);
+  Future<bool> deactivateCompany(String companyId, {bool unlinkStudents = false}) async {
+    await remoteDataSource.deactivateCompany(companyId, unlinkStudents: unlinkStudents);
     return true;
+  }
+
+  @override
+  Future<List<Map<String, String>>> getCompanyLinkedStudents(String companyId) async {
+    return await remoteDataSource.getCompanyLinkedStudents(companyId);
   }
 
   @override
@@ -143,8 +148,12 @@ class AdminRepositoryImpl implements IAdminRepository {
   }
 
   @override
-  Future<bool> updateCareer(CarreraModel career) async {
-    await remoteDataSource.updateCareer(career.id, career.toJson());
+  Future<bool> updateCareer(CarreraModel career, {bool confirmDesactivate = false}) async {
+    await remoteDataSource.updateCareer(
+      career.id,
+      career.toJson(),
+      confirmDesactivate: confirmDesactivate,
+    );
     return true;
   }
 
@@ -159,8 +168,15 @@ class AdminRepositoryImpl implements IAdminRepository {
   }
 
   @override
-  Future<bool> updatePeriod(PeriodoModel period) async {
-    await remoteDataSource.updatePeriod(period.id, period.toJson());
+  Future<bool> updatePeriod(
+    PeriodoModel period, {
+    bool confirmDesactivate = false,
+  }) async {
+    await remoteDataSource.updatePeriod(
+      period.id,
+      period.toJson(),
+      confirmDesactivate: confirmDesactivate,
+    );
     return true;
   }
 

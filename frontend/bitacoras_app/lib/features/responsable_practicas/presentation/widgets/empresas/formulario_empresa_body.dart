@@ -5,6 +5,7 @@ import '../../../domain/models/empresa_model.dart';
 import '../../controllers/gestion_empresa_controller.dart';
 import 'formulario_empresa_campos.dart';
 import 'formulario_empresa_header.dart';
+import 'mapa_empresa_selector.dart';
 
 class FormularioEmpresaBody extends StatefulWidget {
   final EmpresaModel? company;
@@ -20,11 +21,18 @@ class _FormularioEmpresaBodyState extends State<FormularioEmpresaBody> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {};
   bool _isSaving = false;
+  late double _latitude;
+  late double _longitude;
+  late double _radius;
 
   @override
   void initState() {
     super.initState();
     final c = widget.company;
+    _latitude = c?.latitude ?? -0.1807;
+    _longitude = c?.longitude ?? -78.4834;
+    _radius = c?.allowedRadius ?? 50;
+
     _controllers['name'] = TextEditingController(text: c?.name ?? '');
     _controllers['ruc'] = TextEditingController(text: c?.ruc ?? '');
     _controllers['address'] = TextEditingController(text: c?.address ?? '');
@@ -55,6 +63,9 @@ class _FormularioEmpresaBodyState extends State<FormularioEmpresaBody> {
       email: _controllers['email']!.text.trim(),
       legalRepresentative: _controllers['rep']!.text.trim(),
       agreementNumber: _controllers['agreement']!.text.trim(),
+      latitude: _latitude,
+      longitude: _longitude,
+      allowedRadius: _radius,
       isActive: widget.company?.isActive ?? true,
     );
 
@@ -76,6 +87,21 @@ class _FormularioEmpresaBodyState extends State<FormularioEmpresaBody> {
           FormularioEmpresaHeader(isEditing: isEditing),
           const SizedBox(height: 16),
           FormularioEmpresaCampos(controllers: _controllers),
+          const SizedBox(height: 16),
+          MapaEmpresaSelector(
+            initialLatitude: _latitude,
+            initialLongitude: _longitude,
+            initialRadius: _radius,
+            onLocationChanged: (lat, lng) {
+              setState(() {
+                _latitude = lat;
+                _longitude = lng;
+              });
+            },
+            onRadiusChanged: (radius) {
+              setState(() => _radius = radius);
+            },
+          ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: _isSaving ? null : _submit,

@@ -46,10 +46,33 @@ class UsuarioDetailController extends ChangeNotifier {
     passwordController.clear();
   }
 
+  void _normalizeSelectionValues() {
+    final activeCompanyIds = companies.map((company) => company.id).toSet();
+    if (selectedCompanyId != null && !activeCompanyIds.contains(selectedCompanyId)) {
+      selectedCompanyId = null;
+    }
+
+    final activeCareerIds = careers.map((career) => career.id).toSet();
+    if (selectedCareerId != null && !activeCareerIds.contains(selectedCareerId)) {
+      selectedCareerId = null;
+    }
+  }
+
   Future<void> _loadOptions() async {
     try {
-      companies = await repository.getCompanies();
-      careers = await repository.getCareers();
+      final allCompanies = await repository.getCompanies();
+      final seenCompanyIds = <String>{};
+      companies = allCompanies
+          .where((company) => company.isActive && seenCompanyIds.add(company.id))
+          .toList();
+
+      final allCareers = await repository.getCareers();
+      final seenCareerIds = <String>{};
+      careers = allCareers
+          .where((career) => career.isActive && seenCareerIds.add(career.id))
+          .toList();
+
+      _normalizeSelectionValues();
       notifyListeners();
     } catch (_) {
       // Los campos de texto siguen disponibles aunque falle la carga.

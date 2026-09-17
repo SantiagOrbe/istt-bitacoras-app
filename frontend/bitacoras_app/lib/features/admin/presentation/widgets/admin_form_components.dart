@@ -100,6 +100,17 @@ class AdminValidators {
         : '$label solo puede contener letras, tildes y espacios.';
   }
 
+  static String? addressText(
+    String? value, {
+    String label = 'La dirección',
+  }) {
+    final required = requiredText(value, label: label);
+    if (required != null) return required;
+    return RegExp(r'^[\p{L}\d ]+$', unicode: true).hasMatch(value!.trim())
+        ? null
+        : '$label solo puede contener letras, números y espacios, sin símbolos especiales.';
+  }
+
   static String? careerCode(String? value, {String label = 'El código'}) {
     final required = requiredText(value, label: label);
     if (required != null) return required;

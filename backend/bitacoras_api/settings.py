@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-fxj2+@lg76j#qy#aegd@i1_er^c_(pp^2muewa3umhp(9vkbbi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.39']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '10.0.2.2', '192.168.1.39']
 
 # Temporal para desarrollo: permite la comunicación con el frontend Flutter.
 CORS_ALLOW_ALL_ORIGINS = True

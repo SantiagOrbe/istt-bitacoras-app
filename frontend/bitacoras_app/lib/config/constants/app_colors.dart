@@ -31,6 +31,7 @@ class AppColors {
   static const overlay = Color(0x80000000);        // Transparencia para fondos de diálogos y modales
   static const shadow = Color(0x0A000000);         // Sombras suaves de cards e inputs
   static const disabled = Color(0xFFCBD5E1);       // Botones u opciones inactivas
+  static const disabledSurface = Color(0xFFF1F5F9); // Superficie para elementos deshabilitados
   static const textDisabled = Color(0xFF94A3B8);   // Texto sobre elementos deshabilitados
 
   // Fondos para Badges y Estados (Tonos Soft)

@@ -19,12 +19,23 @@ class GestionPeriodoController extends ChangeNotifier {
   String get searchQuery => _searchQuery;
 
   List<PeriodoModel> get filteredPeriods {
+    final list = List<PeriodoModel>.from(periods)
+      ..sort((a, b) {
+        final activeCompare = b.isActive ? 1 : 0 - (a.isActive ? 1 : 0);
+        if (activeCompare != 0) return activeCompare;
+
+        final dateCompare = b.startDate.compareTo(a.startDate);
+        if (dateCompare != 0) return dateCompare;
+
+        return b.id.compareTo(a.id);
+      });
+
     if (_searchQuery.isEmpty) {
-      return periods;
+      return list;
     }
 
     final query = _searchQuery.toLowerCase();
-    return periods.where((period) {
+    return list.where((period) {
       return period.name.toLowerCase().contains(query);
     }).toList();
   }
@@ -59,6 +70,7 @@ class GestionPeriodoController extends ChangeNotifier {
     required DateTime startDate,
     required DateTime endDate,
     required bool isActive,
+    bool confirmDesactivate = false,
   }) async {
     _setLoading(true);
     _clearMessages();
@@ -85,21 +97,29 @@ class GestionPeriodoController extends ChangeNotifier {
         return false;
       }
 
-      final overlappingPeriod = _periods.any((period) {
-        if (periodId != null && period.id == periodId) {
-          return false;
-        }
+      final overlappingPeriod = _periods.firstWhere(
+        (period) {
+          if (periodId != null && period.id == periodId) {
+            return false;
+          }
 
-        return _datesOverlap(
-          startDate,
-          endDate,
-          period.startDate,
-          period.endDate,
-        );
-      });
+          return _datesOverlap(
+            startDate,
+            endDate,
+            period.startDate,
+            period.endDate,
+          );
+        },
+        orElse: () => PeriodoModel(
+          id: '',
+          name: '',
+          startDate: DateTime.now(),
+          endDate: DateTime.now(),
+        ),
+      );
 
-      if (overlappingPeriod) {
-        _errorMessage = 'El período se traslapa con uno ya existente.';
+      if (overlappingPeriod.id.isNotEmpty) {
+        _errorMessage = 'El período se traslapa con ${overlappingPeriod.name}';
         return false;
       }
 
@@ -119,7 +139,10 @@ class GestionPeriodoController extends ChangeNotifier {
           return false;
         }
       } else {
-        final updated = await repository.updatePeriod(period);
+        final updated = await repository.updatePeriod(
+          period,
+          confirmDesactivate: confirmDesactivate,
+        );
         if (!updated) {
           _errorMessage = 'No se pudo actualizar el período lectivo.';
           return false;
@@ -155,6 +178,7 @@ class GestionPeriodoController extends ChangeNotifier {
       startDate: period.startDate,
       endDate: period.endDate,
       isActive: false,
+      confirmDesactivate: true,
     );
   }
 

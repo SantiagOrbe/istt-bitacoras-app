@@ -12,6 +12,9 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       email: 'contacto@tena.gob.ec',
       legalRepresentative: 'Ing. Carlos Mendoza',
       agreementNumber: 'CONV-2025-001',
+      latitude: -0.9848,
+      longitude: -77.8125,
+      allowedRadius: 150,
       isActive: true,
     ),
     const rp_models.EmpresaModel(
@@ -23,6 +26,9 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       email: 'educacion.tena@educacion.gob.ec',
       legalRepresentative: 'Leda. María Ramos',
       agreementNumber: 'CONV-2025-008',
+      latitude: -0.9813,
+      longitude: -77.8180,
+      allowedRadius: 200,
       isActive: true,
     ),
     const rp_models.EmpresaModel(
@@ -34,6 +40,9 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
       email: 'servicios@eerssa.com.ec',
       legalRepresentative: 'Ing. Roberto Silva',
       agreementNumber: 'CONV-2026-003',
+      latitude: -0.9746,
+      longitude: -77.8046,
+      allowedRadius: 120,
       isActive: true,
     ),
   ];

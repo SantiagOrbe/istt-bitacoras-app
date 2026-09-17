@@ -203,16 +203,6 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                   ),
                 ),
                 const AdminFormSectionLabel('Configuración académica'),
-                SwitchListTile.adaptive(
-                  value: _isActive,
-                  onChanged: (value) {
-                    setState(() {
-                      _isActive = value;
-                    });
-                  },
-                  title: const Text('Carrera activa'),
-                  contentPadding: EdgeInsets.zero,
-                ),
                 AppSizes.gapV16,
                 TextFormField(
                   controller: _semestersController,

@@ -4,6 +4,8 @@ class EmpresaModel {
   final String address;
   final String phone;
   final String email;
+  final double latitude;
+  final double longitude;
   final double allowedRadius;
   final bool isActive;
 
@@ -13,7 +15,9 @@ class EmpresaModel {
     required this.address,
     required this.phone,
     required this.email,
-    required this.allowedRadius,
+    this.latitude = -0.1807,
+    this.longitude = -78.4834,
+    this.allowedRadius = 50,
     this.isActive = true,
   });
 
@@ -24,7 +28,9 @@ class EmpresaModel {
       address: json['direccion'] as String? ?? '',
       phone: json['telefono'] as String? ?? '',
       email: json['correo'] as String? ?? '',
-      allowedRadius: (json['radio_permitido'] as num?)?.toDouble() ?? 0,
+      latitude: (json['latitud'] as num?)?.toDouble() ?? -0.1807,
+      longitude: (json['longitud'] as num?)?.toDouble() ?? -78.4834,
+      allowedRadius: (json['radio_permitido'] as num?)?.toDouble() ?? 50,
       isActive: json['estado'] as bool? ?? true,
     );
   }
@@ -34,6 +40,8 @@ class EmpresaModel {
     'direccion': address,
     'telefono': phone,
     'correo': email,
+    'latitud': latitude,
+    'longitud': longitude,
     'radio_permitido': allowedRadius,
     'estado': isActive,
   };
@@ -44,6 +52,8 @@ class EmpresaModel {
     String? address,
     String? phone,
     String? email,
+    double? latitude,
+    double? longitude,
     double? allowedRadius,
     bool? isActive,
   }) {
@@ -53,6 +63,8 @@ class EmpresaModel {
       address: address ?? this.address,
       phone: phone ?? this.phone,
       email: email ?? this.email,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       allowedRadius: allowedRadius ?? this.allowedRadius,
       isActive: isActive ?? this.isActive,
     );

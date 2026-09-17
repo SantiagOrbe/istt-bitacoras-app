@@ -19,9 +19,9 @@ class PeriodoSerializer(serializers.ModelSerializer):
 
     def validate_nombre(self, value):
         value = value.strip()
-        if not re.fullmatch(r'[A-Za-z0-9 ]+', value):
+        if not re.fullmatch(r'[A-Za-z0-9\- ]+', value):
             raise serializers.ValidationError(
-                'El nombre del periodo solo puede contener letras, números y espacios.'
+                'El nombre del periodo solo puede contener letras, números, espacios y guiones.'
             )
         queryset = Periodo.objects.filter(nombre__iexact=value)
         if self.instance:
@@ -46,7 +46,12 @@ class CarreraSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_nombre(self, value):
-        return self._plain_text(value, 'El nombre de la carrera')
+        value = value.strip()
+        if not re.fullmatch(r'[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9.&/°#\'\- ]+', value):
+            raise serializers.ValidationError(
+                'El nombre de la carrera solo puede contener letras, números y símbolos básicos.'
+            )
+        return self._check_duplicate('nombre', value, 'El nombre de la carrera')
 
     def validate_codigo_carrera(self, value):
         return self._code(value, 'El código de la carrera')
@@ -56,9 +61,9 @@ class CarreraSerializer(serializers.ModelSerializer):
 
     def validate_descripcion(self, value):
         value = value.strip()
-        if not re.fullmatch(r'[^\W\d_]+(?: [^\W\d_]+)*', value, re.UNICODE):
+        if not re.fullmatch(r'[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9,.;:/&()#°\'\- ]+', value):
             raise serializers.ValidationError(
-                'La descripción solo puede contener letras, tildes y espacios.'
+                'La descripción solo puede contener letras, números y símbolos básicos.'
             )
         return value
 
@@ -66,9 +71,9 @@ class CarreraSerializer(serializers.ModelSerializer):
         value = value.strip()
         if not value:
             raise serializers.ValidationError('La modalidad es obligatoria.')
-        if not re.fullmatch(r'[A-Za-z ]+', value):
+        if not re.fullmatch(r'[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9/&()\- ]+', value):
             raise serializers.ValidationError(
-                'La modalidad solo puede contener letras sin tildes.'
+                'La modalidad solo puede contener letras, números y símbolos básicos comunes.'
             )
         return value
 
@@ -124,6 +129,18 @@ class CarreraPeriodoSerializer(serializers.ModelSerializer):
             'paralelo', getattr(self.instance, 'paralelo', None)
         )
 
+        if carrera and not carrera.estado:
+            raise serializers.ValidationError({
+                'carrera': 'La carrera seleccionada está inactiva.'
+            })
+        if semestre and not semestre.estado:
+            raise serializers.ValidationError({
+                'semestre': 'El semestre seleccionado está inactivo.'
+            })
+        if paralelo and not paralelo.estado:
+            raise serializers.ValidationError({
+                'paralelo': 'El paralelo seleccionado está inactivo.'
+            })
         if semestre and carrera and semestre.carrera_id != carrera.id:
             raise serializers.ValidationError({
                 'semestre': 'El semestre no pertenece a la carrera seleccionada.'
@@ -136,9 +153,19 @@ class CarreraPeriodoSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['active_semesters'] = (
-            [instance.semestre.nivel] if instance.semestre_id else []
+        active_semesters = list(
+            CarreraPeriodo.objects.filter(
+                carrera_id=instance.carrera_id,
+                periodo_id=instance.periodo_id,
+                estado=True,
+                semestre__estado=True,
+            )
+            .exclude(semestre__isnull=True)
+            .order_by('semestre__nivel')
+            .values_list('semestre__nivel', flat=True)
+            .distinct()
         )
+        data['active_semesters'] = active_semesters
         return data
 
     @transaction.atomic
@@ -193,6 +220,10 @@ class SemestreSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         carrera = attrs.get('carrera', getattr(self.instance, 'carrera', None))
         nivel = attrs.get('nivel', getattr(self.instance, 'nivel', None))
+        if carrera and not carrera.estado:
+            raise serializers.ValidationError({
+                'carrera': 'La carrera seleccionada está inactiva.'
+            })
         if carrera and nivel > carrera.total_semestres:
             raise serializers.ValidationError({
                 'nivel': (
@@ -233,6 +264,14 @@ class ParaleloSerializer(serializers.ModelSerializer):
         semestre = attrs.get('semestre', getattr(self.instance, 'semestre', None))
         nombre = attrs.get('nombre', getattr(self.instance, 'nombre', ''))
         jornada = attrs.get('jornada', getattr(self.instance, 'jornada', ''))
+        if semestre and not semestre.estado:
+            raise serializers.ValidationError({
+                'semestre': 'El semestre seleccionado está inactivo.'
+            })
+        if semestre and not semestre.carrera.estado:
+            raise serializers.ValidationError({
+                'semestre': 'La carrera asociada al semestre está inactiva.'
+            })
         queryset = Paralelo.objects.filter(
             semestre=semestre, nombre__iexact=nombre, jornada__iexact=jornada
         )

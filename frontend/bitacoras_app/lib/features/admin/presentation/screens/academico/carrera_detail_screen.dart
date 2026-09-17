@@ -1,9 +1,6 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
-import 'package:bitacoras_app/features/admin/domain/repositories/i_admin_repository.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_form_sheet.dart';
 
-class CarreraDetailScreen extends StatelessWidget {
+class CarreraDetailScreen extends StatefulWidget {
   final UsuarioModel currentUser;
   final CarreraModel career;
   final IAdminRepository adminRepository;
@@ -16,11 +13,80 @@ class CarreraDetailScreen extends StatelessWidget {
   });
 
   @override
+  State<CarreraDetailScreen> createState() => _CarreraDetailScreenState();
+}
+
+class _CarreraDetailScreenState extends State<CarreraDetailScreen> {
+  late CarreraModel _career;
+
+  @override
+  void initState() {
+    super.initState();
+    _career = widget.career;
+  }
+
+  Future<void> _toggleStatus() async {
+    final willActivate = !_career.isActive;
+
+    if (!willActivate) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Desactivar carrera'),
+          content: const Text(
+            'Si desactivas esta carrera, dejará de estar disponible para nuevos registros y no podrá seleccionarse en formularios activos. Esto incluye semestres y estudiantes asociados.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.error,
+              ),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+    }
+
+    final updated = _career.copyWith(isActive: willActivate);
+    try {
+      await widget.adminRepository.updateCareer(
+        updated,
+        confirmDesactivate: !willActivate,
+      );
+      if (!mounted) return;
+      setState(() => _career = updated);
+      if (mounted) {
+        Navigator.pop(context, updated);
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            willActivate ? 'Carrera activada.' : 'Carrera desactivada.',
+          ),
+          backgroundColor: willActivate ? AppColors.success : AppColors.error,
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString())),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: InicioAppBar(
-        user: currentUser,
+        user: widget.currentUser,
         showBackButton: true,
         onBackPressed: () => context.pop(),
       ),
@@ -57,14 +123,19 @@ class CarreraDetailScreen extends StatelessWidget {
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
                           builder: (_) => CarreraFormSheet(
-                            career: career,
-                            existingCareers: [career],
+                            career: _career,
+                            existingCareers: [_career],
                           ),
                         );
                         if (updated == null || !context.mounted) return;
+
                         try {
-                          await adminRepository.updateCareer(updated);
+                          await widget.adminRepository.updateCareer(
+                            updated,
+                            confirmDesactivate: !updated.isActive && _career.isActive,
+                          );
                           if (context.mounted) {
+                            setState(() => _career = updated);
                             context.pop(updated);
                           }
                         } catch (error) {
@@ -79,20 +150,20 @@ class CarreraDetailScreen extends StatelessWidget {
                 ),
                 AppSizes.gapV12,
                 Text(
-                  career.name,
+                  _career.name,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.textPrimary,
                   ),
                 ),
                 AppSizes.gapV8,
                 Text(
-                  'ID: ${career.id}',
+                  'ID: ${_career.id}',
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
                 AppSizes.gapV16,
-                _InfoRow(label: 'Código', value: career.code),
+                _InfoRow(label: 'Código', value: _career.code),
                 AppSizes.gapV16,
                 SizedBox(
                   width: double.infinity,
@@ -100,7 +171,7 @@ class CarreraDetailScreen extends StatelessWidget {
                     onPressed: () => context.push(
                       AppRoutes.semesterManagement.replaceFirst(
                         ':carreraId',
-                        career.id,
+                        _career.id,
                       ),
                     ),
                     icon: const Icon(Icons.layers_outlined),
@@ -108,24 +179,41 @@ class CarreraDetailScreen extends StatelessWidget {
                   ),
                 ),
                 AppSizes.gapV8,
-                _InfoRow(label: 'Sigla', value: career.shortName),
+                _InfoRow(label: 'Sigla', value: _career.shortName),
                 AppSizes.gapV8,
-                _InfoRow(label: 'Modalidad', value: career.modality),
+                _InfoRow(label: 'Modalidad', value: _career.modality),
                 AppSizes.gapV8,
                 _InfoRow(
                   label: 'Semestres totales',
-                  value: career.totalSemesters.toString(),
+                  value: _career.totalSemesters.toString(),
                 ),
                 AppSizes.gapV8,
                 _InfoRow(
                   label: 'Estado',
-                  value: career.isActive ? 'Activa' : 'Inactiva',
+                  value: _career.isActive ? 'Activa' : 'Inactiva',
                 ),
                 AppSizes.gapV8,
                 Text(
-                  career.description,
+                  _career.description,
                   style: AppTextStyles.body.copyWith(
                     color: AppColors.textSecondary,
+                  ),
+                ),
+                AppSizes.gapV16,
+                FilledButton.icon(
+                  onPressed: _toggleStatus,
+                  icon: Icon(
+                    _career.isActive
+                        ? Icons.block_flipped
+                        : Icons.check_circle_outline,
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: _career.isActive
+                        ? AppColors.error
+                        : AppColors.success,
+                  ),
+                  label: Text(
+                    _career.isActive ? 'Desactivar carrera' : 'Activar carrera',
                   ),
                 ),
               ],

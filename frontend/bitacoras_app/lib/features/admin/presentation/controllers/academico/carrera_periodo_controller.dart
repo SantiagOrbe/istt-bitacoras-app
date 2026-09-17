@@ -33,8 +33,11 @@ class CarreraPeriodoController extends ChangeNotifier {
         };
       }
 
-      if (periods.isNotEmpty) {
-        selectedPeriodId = periods.first.id;
+      final activePeriods = periods.where((period) => period.isActive).toList();
+      if (activePeriods.isNotEmpty) {
+        selectedPeriodId = activePeriods.first.id;
+      } else {
+        selectedPeriodId = '';
       }
     } catch (_) {
       errorMessage = 'No se pudieron cargar las carreras y periodos.';
@@ -45,7 +48,20 @@ class CarreraPeriodoController extends ChangeNotifier {
   }
 
   void selectPeriod(String? periodId) {
-    if (periodId != null && periodId != selectedPeriodId) {
+    if (periodId == null) return;
+
+    final selectedPeriod = periods.firstWhere(
+      (period) => period.id == periodId,
+      orElse: () => PeriodoModel(
+        id: '',
+        name: '',
+        startDate: DateTime.now(),
+        endDate: DateTime.now(),
+      ),
+    );
+
+    if (!selectedPeriod.isActive) return;
+    if (periodId != selectedPeriodId) {
       selectedPeriodId = periodId;
       notifyListeners();
     }
@@ -54,6 +70,23 @@ class CarreraPeriodoController extends ChangeNotifier {
   String getConfigKey(String careerId) => '${careerId}_$selectedPeriodId';
 
   void toggleSemester(String careerId, int semester) {
+    final career = careers.firstWhere(
+      (item) => item.id == careerId,
+      orElse: () => const CarreraModel(
+        id: '',
+        name: '',
+        code: '',
+        shortName: '',
+        description: '',
+        modality: '',
+        isActive: false,
+        totalSemesters: 0,
+      ),
+    );
+    if (!career.isActive) {
+      return;
+    }
+
     final key = getConfigKey(careerId);
     final activeSemesters = Set<int>.from(configs[key] ?? {});
 
@@ -69,6 +102,8 @@ class CarreraPeriodoController extends ChangeNotifier {
 
   Future<bool> saveConfiguration() async {
     for (final career in careers) {
+      if (!career.isActive) continue;
+
       final key = getConfigKey(career.id);
       final activeSemesters = configs[key]?.toList() ?? [];
 

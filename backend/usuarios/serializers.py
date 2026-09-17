@@ -143,20 +143,28 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
     cargo = serializers.CharField(write_only=True, required=False, allow_blank=True)
     carrera_id = serializers.PrimaryKeyRelatedField(
         source='carrera',
-        queryset=Carrera.objects.all(), write_only=True, required=False,
+        queryset=Carrera.objects.filter(estado=True),
+        write_only=True,
+        required=False,
         allow_null=True,
     )
     semestre = serializers.PrimaryKeyRelatedField(
-        queryset=Semestre.objects.all(), write_only=True, required=False,
+        queryset=Semestre.objects.filter(estado=True),
+        write_only=True,
+        required=False,
         allow_null=True,
     )
     paralelo = serializers.PrimaryKeyRelatedField(
-        queryset=Paralelo.objects.all(), write_only=True, required=False,
+        queryset=Paralelo.objects.filter(estado=True),
+        write_only=True,
+        required=False,
         allow_null=True,
     )
     empresa_id = serializers.PrimaryKeyRelatedField(
         source='empresa',
-        queryset=Empresa.objects.all(), write_only=True, required=False,
+        queryset=Empresa.objects.filter(estado=True),
+        write_only=True,
+        required=False,
         allow_null=True,
     )
 
@@ -283,6 +291,21 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         role = attrs.get('rol', self.instance.rol if self.instance else None)
+
+        for field_name, field_label in (
+            ('empresa', 'La empresa'),
+            ('carrera', 'La carrera'),
+            ('semestre', 'El semestre'),
+            ('paralelo', 'El paralelo'),
+        ):
+            value = attrs.get(field_name)
+            if value is not None and hasattr(value, 'estado') and not value.estado:
+                raise serializers.ValidationError({
+                    field_name: [
+                        f'{field_label} está inactiva y no puede seleccionarse.'
+                    ]
+                })
+
         if role == 'tutor_empresarial' and not attrs.get('empresa'):
             existing_profile = (
                 TutorEmpresarial.objects.filter(usuario=self.instance).first()

@@ -16,11 +16,11 @@ class PeriodoSelectorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Validación de seguridad para el valor seleccionado en el Dropdown
-    final bool valueExists = periods.any((p) => p.id == selectedPeriodId);
+    final activePeriods = periods.where((p) => p.isActive).toList();
+    final bool valueExists = activePeriods.any((p) => p.id == selectedPeriodId);
     final String? effectiveValue = valueExists
         ? selectedPeriodId
-        : (periods.isNotEmpty ? periods.first.id : null);
+        : (activePeriods.isNotEmpty ? activePeriods.first.id : null);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -65,17 +65,25 @@ class PeriodoSelectorCard extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                     style: AppTextStyles.bodyMedium,
-                    items: periods.map((p) {
-                      return DropdownMenuItem<String>(
-                        value: p.id,
-                        child: Text(
-                          p.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodyBold.copyWith(fontSize: 14),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: onChanged,
+                    items: activePeriods.isEmpty
+                        ? [
+                            const DropdownMenuItem<String>(
+                              value: null,
+                              enabled: false,
+                              child: Text('No hay periodos activos'),
+                            ),
+                          ]
+                        : activePeriods.map((p) {
+                            return DropdownMenuItem<String>(
+                              value: p.id,
+                              child: Text(
+                                p.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyBold.copyWith(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                    onChanged: activePeriods.isEmpty ? null : onChanged,
                   ),
                 ),
               ),

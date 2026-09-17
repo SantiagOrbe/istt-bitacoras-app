@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from unittest.mock import patch
 
+from empresas.models import Empresa
 from .models import Estudiante
 from .models import ResponsablePracticas
 from .models import TutorAcademico
@@ -258,6 +259,47 @@ class AutenticacionTests(APITestCase):
 		perfil = ResponsablePracticas.objects.get(usuario=usuario)
 		self.assertEqual(perfil.cedula, '1500000003')
 		self.assertEqual(response.data['cedula'], '1500000003')
+
+	def test_admin_rechaza_empresa_y_carrera_inactivas_al_crear_estudiante(self):
+		self.client.force_authenticate(user=self.admin)
+		carrera = Carrera.objects.create(
+			nombre='Carrera inactiva',
+			descripcion='Carrera de prueba',
+			codigo_carrera='CI',
+			sigla_carrera='CI',
+			modalidad='Presencial',
+			estado=False,
+		)
+		empresa = Empresa.objects.create(
+			nombre='Empresa inactiva',
+			direccion='Dirección prueba',
+			telefono='0999999999',
+			correo='empresa.inactiva@empresa.com',
+			latitud=-0.1807,
+			longitud=-78.4834,
+			radio_permitido=50,
+			estado=False,
+		)
+
+		response = self.client.post(
+			reverse('usuario-list'),
+			{
+				'email': 'estudiante.inactivo@est.itstena.edu.ec',
+				'first_name': 'Estudiante',
+				'last_name': 'Inactivo',
+				'telefono': '0991234567',
+				'rol': 'estudiante',
+				'cedula': '1700000001',
+				'carrera_id': carrera.pk,
+				'empresa_id': empresa.pk,
+				'password': 'ClaveSegura123',
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('carrera_id', response.data)
+		self.assertIn('empresa_id', response.data)
 
 	def test_listado_filtra_por_estado_rol_y_busqueda(self):
 		self.client.force_authenticate(user=self.admin)

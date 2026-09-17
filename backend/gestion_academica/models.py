@@ -8,6 +8,7 @@ class Periodo(models.Model):
     estado = models.BooleanField(default=True)
 
     class Meta:
+        ordering = ['-estado', '-fecha_inicio', '-id']
         constraints = [
             models.UniqueConstraint(
                 fields=['nombre'], name='unique_periodo_nombre'

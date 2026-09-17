@@ -1,9 +1,4 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/presentation/controllers/academico/gestion_periodo_controller.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_search_bar.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/periodo_card.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/periodo_empty_state.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/periodo_form_sheet.dart';
 
 class GestionPeriodoScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -72,6 +67,31 @@ class _GestionPeriodoScreenState extends State<GestionPeriodoScreen> {
   }
 
   Future<void> _toggleStatus(PeriodoModel period) async {
+    if (period.isActive) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Desactivar período'),
+          content: const Text(
+            'Si desactivas este período, también quedarán bloqueadas las configuraciones de carreras y semestres asociadas a este periodo.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+    }
+
     final success = period.isActive
         ? await _controller.deactivatePeriod(period)
         : await _controller.activatePeriod(period);
@@ -124,6 +144,13 @@ class _GestionPeriodoScreenState extends State<GestionPeriodoScreen> {
                     'Gestión de Períodos Lectivos',
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.textPrimary,
+                    ),
+                  ),
+                  AppSizes.gapV4,
+                  Text(
+                    'Administra los ciclos académicos y define qué periodos están activos para prácticas.',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   AppSizes.gapV12,

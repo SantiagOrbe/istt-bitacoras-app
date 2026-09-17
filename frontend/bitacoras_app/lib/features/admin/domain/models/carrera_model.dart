@@ -48,4 +48,26 @@ class CarreraModel {
       'estado': isActive,
     };
   }
+
+  CarreraModel copyWith({
+    String? id,
+    String? name,
+    String? code,
+    String? shortName,
+    String? description,
+    String? modality,
+    bool? isActive,
+    int? totalSemesters,
+  }) {
+    return CarreraModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      code: code ?? this.code,
+      shortName: shortName ?? this.shortName,
+      description: description ?? this.description,
+      modality: modality ?? this.modality,
+      isActive: isActive ?? this.isActive,
+      totalSemesters: totalSemesters ?? this.totalSemesters,
+    );
+  }
 }

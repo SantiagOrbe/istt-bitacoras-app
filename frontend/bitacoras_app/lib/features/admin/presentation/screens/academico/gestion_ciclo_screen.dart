@@ -1,10 +1,4 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
-import 'package:bitacoras_app/features/admin/presentation/controllers/academico/gestion_ciclo_controller.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/admin_empty_state.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_search_bar.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/ciclo_card.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/ciclo_form_sheet.dart';
 
 class GestionCicloScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -149,6 +143,29 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
                     hintText: 'Buscar curso...',
                   ),
                   AppSizes.gapV12,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _FilterChip(
+                          label: 'Todos',
+                          selected: _controller.statusFilter == 'all',
+                          onSelected: (_) => _controller.setStatusFilter('all'),
+                        ),
+                        _FilterChip(
+                          label: 'Activos',
+                          selected: _controller.statusFilter == 'active',
+                          onSelected: (_) => _controller.setStatusFilter('active'),
+                        ),
+                        _FilterChip(
+                          label: 'Inactivos',
+                          selected: _controller.statusFilter == 'inactive',
+                          onSelected: (_) => _controller.setStatusFilter('inactive'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppSizes.gapV12,
                   Text(
                     '${_controller.filteredCycles.length} semestres registrados',
                     style: AppTextStyles.caption.copyWith(
@@ -205,6 +222,39 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
+
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: AppSizes.sm),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: selected,
+        onSelected: onSelected,
+        selectedColor: AppColors.primary.withValues(alpha: 0.12),
+        backgroundColor: AppColors.surface,
+        labelStyle: AppTextStyles.body.copyWith(
+          color: selected ? AppColors.primary : AppColors.textSecondary,
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+        ),
+        side: BorderSide(
+          color: selected ? AppColors.primary : AppColors.outline,
+        ),
+      ),
     );
   }
 }
