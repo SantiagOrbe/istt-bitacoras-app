@@ -3,6 +3,7 @@ import 'package:bitacoras_app/shared/exports.dart';
 class AsistenciaActionButtons extends StatelessWidget {
   final bool isEntry;
   final bool isLoading;
+  final bool enabled;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
@@ -10,6 +11,7 @@ class AsistenciaActionButtons extends StatelessWidget {
     super.key,
     required this.isEntry,
     required this.isLoading,
+    this.enabled = true,
     required this.onConfirm,
     required this.onCancel,
   });
@@ -18,6 +20,7 @@ class AsistenciaActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonText = isEntry ? 'Confirmar Entrada' : 'Confirmar Salida';
     final buttonIcon = isEntry ? Icons.login_outlined : Icons.logout_outlined;
+    final effectiveEnabled = enabled && !isLoading;
 
     return Column(
       children: [
@@ -26,13 +29,13 @@ class AsistenciaActionButtons extends StatelessWidget {
           height: 50,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: effectiveEnabled ? AppColors.primary : AppColors.disabled,
               foregroundColor: AppColors.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSizes.radiusMd),
               ),
             ),
-            onPressed: isLoading ? null : onConfirm,
+            onPressed: effectiveEnabled ? onConfirm : null,
             icon: isLoading
                 ? const SizedBox(
                     width: 20,

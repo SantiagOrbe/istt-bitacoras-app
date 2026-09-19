@@ -173,6 +173,26 @@ class AutenticacionTests(APITestCase):
 		self.assertTrue(usuario.check_password('ClaveSegura123'))
 		self.assertEqual(usuario.username, usuario.email)
 
+	def test_perfil_incluye_empresa_asignada_para_estudiante(self):
+		usuario = Usuario.objects.get(email=self.email)
+		empresa = Empresa.objects.create(
+			nombre='Empresa Prueba',
+			direccion='Dirección de prueba',
+			telefono='0999999999',
+			correo='empresa@prueba.com',
+			latitud=-0.1807,
+			longitud=-78.4834,
+			radio_permitido=80.0,
+		)
+		Estudiante.objects.filter(usuario=usuario).update(empresa=empresa)
+
+		self.client.force_authenticate(user=usuario)
+		response = self.client.get(reverse('perfil'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['empresa_id'], empresa.id)
+		self.assertEqual(response.data['company_name'], empresa.nombre)
+
 	def test_admin_rechaza_cedula_y_telefono_repetidos(self):
 		self.client.force_authenticate(user=self.admin)
 		base_data = {

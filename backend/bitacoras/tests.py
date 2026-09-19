@@ -99,6 +99,23 @@ class BitacorasGeofencingTests(APITestCase):
         self.assertIn('hora_salida', response.data)
         self.assertIsNotNone(response.data['hora_salida'])
 
+    def test_check_out_out_of_range(self):
+        self.client.force_authenticate(user=self.user_estudiante)
+        self.client.post(
+            self.check_in_url,
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        response = self.client.post(
+            self.check_out_url,
+            {'latitud': -2.1894, 'longitud': -79.8891},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+
     def test_role_based_permissions_and_queries(self):
         # Student creates check-in
         self.client.force_authenticate(user=self.user_estudiante)

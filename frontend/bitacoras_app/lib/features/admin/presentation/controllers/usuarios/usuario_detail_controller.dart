@@ -83,7 +83,8 @@ class UsuarioDetailController extends ChangeNotifier {
     selectedRole = role;
     if (role != RolUsuarioModel.student &&
       role != RolUsuarioModel.coordinator &&
-      role != RolUsuarioModel.academicTutor) {
+      role != RolUsuarioModel.academicTutor &&
+      role != RolUsuarioModel.practiceManager) {
       selectedCareerId = null;
     }
     if (role != RolUsuarioModel.student &&

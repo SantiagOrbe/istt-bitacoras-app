@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+import 'package:go_router/go_router.dart';
 
 class RegistroActividadScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -27,6 +28,7 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
       repository: widget.attendanceRepository,
       bitacoraRepository: widget.bitacoraRepository,
     );
+    _controller.init();
   }
 
   @override
@@ -44,7 +46,8 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Por favor, ingrese al menos una actividad.',
+            _controller.validationMessage ??
+              'Por favor, ingrese al menos una actividad.',
             style: AppTextStyles.body.copyWith(color: AppColors.surface),
           ),
           backgroundColor: AppColors.error,
@@ -65,7 +68,7 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
       ),
     );
 
-    Navigator.pop(context);
+    context.go(AppRoutes.registerExitAttendance);
   }
 
   @override
@@ -92,6 +95,7 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
                   AppSizes.gapV16,
                   RegistroActividadActionButtons(
                     isLoading: _controller.isLoading,
+                    enabled: _controller.canRegister,
                     onSave: _handleSave,
                     onAddMore: _controller.addActivityField,
                   ),

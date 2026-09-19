@@ -145,3 +145,168 @@ class PerfilView(APIView):
 
         data['perfil'] = perfil
         return Response(data)
+
+
+class ResponsablePracticasDatosView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def _responsable(self, request):
+        if request.user.rol != 'responsable_practicas':
+            return None
+        return ResponsablePracticas.objects.select_related('carrera').filter(
+            usuario=request.user
+        ).first()
+
+    def get(self, request):
+        responsable = self._responsable(request)
+        if responsable is None:
+            return Response(
+                {'detail': 'El usuario no es responsable de prácticas.'},
+                status=403,
+            )
+        if responsable.carrera_id is None:
+            return Response(
+                {'detail': 'El responsable no tiene una carrera asignada.'},
+                status=400,
+            )
+
+        from empresas.models import Empresa
+        from gestion_academica.models import CarreraPeriodo, Paralelo, Semestre
+
+        carrera_id = responsable.carrera_id
+        semestres = Semestre.objects.filter(
+            carrera_id=carrera_id,
+            estado=True,
+            carreraperiodo__estado=True,
+        ).distinct().order_by('nivel', 'id')
+        paralelos = Paralelo.objects.filter(
+            semestre__carrera_id=carrera_id,
+            semestre__estado=True,
+            estado=True,
+            semestre__carreraperiodo__estado=True,
+        ).select_related('semestre').order_by('semestre__nivel', 'nombre')
+        estudiantes = Estudiante.objects.filter(
+            carrera_id=carrera_id,
+            semestre__estado=True,
+            paralelo__estado=True,
+            semestre__carreraperiodo__estado=True,
+            paralelo__semestre__carreraperiodo__estado=True,
+        ).select_related(
+            'usuario', 'semestre', 'paralelo', 'empresa',
+            'tutor_academico__usuario', 'tutor_empresarial__usuario',
+        ).order_by('paralelo__semestre__nivel', 'paralelo__nombre', 'usuario__last_name')
+        tutores_academicos = TutorAcademico.objects.filter(
+            carrera_id=carrera_id,
+            usuario__estado=True,
+            usuario__is_active=True,
+        ).select_related('usuario', 'empresa')
+        tutores_empresariales = TutorEmpresarial.objects.filter(
+            empresa__estado=True,
+            usuario__estado=True,
+            usuario__is_active=True,
+        ).select_related('usuario', 'empresa')
+
+        return Response({
+            'carrera': {
+                'id': carrera_id,
+                'nombre': responsable.carrera.nombre,
+            },
+            'empresas': [
+                {
+                    'id': empresa.id,
+                    'nombre': empresa.nombre,
+                    'direccion': empresa.direccion,
+                    'telefono': empresa.telefono,
+                    'correo': empresa.correo,
+                    'latitud': empresa.latitud,
+                    'longitud': empresa.longitud,
+                    'radio_permitido': empresa.radio_permitido,
+                    'estado': empresa.estado,
+                }
+                for empresa in Empresa.objects.filter(estado=True).order_by('nombre')
+            ],
+            'semestres': [
+                {'id': semestre.id, 'nombre': semestre.nombre, 'nivel': semestre.nivel}
+                for semestre in semestres
+            ],
+            'paralelos': [
+                {
+                    'id': paralelo.id,
+                    'nombre': paralelo.nombre,
+                    'jornada': paralelo.jornada,
+                    'semestre_id': paralelo.semestre_id,
+                }
+                for paralelo in paralelos
+            ],
+            'estudiantes': [
+                {
+                    'id': estudiante.id,
+                    'nombre': estudiante.usuario.get_full_name() or estudiante.usuario.email,
+                    'email': estudiante.usuario.email,
+                    'cedula': estudiante.cedula,
+                    'semestre_id': estudiante.semestre_id,
+                    'paralelo_id': estudiante.paralelo_id,
+                    'empresa_id': estudiante.empresa_id,
+                    'tutor_academico_id': estudiante.tutor_academico_id,
+                    'tutor_empresarial_id': estudiante.tutor_empresarial_id,
+                }
+                for estudiante in estudiantes
+            ],
+            'tutores_academicos': [
+                {
+                    'id': tutor.id,
+                    'nombre': tutor.usuario.get_full_name() or tutor.usuario.email,
+                    'empresa_id': tutor.empresa_id,
+                }
+                for tutor in tutores_academicos
+            ],
+            'tutores_empresariales': [
+                {
+                    'id': tutor.id,
+                    'nombre': tutor.usuario.get_full_name() or tutor.usuario.email,
+                    'empresa_id': tutor.empresa_id,
+                    'empresa_nombre': tutor.empresa.nombre,
+                }
+                for tutor in tutores_empresariales
+            ],
+        })
+
+    def post(self, request):
+        from empresas.models import Empresa
+
+        responsable = self._responsable(request)
+        if responsable is None:
+            return Response({'detail': 'No autorizado.'}, status=403)
+        estudiante = Estudiante.objects.filter(
+            pk=request.data.get('estudiante_id'),
+            carrera_id=responsable.carrera_id,
+        ).first()
+        if estudiante is None:
+            return Response({'detail': 'El estudiante no pertenece a su carrera.'}, status=400)
+
+        academic_tutor_id = request.data.get('tutor_academico_id')
+        company_tutor_id = request.data.get('tutor_empresarial_id')
+        company_id = request.data.get('empresa_id')
+        academic_tutor = TutorAcademico.objects.filter(
+            pk=academic_tutor_id,
+            carrera_id=responsable.carrera_id,
+            usuario__estado=True,
+            usuario__is_active=True,
+        ).first()
+        company_tutor = TutorEmpresarial.objects.filter(
+            pk=company_tutor_id,
+            empresa__estado=True,
+            usuario__estado=True,
+            usuario__is_active=True,
+        ).first()
+        company = Empresa.objects.filter(pk=company_id, estado=True).first()
+        if not academic_tutor or not company_tutor or not company:
+            return Response({'detail': 'La asignación seleccionada no es válida.'}, status=400)
+        if company_tutor.empresa_id != company.id:
+            return Response({'detail': 'El tutor empresarial no pertenece a la empresa.'}, status=400)
+
+        estudiante.tutor_academico = academic_tutor
+        estudiante.tutor_empresarial = company_tutor
+        estudiante.empresa = company
+        estudiante.save(update_fields=['tutor_academico', 'tutor_empresarial', 'empresa'])
+        return Response({'detail': 'Asignación guardada correctamente.'})

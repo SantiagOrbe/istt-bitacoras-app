@@ -43,16 +43,19 @@ class AsistenciaRemoteDataSource {
 
   Future<UbicacionEmpresaModel> obtenerUbicacionEmpresa() async {
     final profile = await apiClient.get('usuarios/perfil/');
-    final profileData = profile is Map<String, dynamic>
-        ? profile['perfil'] as Map<String, dynamic>?
-        : null;
-    final companyId = profileData?['empresa'];
+    final rawProfile = profile is Map<String, dynamic> ? profile['perfil'] ?? profile : null;
+    final profileData = rawProfile is Map<String, dynamic> ? rawProfile : null;
 
-    if (companyId == null) {
+    final dynamic companyId = profileData?['empresa'] ??
+        profileData?['empresa_id'] ??
+        (profile is Map<String, dynamic> ? profile['empresa'] : null) ??
+        (profile is Map<String, dynamic> ? profile['empresa_id'] : null);
+
+    if (companyId == null || companyId == '' || companyId == 'null') {
       throw StateError('El estudiante no tiene una empresa asignada.');
     }
 
-    final company = await apiClient.get('empresas/$companyId/');
+    final company = await apiClient.get('empresas/empresas/$companyId/');
     if (company is! Map<String, dynamic>) {
       throw StateError('La respuesta de la empresa no es válida.');
     }
@@ -61,17 +64,49 @@ class AsistenciaRemoteDataSource {
     final coordinates = location is Map<String, dynamic>
         ? location['coordinates'] as List<dynamic>?
         : null;
+        final latitude = _asDouble(company['latitud']) ??
+        (coordinates != null && coordinates.length > 1
+          ? _asDouble(coordinates[1])
+            : null);
+        final longitude = _asDouble(company['longitud']) ??
+        (coordinates != null && coordinates.isNotEmpty
+          ? _asDouble(coordinates[0])
+            : null);
 
-    if (coordinates == null || coordinates.length < 2) {
+        final pointCoordinates = _parsePoint(company['ubicacion']);
+        final resolvedLatitude = latitude ?? pointCoordinates?.$1;
+        final resolvedLongitude = longitude ?? pointCoordinates?.$2;
+
+        if (resolvedLatitude == null || resolvedLongitude == null) {
       throw StateError('La empresa no tiene una ubicación GPS válida.');
     }
 
     return UbicacionEmpresaModel(
       name: company['nombre'] as String? ?? '',
-      latitude: (coordinates[1] as num).toDouble(),
-      longitude: (coordinates[0] as num).toDouble(),
+      latitude: resolvedLatitude,
+      longitude: resolvedLongitude,
       allowedRadiusMeters:
-          (company['radio_permitido'] as num?)?.toDouble() ?? 200.0,
+          _asDouble(company['radio_permitido']) ?? 200.0,
     );
+  }
+
+  double? _asDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    return double.tryParse(value?.toString() ?? '');
+  }
+
+  (double, double)? _parsePoint(dynamic value) {
+    final text = value?.toString() ?? '';
+    final match = RegExp(
+      r'POINT\s*\(\s*(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s*\)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (match == null) return null;
+
+    final longitude = double.tryParse(match.group(1)!);
+    final latitude = double.tryParse(match.group(2)!);
+    return longitude != null && latitude != null
+        ? (latitude, longitude)
+        : null;
   }
 }

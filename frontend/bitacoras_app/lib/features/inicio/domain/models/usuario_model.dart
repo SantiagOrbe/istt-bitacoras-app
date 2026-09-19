@@ -87,6 +87,12 @@ class UsuarioModel {
     final profile = json['perfil'] as Map<String, dynamic>?;
     final user = profile?['usuario'] as Map<String, dynamic>? ?? json;
     final roleName = (user['rol'] ?? json['role']) as String? ?? '';
+    final role = _roleFromName(roleName);
+    final careerName = user['career_name']?.toString() ??
+      profile?['career_name']?.toString() ??
+      (profile?['carrera'] is Map<String, dynamic>
+        ? (profile?['carrera'] as Map<String, dynamic>)['nombre']?.toString()
+        : null);
     final fullName = [
       user['first_name'],
       user['last_name'],
@@ -100,12 +106,11 @@ class UsuarioModel {
           (fullName.isEmpty ? user['username'] as String? ?? '' : fullName),
       email: user['email'] as String? ?? '',
       company: (user['company_name'] ?? user['company'])?.toString(),
-      role: _roleFromName(roleName),
+      role: role,
       isActive: user['estado'] as bool? ?? user['is_active'] as bool? ?? true,
       phone: user['telefono']?.toString() ?? user['phone']?.toString(),
       cedula: profile?['cedula']?.toString() ?? user['cedula']?.toString(),
-      careerName:
-          profile?['carrera']?.toString() ?? user['career_name'] as String?,
+      careerName: careerName,
       periodName: user['period_name'] as String?,
       password: null,
       tutorAcademico: profile?['tutor_academico']?.toString(),

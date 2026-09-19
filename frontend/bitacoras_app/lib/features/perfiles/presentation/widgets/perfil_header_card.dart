@@ -72,7 +72,7 @@ class PerfilHeaderCard extends StatelessWidget {
               border: Border.all(color: AppColors.warning),
             ),
             child: Text(
-              user.role.name.toUpperCase(),
+              user.role.label,
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
@@ -95,9 +95,34 @@ class PerfilHeaderCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
-                    user.company!,
+                    'Empresa: ${user.company!}',
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ] else ...[
+            AppSizes.gapV12,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.business_outlined,
+                  size: 16,
+                  color: AppColors.error,
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    'Sin empresa asignada',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.error,
                       fontWeight: FontWeight.w600,
                     ),
                     overflow: TextOverflow.ellipsis,

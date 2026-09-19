@@ -1,11 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../../app/apps.dart' hide EmpresaCard;
-import '../../../../../config/constants/app_colors.dart';
-import '../../../../inicio/data/repositories/fake_usuario_repository.dart';
-import '../../../../inicio/presentation/widgets/inicio_app_bar.dart';
-import '../../../data/repositories/fake_responsable_practicas_repository.dart';
-import '../../controllers/gestion_empresa_controller.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/empresas/empresa_card.dart';
 
 class GestionEmpresasScreen extends StatefulWidget {
@@ -22,7 +16,7 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
   void initState() {
     super.initState();
     _controller = GestionEmpresaController(
-      repository: FakeResponsablePracticasRepository(),
+      repository: context.read<IResponsablePracticasRepository>(),
     );
     _controller.loadCompanies();
   }
@@ -35,7 +29,7 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: InicioAppBar(
-            user: FakeUsuarioRepository.practiceManager,
+            user: context.read<AuthSession>().currentUser!,
             showBackButton: true,
             showDrawerButton: false,
             onBackPressed: () => context.pop(),
@@ -48,7 +42,7 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
                   onChanged: _controller.searchCompanies,
                   style: const TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
-                    hintText: 'Buscar por nombre, RUC o convenio...',
+                    hintText: 'Buscar por nombre o dirección...',
                     hintStyle: const TextStyle(color: AppColors.textHint),
                     prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textSecondary),
                     filled: true,
@@ -85,87 +79,15 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
                               final company = _controller.companies[index];
                               return EmpresaCard(
                                 company: company,
-                                onEdit: () {
-                                  context.push(
-                                    AppRoutes.responsablePracticasCompanyForm,
-                                    extra: {
-                                      'company': company,
-                                      'controller': _controller,
-                                    },
-                                  );
-                                },
-                                onToggleStatus: () async {
-                                  final willDeactivate = company.isActive;
-                                  final confirm = await showDialog<bool>(
-                                    context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      title: Text(
-                                        willDeactivate
-                                            ? '¿Deseas desactivar esta empresa?'
-                                            : '¿Deseas activar esta empresa?',
-                                        style: const TextStyle(
-                                          color: AppColors.textPrimary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      content: Text(
-                                        willDeactivate
-                                            ? 'La empresa no será eliminada permanentemente, sino que quedará inactiva y no podrá utilizarse para nuevas asignaciones.'
-                                            : 'La empresa volverá a estar disponible para asignaciones de estudiantes.',
-                                        style: const TextStyle(color: AppColors.textSecondary),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(ctx, false),
-                                          child: const Text(
-                                            'Cancelar',
-                                            style: TextStyle(color: AppColors.textSecondary),
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () => Navigator.pop(ctx, true),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: willDeactivate
-                                                ? AppColors.error
-                                                : AppColors.success,
-                                          ),
-                                          child: Text(
-                                            willDeactivate ? 'Desactivar' : 'Activar',
-                                            style: const TextStyle(color: AppColors.surface),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-
-                                  if (confirm == true) {
-                                    await _controller.toggleCompanyActiveStatus(
-                                      company.id,
-                                      !willDeactivate,
-                                    );
-                                  }
-                                },
+                                onTap: () => context.push(
+                                  AppRoutes.responsablePracticasCompanyDetail,
+                                  extra: company,
+                                ),
                               );
                             },
                           ),
               ),
             ],
-          ),
-          floatingActionButton: FloatingActionButton.extended(
-            backgroundColor: AppColors.primary,
-            onPressed: () {
-              context.push(
-                AppRoutes.responsablePracticasCompanyForm,
-                extra: {
-                  'controller': _controller,
-                },
-              );
-            },
-            icon: const Icon(Icons.add_rounded, color: AppColors.surface),
-            label: const Text(
-              'Nueva Empresa',
-              style: TextStyle(color: AppColors.surface, fontWeight: FontWeight.bold),
-            ),
           ),
         );
       },

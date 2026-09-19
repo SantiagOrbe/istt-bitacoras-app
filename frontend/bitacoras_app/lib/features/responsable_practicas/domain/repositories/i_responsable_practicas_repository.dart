@@ -4,6 +4,8 @@ import '../models/empresa_model.dart';
 import '../models/asignacion_estudiante_model.dart';
 
 abstract class IResponsablePracticasRepository {
+  void invalidateCache();
+
   List<AccionRapidaModel> responsablePracticasActions();
 
   // Gestión de Empresas (CRUD)
@@ -20,4 +22,7 @@ abstract class IResponsablePracticasRepository {
     required String companyTutorId,
     required String companyId,
   });
+
+  Future<Map<String, List<Map<String, String>>>> getAssignmentOptions();
+  Future<Map<String, List<Map<String, String>>>> getAcademicHierarchy();
 }

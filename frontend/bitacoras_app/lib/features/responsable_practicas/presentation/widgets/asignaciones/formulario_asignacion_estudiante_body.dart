@@ -88,8 +88,19 @@ class _FormularioAsignacionEstudianteBodyState extends State<FormularioAsignacio
             companyId: _selectedCompanyId,
             companyTutorId: _selectedCompanyTutorId,
             onAcademicTutorChanged: (v) => setState(() => _selectedAcademicTutorId = v),
-            onCompanyChanged: (v) => setState(() => _selectedCompanyId = v),
+            onCompanyChanged: (v) => setState(() {
+              _selectedCompanyId = v;
+              final tutorBelongsToCompany = widget.controller.companyTutors.any(
+                (tutor) =>
+                    tutor['id'] == _selectedCompanyTutorId &&
+                    tutor['companyId'] == v,
+              );
+              if (!tutorBelongsToCompany) _selectedCompanyTutorId = null;
+            }),
             onCompanyTutorChanged: (v) => setState(() => _selectedCompanyTutorId = v),
+            academicTutors: widget.controller.academicTutors,
+            companies: widget.controller.companies,
+            companyTutors: widget.controller.companyTutors,
           ),
           const SizedBox(height: 24),
           ElevatedButton(

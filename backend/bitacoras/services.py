@@ -1,5 +1,5 @@
 from datetime import date
-from django.contrib.gis.db.models.functions import Distance
+from math import asin, cos, radians, sin, sqrt
 from django.contrib.gis.geos import Point
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
@@ -10,6 +10,27 @@ from .models import RegistroPractica
 
 
 class GeofencingService:
+    @staticmethod
+    def _distancia_a_empresa(empresa, latitud, longitud):
+        if empresa.ubicacion:
+            empresa_latitud = empresa.ubicacion.y
+            empresa_longitud = empresa.ubicacion.x
+        elif empresa.latitud is not None and empresa.longitud is not None:
+            empresa_latitud = empresa.latitud
+            empresa_longitud = empresa.longitud
+        else:
+            return None
+
+        radio_tierra_metros = 6_371_000
+        lat1, lat2 = radians(float(empresa_latitud)), radians(float(latitud))
+        delta_lat = radians(float(latitud) - float(empresa_latitud))
+        delta_lon = radians(float(longitud) - float(empresa_longitud))
+        valor = (
+            sin(delta_lat / 2) ** 2
+            + cos(lat1) * cos(lat2) * sin(delta_lon / 2) ** 2
+        )
+        return 2 * radio_tierra_metros * asin(sqrt(valor))
+
     @staticmethod
     def realizar_check_in(estudiante, latitud, longitud):
         if not estudiante:
@@ -43,15 +64,13 @@ class GeofencingService:
         if not empresa.ubicacion:
             raise ValidationError({'error': 'La empresa asignada no tiene una ubicación GPS configurada.'})
 
-        # Calculate distance using manager (.con_distancia_a_empresa) or fallback to Empresa annotation
-        existing_rp = RegistroPractica.objects.filter(estudiante=estudiante).con_distancia_a_empresa(punto_enviado).first()
-        if existing_rp and hasattr(existing_rp, 'distancia_empresa') and existing_rp.distancia_empresa:
-            distancia_metros = existing_rp.distancia_empresa.m
-        else:
-            empresa_annotated = Empresa.objects.filter(pk=empresa.pk).annotate(
-                dist=Distance('ubicacion', punto_enviado)
-            ).first()
-            distancia_metros = empresa_annotated.dist.m if empresa_annotated and empresa_annotated.dist else 0.0
+        distancia_metros = GeofencingService._distancia_a_empresa(
+            empresa, lat, lon
+        )
+        if distancia_metros is None:
+            raise ValidationError({
+                'error': 'La empresa asignada no tiene una ubicación GPS configurada.'
+            })
 
         radio_permitido = empresa.radio_permitido if empresa.radio_permitido is not None else 50.0
 
@@ -86,18 +105,40 @@ class GeofencingService:
         if not registro:
             raise ValidationError({'error': 'No se encontró un registro de práctica activo (entrada sin salida) para el día de hoy.'})
 
-        ubicacion_salida = None
-        if latitud is not None and longitud is not None:
-            try:
-                lat = float(latitud)
-                lon = float(longitud)
-                ubicacion_salida = Point(lon, lat, srid=4326)
-            except (ValueError, TypeError):
-                pass
+        if latitud is None or longitud is None:
+            raise ValidationError({'error': 'Se requieren latitud y longitud para registrar la salida.'})
+
+        try:
+            lat = float(latitud)
+            lon = float(longitud)
+        except (ValueError, TypeError):
+            raise ValidationError({'error': 'Latitud y longitud deben ser valores numéricos válidos.'})
+
+        punto_salida = Point(lon, lat, srid=4326)
+        empresa = estudiante.empresa
+        if not empresa:
+            raise ValidationError({'error': 'El estudiante no tiene una empresa asignada.'})
+        if not empresa.ubicacion and (empresa.latitud is None or empresa.longitud is None):
+            raise ValidationError({'error': 'La empresa asignada no tiene una ubicación GPS configurada.'})
+
+        distancia_metros = GeofencingService._distancia_a_empresa(
+            empresa, lat, lon
+        )
+        if distancia_metros is None:
+            raise ValidationError({
+                'error': 'La empresa asignada no tiene una ubicación GPS configurada.'
+            })
+        radio_permitido = empresa.radio_permitido if empresa.radio_permitido is not None else 50.0
+        if distancia_metros > radio_permitido:
+            raise ValidationError({
+                'error': 'Estás fuera del rango permitido de la empresa.',
+                'distancia_metros': round(distancia_metros, 2),
+                'radio_permitido': radio_permitido,
+            })
 
         registro.hora_salida = timezone.now().time()
-        if ubicacion_salida:
-            registro.ubicacion_salida = ubicacion_salida
+        registro.ubicacion_salida = punto_salida
+        registro.estado = False
         registro.save()
 
         return registro

@@ -2,6 +2,7 @@
 import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 import 'package:bitacoras_app/features/estudiantes/presentation/widgets/asistencia/registro_asistencia_body.dart';
+import 'package:intl/intl.dart';
 
 class RegistroSalidaScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -37,9 +38,7 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
 
   Future<void> _handleConfirmExit() async {
     final success = await _controller.confirmExit();
-    if (success && mounted) {
-      context.go('/register-activity');
-    }
+    if (success && mounted) context.go(AppRoutes.studentHome);
   }
 
   @override
@@ -50,6 +49,7 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
         final companyName =
             _controller.company?.name ?? widget.currentUser.company;
         final date = _controller.currentRecord?.date ?? '24/10/2026';
+        final time = DateFormat('hh:mm a').format(DateTime.now());
 
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -66,9 +66,12 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
                         // Cuerpo reutilizado parametrizado para Salida
                         RegistroAsistenciaBody(
                           title: 'Registrar Salida',
-                          currentTime: '05:00 PM',
+                          currentTime: time,
                           currentDate: date,
                           companyName: companyName ?? "Sin Empresa Asignada",
+                          isGpsValid: _controller.isGpsValid,
+                          locationAvailable: _controller.company != null,
+                          validationMessage: _controller.validationMessage,
                         ),
                         AppSizes.gapV24,
 
@@ -76,6 +79,7 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
                         AsistenciaActionButtons(
                           isEntry: false,
                           isLoading: _controller.isSaving,
+                          enabled: _controller.isGpsValid,
                           onConfirm: _handleConfirmExit,
                           onCancel: () => context.pop(),
                         ),

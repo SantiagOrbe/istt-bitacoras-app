@@ -12,12 +12,19 @@ class AsignacionEstudianteController extends ChangeNotifier {
   bool _pendingOnlyFilter = false;
   String _searchQuery = '';
   String? _errorMessage;
+  Map<String, List<Map<String, String>>> _options = {};
+  Map<String, List<Map<String, String>>> _hierarchy = {};
 
   List<AsignacionEstudianteModel> get assignments => _assignments;
   bool get isLoading => _isLoading;
   bool get pendingOnlyFilter => _pendingOnlyFilter;
   String get searchQuery => _searchQuery;
   String? get errorMessage => _errorMessage;
+  List<Map<String, String>> get academicTutors => _options['academicTutors'] ?? [];
+  List<Map<String, String>> get companyTutors => _options['companyTutors'] ?? [];
+  List<Map<String, String>> get companies => _options['companies'] ?? [];
+  List<Map<String, String>> get semesters => _hierarchy['semestres'] ?? [];
+  List<Map<String, String>> get parallels => _hierarchy['paralelos'] ?? [];
 
   Future<void> loadAssignments() async {
     _setLoading(true);
@@ -27,6 +34,8 @@ class AsignacionEstudianteController extends ChangeNotifier {
         query: _searchQuery,
         pendingOnly: _pendingOnlyFilter ? true : null,
       );
+      _options = await repository.getAssignmentOptions();
+      _hierarchy = await repository.getAcademicHierarchy();
     } catch (e) {
       _errorMessage = 'Error al cargar las asignaciones de estudiantes';
     } finally {

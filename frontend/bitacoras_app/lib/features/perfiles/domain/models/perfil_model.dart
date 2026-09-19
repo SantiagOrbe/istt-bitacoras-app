@@ -5,18 +5,24 @@ class PerfilModel {
   final String cedula;
   final String tutorAcademico;
   final String tutorEmpresarial;
+  final String empresaAsignada;
 
   PerfilModel({
     required this.user,
     required this.cedula,
     this.tutorAcademico = 'Sin asignar',
     this.tutorEmpresarial = 'Sin asignar',
+    this.empresaAsignada = 'Sin asignar',
   });
 
   factory PerfilModel.fromUser(
     UsuarioModel user, {
     Map<String, dynamic>? extraData,
   }) {
+    final canHaveCompany = user.role == RolUsuarioModel.student ||
+        user.role == RolUsuarioModel.academicTutor ||
+        user.role == RolUsuarioModel.companyTutor;
+
     return PerfilModel(
       user: user,
       cedula:
@@ -29,6 +35,11 @@ class PerfilModel {
           extraData?['tutor_empresarial']?.toString() ??
           user.tutorEmpresarial ??
           'Sin asignar',
+      empresaAsignada: canHaveCompany
+          ? (extraData?['empresa_asignada']?.toString() ??
+              user.company ??
+              'Sin asignar')
+          : '',
     );
   }
 }

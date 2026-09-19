@@ -4,7 +4,7 @@ from django.contrib.gis.db.models.functions import Distance
 from usuarios.models import Estudiante, TutorAcademico, TutorEmpresarial
 
 
-class RegistroPracticaQuerySet(models.QuerySet):
+class PracticaQuerySet(models.QuerySet):
     def para_usuario(self, user):
         if not user or not user.is_authenticated:
             return self.none()
@@ -36,4 +36,4 @@ class RegistroPracticaQuerySet(models.QuerySet):
         )
 
 
-RegistroPracticaManager = models.Manager.from_queryset(RegistroPracticaQuerySet)
+RegistroPracticaManager = models.Manager.from_queryset(PracticaQuerySet)

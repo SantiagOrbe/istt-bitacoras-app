@@ -56,6 +56,8 @@ class AppRoutes {
       '/responsable-practicas/empresas';
   static const String responsablePracticasCompanyForm =
       '/responsable-practicas/empresas/formulario';
+  static const String responsablePracticasCompanyDetail =
+      '/responsable-practicas/empresas/detalle';
   static const String responsablePracticasAssignStudents =
       '/responsable-practicas/asignaciones';
   static const String responsablePracticasAssignStudentForm =

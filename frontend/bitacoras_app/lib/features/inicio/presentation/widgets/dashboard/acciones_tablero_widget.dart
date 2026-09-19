@@ -50,6 +50,7 @@ class AccionesTableroWidget extends StatelessWidget {
           icon: action.icon,
           onTap: action.route != null ? () => context.push(action.route!) : action.onTap,
           color: cardColor,
+          enabled: action.enabled,
         );
       },
     );

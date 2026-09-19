@@ -25,6 +25,7 @@ export 'package:bitacoras_app/features/responsable_practicas/presentation/screen
 export 'package:bitacoras_app/features/responsable_practicas/presentation/screens/asignaciones/formulario_asignacion_estudiante_screen.dart';
 export 'package:bitacoras_app/features/responsable_practicas/presentation/screens/empresas/formulario_empresa_screen.dart';
 export 'package:bitacoras_app/features/responsable_practicas/presentation/screens/empresas/gestion_empresas_screen.dart';
+export 'package:bitacoras_app/features/responsable_practicas/presentation/screens/empresas/detalle_empresa_responsable_screen.dart';
 
 // --- Widgets ---
 export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/asignaciones/asignacion_estudiantes_body.dart';

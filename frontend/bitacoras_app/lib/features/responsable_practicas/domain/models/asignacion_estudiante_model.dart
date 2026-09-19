@@ -11,6 +11,8 @@ class AsignacionEstudianteModel {
   final String? companyId;
   final String? companyName;
   final bool isAssigned;
+  final String? semesterId;
+  final String? parallelId;
 
   const AsignacionEstudianteModel({
     required this.id,
@@ -25,6 +27,8 @@ class AsignacionEstudianteModel {
     this.companyId,
     this.companyName,
     this.isAssigned = false,
+    this.semesterId,
+    this.parallelId,
   });
 
   AsignacionEstudianteModel copyWith({
@@ -54,6 +58,8 @@ class AsignacionEstudianteModel {
       companyId: companyId ?? this.companyId,
       companyName: companyName ?? this.companyName,
       isAssigned: isAssigned ?? this.isAssigned,
+      semesterId: semesterId ?? this.semesterId,
+      parallelId: parallelId ?? this.parallelId,
     );
   }
 }

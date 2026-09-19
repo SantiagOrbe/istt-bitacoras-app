@@ -154,7 +154,8 @@ class UsuarioInfoCard extends StatelessWidget {
             ],
             if (controller.selectedRole == RolUsuarioModel.student ||
               controller.selectedRole == RolUsuarioModel.coordinator ||
-              controller.selectedRole == RolUsuarioModel.academicTutor) ...[
+              controller.selectedRole == RolUsuarioModel.academicTutor ||
+              controller.selectedRole == RolUsuarioModel.practiceManager) ...[
               DropdownButtonFormField<String?>(
                 initialValue: controller.selectedCareerId,
                 decoration: const InputDecoration(
@@ -222,7 +223,8 @@ class UsuarioInfoCard extends StatelessWidget {
   bool _hasCareerRole(RolUsuarioModel role) =>
       role == RolUsuarioModel.student ||
       role == RolUsuarioModel.coordinator ||
-      role == RolUsuarioModel.academicTutor;
+      role == RolUsuarioModel.academicTutor ||
+      role == RolUsuarioModel.practiceManager;
 }
 
 class _InfoTile extends StatelessWidget {

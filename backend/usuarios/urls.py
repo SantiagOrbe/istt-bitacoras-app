@@ -3,7 +3,12 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .serializers import LoginTokenSerializer
-from .views import PerfilView, RegistroView, UsuarioViewSet
+from .views import (
+    PerfilView,
+    RegistroView,
+    ResponsablePracticasDatosView,
+    UsuarioViewSet,
+)
 
 router = DefaultRouter()
 router.register('', UsuarioViewSet, basename='usuario')
@@ -17,5 +22,10 @@ urlpatterns = [
     path('login/', LoginTokenView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('perfil/', PerfilView.as_view(), name='perfil'),
+    path(
+        'responsable-practicas/datos/',
+        ResponsablePracticasDatosView.as_view(),
+        name='responsable-practicas-datos',
+    ),
     path('', include(router.urls)),
 ]

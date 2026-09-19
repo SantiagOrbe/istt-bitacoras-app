@@ -8,6 +8,9 @@ class AsignacionEstudianteDropdowns extends StatelessWidget {
   final ValueChanged<String?> onAcademicTutorChanged;
   final ValueChanged<String?> onCompanyChanged;
   final ValueChanged<String?> onCompanyTutorChanged;
+  final List<Map<String, String>> academicTutors;
+  final List<Map<String, String>> companies;
+  final List<Map<String, String>> companyTutors;
 
   const AsignacionEstudianteDropdowns({
     super.key,
@@ -17,23 +20,21 @@ class AsignacionEstudianteDropdowns extends StatelessWidget {
     required this.onAcademicTutorChanged,
     required this.onCompanyChanged,
     required this.onCompanyTutorChanged,
+    required this.academicTutors,
+    required this.companies,
+    required this.companyTutors,
   });
 
   @override
   Widget build(BuildContext context) {
-    final academicTutors = [
-      {'id': 'tut-acad-01', 'name': 'Ing. Fernando Pérez'},
-      {'id': 'tut-acad-02', 'name': 'Ing. Patricia Gómez'},
-    ];
-    final companies = [
-      {'id': '1', 'name': 'GAD Municipal de Tena'},
-      {'id': '2', 'name': 'Ministerio de Educación'},
-      {'id': '3', 'name': 'Empresa Eléctrica Ambato SA'},
-    ];
-    final companyTutors = [
-      {'id': 'tut-emp-01', 'name': 'Ing. Carlos Mendoza'},
-      {'id': 'tut-emp-02', 'name': 'Leda. María Ramos'},
-    ];
+    final availableCompanyTutors = companyTutors
+        .where((tutor) => tutor['companyId'] == companyId)
+        .toList();
+    final selectedCompanyTutorId = availableCompanyTutors.any(
+      (tutor) => tutor['id'] == companyTutorId,
+    )
+        ? companyTutorId
+        : null;
 
     return Card(
       elevation: 0,
@@ -50,7 +51,13 @@ class AsignacionEstudianteDropdowns extends StatelessWidget {
             const SizedBox(height: 16),
             _dropdown('Empresa Receptora', companyId, companies, onCompanyChanged, Icons.business_outlined),
             const SizedBox(height: 16),
-            _dropdown('Tutor Empresarial', companyTutorId, companyTutors, onCompanyTutorChanged, Icons.badge_outlined),
+            _dropdown(
+              'Tutor Empresarial',
+              selectedCompanyTutorId,
+              availableCompanyTutors,
+              onCompanyTutorChanged,
+              Icons.badge_outlined,
+            ),
           ],
         ),
       ),

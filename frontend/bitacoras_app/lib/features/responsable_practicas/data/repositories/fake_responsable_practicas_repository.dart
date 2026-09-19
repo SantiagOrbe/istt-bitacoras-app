@@ -107,6 +107,9 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
   ];
 
   @override
+  void invalidateCache() {}
+
+  @override
   List<AccionRapidaModel> responsablePracticasActions() {
     return [
       AccionRapidaModel(
@@ -198,4 +201,26 @@ class FakeResponsablePracticasRepository implements IResponsablePracticasReposit
     }
     return false;
   }
+
+  @override
+  Future<Map<String, List<Map<String, String>>>> getAssignmentOptions() async => {
+    'academicTutors': const [
+      {'id': 'tut-acad-01', 'name': 'Ing. Fernando Pérez'},
+      {'id': 'tut-acad-02', 'name': 'Ing. Patricia Gómez'},
+    ],
+    'companyTutors': const [
+      {'id': 'tut-emp-01', 'name': 'Ing. Carlos Mendoza'},
+      {'id': 'tut-emp-02', 'name': 'Leda. María Ramos'},
+    ],
+    'companies': const [
+      {'id': '1', 'name': 'GAD Municipal de Tena'},
+      {'id': '2', 'name': 'Ministerio de Educación'},
+    ],
+  };
+
+  @override
+  Future<Map<String, List<Map<String, String>>>> getAcademicHierarchy() async => const {
+    'semestres': [],
+    'paralelos': [],
+  };
 }

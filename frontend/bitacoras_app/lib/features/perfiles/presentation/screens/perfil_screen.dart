@@ -63,31 +63,85 @@ class PerfilScreen extends StatelessWidget {
                 title: 'Estado de la cuenta',
                 value: profile.user.isActive ? 'Activa' : 'Inactiva',
               ),
-            ] else ...[
-              PerfilInfoTile(
-                icon: Icons.badge_outlined,
-                title: 'Cédula de Identidad',
-                value: profile.cedula,
-              ),
-              PerfilInfoTile(
-                icon: Icons.email_outlined,
-                title: 'Correo Electrónico',
-                value: profile.user.email,
-              ),
-              PerfilInfoTile(
-                icon: Icons.person_outline,
-                title: 'Tutor Académico',
-                value: profile.tutorAcademico,
-              ),
-              PerfilInfoTile(
-                icon: Icons.business_center_outlined,
-                title: 'Tutor Empresarial',
-                value: profile.tutorEmpresarial,
-              ),
-            ],
+            ] else ..._profileDetails(profile),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _profileDetails(PerfilModel profile) {
+    final details = <Widget>[
+      PerfilInfoTile(
+        icon: Icons.badge_outlined,
+        title: 'Cédula de Identidad',
+        value: profile.cedula,
+      ),
+      PerfilInfoTile(
+        icon: Icons.email_outlined,
+        title: 'Correo Electrónico',
+        value: profile.user.email,
+      ),
+    ];
+
+    switch (currentUser.role) {
+      case RolUsuarioModel.student:
+        details.addAll([
+          PerfilInfoTile(
+            icon: Icons.business_center_outlined,
+            title: 'Empresa asignada',
+            value: profile.empresaAsignada,
+          ),
+          PerfilInfoTile(
+            icon: Icons.person_outline,
+            title: 'Tutor Académico',
+            value: profile.tutorAcademico,
+          ),
+          PerfilInfoTile(
+            icon: Icons.business_center_outlined,
+            title: 'Tutor Empresarial',
+            value: profile.tutorEmpresarial,
+          ),
+        ]);
+      case RolUsuarioModel.academicTutor:
+      case RolUsuarioModel.companyTutor:
+        details.add(
+          PerfilInfoTile(
+            icon: Icons.business_center_outlined,
+            title: 'Empresa asignada',
+            value: profile.empresaAsignada,
+          ),
+        );
+        if (currentUser.role == RolUsuarioModel.academicTutor) {
+          details.add(
+            PerfilInfoTile(
+              icon: Icons.school_outlined,
+              title: 'Carrera asignada',
+              value: currentUser.careerName ?? 'No asignada',
+            ),
+          );
+        }
+      case RolUsuarioModel.practiceManager:
+        details.add(
+          PerfilInfoTile(
+            icon: Icons.school_outlined,
+            title: 'Carrera asignada',
+            value: currentUser.careerName ?? 'No asignada',
+          ),
+        );
+      case RolUsuarioModel.coordinator:
+        details.add(
+          PerfilInfoTile(
+            icon: Icons.school_outlined,
+            title: 'Carrera asignada',
+            value: currentUser.careerName ?? 'No asignada',
+          ),
+        );
+      case RolUsuarioModel.teacher:
+      case RolUsuarioModel.admin:
+        break;
+    }
+
+    return details;
   }
 }

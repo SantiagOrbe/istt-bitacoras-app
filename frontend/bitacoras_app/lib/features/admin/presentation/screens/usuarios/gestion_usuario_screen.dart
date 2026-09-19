@@ -307,7 +307,8 @@ class _UsuarioFormSheetState extends State<_UsuarioFormSheet> {
                 ],
                 if (_role == RolUsuarioModel.student ||
                   _role == RolUsuarioModel.coordinator ||
-                  _role == RolUsuarioModel.academicTutor) ...[
+                  _role == RolUsuarioModel.academicTutor ||
+                  _role == RolUsuarioModel.practiceManager) ...[
                   AppSizes.gapV8,
                   DropdownButtonFormField<String>(
                     initialValue: _careerId,
@@ -363,7 +364,8 @@ class _UsuarioFormSheetState extends State<_UsuarioFormSheet> {
       _role = role;
       if (role != RolUsuarioModel.student &&
           role != RolUsuarioModel.coordinator &&
-          role != RolUsuarioModel.academicTutor) {
+          role != RolUsuarioModel.academicTutor &&
+          role != RolUsuarioModel.practiceManager) {
         _careerId = null;
       }
       if (role != RolUsuarioModel.student &&

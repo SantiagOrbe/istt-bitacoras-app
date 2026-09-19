@@ -6,12 +6,14 @@ class RegistroActividadActionButtons extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onSave;
   final VoidCallback onAddMore;
+  final bool enabled;
 
   const RegistroActividadActionButtons({
     super.key,
     required this.isLoading,
     required this.onSave,
     required this.onAddMore,
+    this.enabled = true,
   });
 
   @override
@@ -23,7 +25,7 @@ class RegistroActividadActionButtons extends StatelessWidget {
           text: 'Guardar Actividad',
           icon: Icons.save_rounded,
           isLoading: isLoading,
-          onPressed: onSave,
+          onPressed: enabled ? onSave : null,
         ),
         AppSizes.gapV16,
         Center(

@@ -30,14 +30,15 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.registerExitAttendance,
       builder: (context, state) => RegistroSalidaScreen(
-        currentUser: FakeUsuarioRepository.student,
+        currentUser: context.read<AuthSession>().currentUser ??
+            FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.attendance,
       builder: (context, state) => RegistroAsistenciaScreen(
-        currentUser: FakeUsuarioRepository.student,
+        currentUser: context.read<AuthSession>().currentUser!,
         attendanceRepository: context.read<IAsistenciaRepository>(),
         bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
       ),
@@ -45,7 +46,8 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.registerActivity,
       builder: (context, state) => RegistroActividadScreen(
-        currentUser: FakeUsuarioRepository.student,
+        currentUser: context.read<AuthSession>().currentUser ??
+            FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
         bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
       ),
@@ -53,22 +55,23 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.history,
       builder: (context, state) => HistorialScreen(
-        currentUser: FakeUsuarioRepository.student,
+        currentUser: context.read<AuthSession>().currentUser ??
+            FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.reports,
       builder: (context, state) => ReportesScreen(
-        currentUser: FakeUsuarioRepository.student,
+        currentUser: context.read<AuthSession>().currentUser ??
+            FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.perfil,
       builder: (context, state) => PerfilScreen(
-        currentUser: context.read<AuthSession>().currentUser ??
-            FakeUsuarioRepository.student,
+        currentUser: context.read<AuthSession>().currentUser!,
       ),
     ),
     GoRoute(
@@ -279,6 +282,12 @@ final GoRouter appRouter = GoRouter(
 
         return FormularioEmpresaScreen(company: company, controller: controller);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.responsablePracticasCompanyDetail,
+      builder: (context, state) => DetalleEmpresaResponsableScreen(
+        company: state.extra as rp.EmpresaModel,
+      ),
     ),
     GoRoute(
       path: AppRoutes.responsablePracticasAssignStudents,

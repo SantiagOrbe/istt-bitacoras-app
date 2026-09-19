@@ -7,6 +7,11 @@ class RegistroAsistenciaBody extends StatelessWidget {
   final String currentDate;
   final String companyName;
   final bool isGpsValid;
+  final bool locationAvailable;
+  final double? latitude;
+  final double? longitude;
+  final double? allowedRadiusMeters;
+  final String? validationMessage;
 
   const RegistroAsistenciaBody({
     super.key,
@@ -15,6 +20,11 @@ class RegistroAsistenciaBody extends StatelessWidget {
     required this.currentDate,
     required this.companyName,
     this.isGpsValid = true,
+    this.locationAvailable = true,
+    this.latitude,
+    this.longitude,
+    this.allowedRadiusMeters,
+    this.validationMessage,
   });
 
   @override
@@ -35,11 +45,25 @@ class RegistroAsistenciaBody extends StatelessWidget {
         AsistenciaInfoTile(time: currentTime, date: currentDate),
 
         AppSizes.gapV16,
-        const MapaPreview(),
+        MapaPreview(
+          latitude: latitude,
+          longitude: longitude,
+          radiusInMeters: allowedRadiusMeters ?? 200,
+          isGpsActive: isGpsValid,
+          statusLabel: isGpsValid ? 'GPS Activo' : 'GPS Fuera de rango',
+        ),
         AppSizes.gapV16,
 
         // 2. UbicacionEstadoCard pasando 'isValid'
-        UbicacionEstadoCard(isValid: isGpsValid),
+        if (locationAvailable) UbicacionEstadoCard(isValid: isGpsValid),
+
+        if (validationMessage != null) ...[
+          AppSizes.gapV8,
+          Text(
+            validationMessage!,
+            style: AppTextStyles.body.copyWith(color: AppColors.error),
+          ),
+        ],
 
         AppSizes.gapV16,
         EmpresaCard(companyName: companyName),

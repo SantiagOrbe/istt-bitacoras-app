@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../../../../app/apps.dart';
 import '../../../../../config/constants/app_colors.dart';
-import '../../../../inicio/data/repositories/fake_usuario_repository.dart';
-import '../../../../inicio/presentation/widgets/inicio_app_bar.dart';
-import '../../../data/repositories/fake_responsable_practicas_repository.dart';
+import '../../../../../app/auth_session.dart';
+import '../../../domain/repositories/i_responsable_practicas_repository.dart';
 import '../../controllers/asignacion_estudiante_controller.dart';
 import '../../widgets/asignaciones/asignacion_estudiantes_body.dart';
 
@@ -20,9 +21,9 @@ class _AsignacionEstudiantesScreenState extends State<AsignacionEstudiantesScree
   @override
   void initState() {
     super.initState();
-    _controller = AsignacionEstudianteController(
-      repository: FakeResponsablePracticasRepository(),
-    );
+    final repository = context.read<IResponsablePracticasRepository>();
+    repository.invalidateCache();
+    _controller = AsignacionEstudianteController(repository: repository);
     _controller.loadAssignments();
   }
 
@@ -34,7 +35,7 @@ class _AsignacionEstudiantesScreenState extends State<AsignacionEstudiantesScree
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: InicioAppBar(
-            user: FakeUsuarioRepository.practiceManager,
+            user: context.read<AuthSession>().currentUser!,
             showBackButton: true,
             showDrawerButton: false,
             onBackPressed: () => context.pop(),

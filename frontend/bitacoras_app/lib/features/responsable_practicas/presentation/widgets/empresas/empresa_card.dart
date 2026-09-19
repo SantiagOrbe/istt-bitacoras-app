@@ -61,7 +61,11 @@ class EmpresaCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'RUC: ${company.ruc}',
+                          company.address.isEmpty
+                              ? 'Dirección no registrada'
+                              : company.address,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 13,
                             color: AppColors.textSecondary,
@@ -70,7 +74,6 @@ class EmpresaCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Badge de Estado Institucional
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
@@ -92,18 +95,19 @@ class EmpresaCard extends StatelessWidget {
                 ],
               ),
               const Divider(color: AppColors.divider, height: 24),
-              Text(
-                'Representante: ${company.legalRepresentative}',
-                style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+              _CompanyDataRow(
+                icon: Icons.phone_outlined,
+                value: company.phone.isEmpty ? 'Teléfono no registrado' : company.phone,
               ),
-              const SizedBox(height: 2),
-              Text(
-                'Convenio: ${company.agreementNumber}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
+              const SizedBox(height: 6),
+              _CompanyDataRow(
+                icon: Icons.email_outlined,
+                value: company.email.isEmpty ? 'Correo no registrado' : company.email,
+              ),
+              const SizedBox(height: 6),
+              _CompanyDataRow(
+                icon: Icons.radar_outlined,
+                value: 'Radio permitido: ${company.allowedRadius.toStringAsFixed(0)} m',
               ),
               const SizedBox(height: 12),
               Row(
@@ -147,6 +151,31 @@ class EmpresaCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CompanyDataRow extends StatelessWidget {
+  final IconData icon;
+  final String value;
+
+  const _CompanyDataRow({required this.icon, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 17, color: AppColors.primary),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+          ),
+        ),
+      ],
     );
   }
 }

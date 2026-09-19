@@ -19,6 +19,9 @@ import '../features/estudiantes/data/repositories/asistencia_repository_impl.dar
 import '../features/estudiantes/data/repositories/bitacora_repository_impl.dart';
 import '../features/estudiantes/domain/repositories/i_asistencia_repository.dart';
 import '../features/estudiantes/presentation/controllers/asistencia_provider.dart';
+import '../features/responsable_practicas/data/datasources/responsable_practicas_remote_datasource.dart';
+import '../features/responsable_practicas/data/repositories/responsable_practicas_repository_impl.dart';
+import '../features/responsable_practicas/domain/repositories/i_responsable_practicas_repository.dart';
 
 List<SingleChildWidget> get appProviders => [
   ChangeNotifierProvider<AuthSession>(create: (_) => AuthSession()),
@@ -81,4 +84,14 @@ List<SingleChildWidget> get appProviders => [
         ),
       ),
       ChangeNotifierProvider(create: (_) => AsistenciaProvider()),
+      Provider<ResponsablePracticasRemoteDataSource>(
+        create: (context) => ResponsablePracticasRemoteDataSource(
+          apiClient: context.read<ApiClient>(),
+        ),
+      ),
+      Provider<IResponsablePracticasRepository>(
+        create: (context) => ResponsablePracticasRepositoryImpl(
+          remoteDataSource: context.read<ResponsablePracticasRemoteDataSource>(),
+        ),
+      ),
     ];

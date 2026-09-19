@@ -136,6 +136,77 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'estado',
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        profile = None
+
+        if instance.rol == 'estudiante':
+            profile = Estudiante.objects.filter(usuario=instance).first()
+            if profile:
+                data.update({
+                    'cedula': profile.cedula,
+                    'empresa': profile.empresa_id,
+                    'empresa_id': profile.empresa_id,
+                    'company_name': (
+                        profile.empresa.nombre if profile.empresa else None
+                    ),
+                    'carrera_id': profile.carrera_id,
+                })
+                data['career_name'] = (
+                    profile.carrera.nombre if profile.carrera else None
+                )
+                period = None
+                if profile.carrera_id and profile.semestre_id:
+                    period = CarreraPeriodo.objects.filter(
+                        carrera_id=profile.carrera_id,
+                        semestre_id=profile.semestre_id,
+                        estado=True,
+                    ).select_related('periodo').first()
+                data['period_name'] = period.periodo.nombre if period else None
+        elif instance.rol == 'tutor_academico':
+            profile = TutorAcademico.objects.filter(usuario=instance).first()
+            if profile:
+                data['cedula'] = profile.cedula
+                data['empresa_id'] = profile.empresa_id
+                data['carrera_id'] = profile.carrera_id
+                data['career_name'] = (
+                    profile.carrera.nombre if profile.carrera else None
+                )
+                data['company_name'] = (
+                    profile.empresa.nombre if profile.empresa else None
+                )
+        elif instance.rol == 'tutor_empresarial':
+            profile = TutorEmpresarial.objects.filter(usuario=instance).first()
+            if profile:
+                data.update({
+                    'cedula': profile.cedula,
+                    'cargo': profile.cargo,
+                    'empresa': profile.empresa_id,
+                    'empresa_id': profile.empresa_id,
+                    'company_name': profile.empresa.nombre,
+                })
+        elif instance.rol == 'docente':
+            profile = Docente.objects.filter(usuario=instance).first()
+            if profile:
+                data['cedula'] = profile.cedula
+        elif instance.rol == 'coordinador':
+            profile = Coordinador.objects.filter(usuario=instance).first()
+            if profile:
+                data['cedula'] = profile.cedula
+                data['carrera_id'] = profile.carrera_id
+                data['career_name'] = (
+                    profile.carrera.nombre if profile.carrera else None
+                )
+        elif instance.rol == 'responsable_practicas':
+            profile = ResponsablePracticas.objects.filter(usuario=instance).first()
+            if profile:
+                data['cedula'] = profile.cedula
+                data['carrera_id'] = profile.carrera_id
+                data['career_name'] = (
+                    profile.carrera.nombre if profile.carrera else None
+                )
+        return data
+
 
 class UsuarioAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False, min_length=8)
@@ -330,6 +401,15 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'carrera_id': ['La carrera es obligatoria para este rol.']
                 })
+        if role == 'responsable_practicas' and not attrs.get('carrera'):
+            existing_profile = (
+                ResponsablePracticas.objects.filter(usuario=self.instance).first()
+                if self.instance else None
+            )
+            if existing_profile is None or existing_profile.carrera_id is None:
+                raise serializers.ValidationError({
+                    'carrera_id': ['La carrera es obligatoria para este rol.']
+                })
         return attrs
 
     def _sync_profile(self, usuario, profile_data):
@@ -385,7 +465,10 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
         elif usuario.rol == 'responsable_practicas':
             ResponsablePracticas.objects.update_or_create(
                 usuario=usuario,
-                defaults={'cedula': profile_data.get('cedula', '')},
+                defaults={
+                    'cedula': profile_data.get('cedula', ''),
+                    'carrera': profile_data.get('carrera'),
+                },
             )
 
     @transaction.atomic
@@ -520,7 +603,7 @@ class ResponsablePracticasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResponsablePracticas
-        fields = ['id', 'usuario', 'cedula']
+        fields = ['id', 'usuario', 'cedula', 'carrera']
 
 
 class TutorAcademicoSerializer(serializers.ModelSerializer):

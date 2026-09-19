@@ -38,6 +38,9 @@ class Docente(models.Model):
 class ResponsablePracticas(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     cedula = models.CharField(max_length=10)
+    carrera = models.ForeignKey(
+        Carrera, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self):
         return self.usuario.username
