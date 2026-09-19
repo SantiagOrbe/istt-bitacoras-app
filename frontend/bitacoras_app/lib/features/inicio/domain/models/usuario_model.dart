@@ -20,6 +20,9 @@ class UsuarioModel {
   final String? cargo;
   final String? companyId;
   final String? carreraId;
+  final String? semestreId;
+  final String? semestreNombre;
+  final int horasPracticas;
 
   const UsuarioModel({
     required this.id,
@@ -39,6 +42,9 @@ class UsuarioModel {
     this.cargo,
     this.companyId,
     this.carreraId,
+    this.semestreId,
+    this.semestreNombre,
+    this.horasPracticas = 0,
   });
 
   // Método copyWith fundamental para la lógica del Controller
@@ -60,6 +66,9 @@ class UsuarioModel {
     String? cargo,
     String? companyId,
     String? carreraId,
+    String? semestreId,
+    String? semestreNombre,
+    int? horasPracticas,
   }) {
     return UsuarioModel(
       id: id ?? this.id,
@@ -79,6 +88,9 @@ class UsuarioModel {
       cargo: cargo ?? this.cargo,
       companyId: companyId ?? this.companyId,
       carreraId: carreraId ?? this.carreraId,
+      semestreId: semestreId ?? this.semestreId,
+      semestreNombre: semestreNombre ?? this.semestreNombre,
+      horasPracticas: horasPracticas ?? this.horasPracticas,
     );
   }
 
@@ -97,6 +109,8 @@ class UsuarioModel {
       user['first_name'],
       user['last_name'],
     ].whereType<String>().where((value) => value.trim().isNotEmpty).join(' ');
+
+    final requiredHours = (profile?['horas_practicas'] ?? user['horas_practicas'] ?? 0) as num? ?? 0;
 
     return UsuarioModel(
       id: user['id']?.toString() ?? '',
@@ -118,6 +132,9 @@ class UsuarioModel {
       cargo: user['cargo']?.toString(),
       companyId: (user['empresa_id'] ?? user['empresa'])?.toString(),
       carreraId: user['carrera_id']?.toString(),
+      semestreId: (profile?['semestre_id'] ?? user['semestre_id'])?.toString(),
+      semestreNombre: (profile?['semestre_nombre'] ?? user['semestre_nombre'])?.toString(),
+      horasPracticas: requiredHours.toInt(),
     );
   }
 

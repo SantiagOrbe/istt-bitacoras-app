@@ -82,7 +82,7 @@ class _DetalleSeguimientoEstudianteScreenState extends State<DetalleSeguimientoE
                       return Card(
                         margin: const EdgeInsets.only(bottom: 10),
                         child: ListTile(
-                          title: Text('${log.date} (${log.entryTime} - ${log.exitTime ?? "En curso"})'),
+                          title: Text('${log.date} (${log.entryTimeLabel} - ${log.exitTime != null ? log.exitTimeLabel : "En curso"})'),
                           subtitle: Text(log.activityDescription),
                           trailing: Chip(
                             label: Text(log.status, style: const TextStyle(color: Colors.white, fontSize: 10)),

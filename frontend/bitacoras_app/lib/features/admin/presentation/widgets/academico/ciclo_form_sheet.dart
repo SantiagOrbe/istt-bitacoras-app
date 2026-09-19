@@ -7,12 +7,14 @@ class CicloFormResult {
   final String name;
   final String careerId;
   final int level;
+  final int hoursPracticas;
   final bool isActive;
 
   const CicloFormResult({
     required this.name,
     required this.careerId,
     required this.level,
+    required this.hoursPracticas,
     required this.isActive,
   });
 }
@@ -37,6 +39,7 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _levelController;
+  late final TextEditingController _hoursPracticasController;
   late String _selectedCareerId;
   late bool _isActive;
 
@@ -54,6 +57,9 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
     _levelController = TextEditingController(
       text: widget.cycle?.level.toString() ?? '',
     );
+    _hoursPracticasController = TextEditingController(
+      text: widget.cycle?.hoursPracticas.toString() ?? '0',
+    );
     _selectedCareerId =
         widget.fixedCareerId ??
         widget.cycle?.careerId ??
@@ -65,6 +71,7 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
   void dispose() {
     _nameController.dispose();
     _levelController.dispose();
+    _hoursPracticasController.dispose();
     super.dispose();
   }
 
@@ -78,6 +85,7 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
         name: _nameController.text.trim(),
         careerId: _selectedCareerId,
         level: int.parse(_levelController.text.trim()),
+        hoursPracticas: int.parse(_hoursPracticasController.text.trim()),
         isActive: _isActive,
       ),
     );
@@ -181,6 +189,22 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                     final maximum = _selectedCareer?.totalSemesters;
                     if (maximum != null && parsed > maximum) {
                       return 'El nivel no puede superar los $maximum semestres configurados.';
+                    }
+                    return null;
+                  },
+                ),
+                AppSizes.gapV12,
+                TextFormField(
+                  controller: _hoursPracticasController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Horas requeridas de prácticas',
+                    helperText: 'Número total de horas de práctica del semestre',
+                  ),
+                  validator: (value) {
+                    final parsed = int.tryParse(value ?? '');
+                    if (parsed == null || parsed < 0) {
+                      return 'Ingresa un valor válido de horas';
                     }
                     return null;
                   },

@@ -37,15 +37,5 @@ List<SeccionMenuModel> getAdminDrawerSections() {
         ),
       ],
     ),
-    SeccionMenuModel(
-      title: 'Auditoría y Prácticas',
-      items: [
-        ItemMenuModel(
-          icon: Icons.assignment_turned_in_outlined,
-          title: 'Registro de Bitácoras',
-          route: AppRoutes.adminPracticeLogs,
-        ),
-      ],
-    ),
   ];
 }

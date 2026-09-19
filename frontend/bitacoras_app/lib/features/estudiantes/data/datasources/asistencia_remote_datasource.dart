@@ -19,6 +19,18 @@ class AsistenciaRemoteDataSource {
         .toList();
   }
 
+  Future<Map<String, dynamic>> obtenerProgresoPracticas() async {
+    final response = await apiClient.get('bitacoras/registros/mi-avance/');
+    return response is Map<String, dynamic>
+        ? response
+        : <String, dynamic>{
+            'horas_acumuladas': 0.0,
+            'horas_requeridas': 0,
+            'porcentaje': 0.0,
+            'completo': false,
+          };
+  }
+
   Future<RegistroAsistenciaModel?> registrarAsistencia({
     required String tipo,
     required double lat,

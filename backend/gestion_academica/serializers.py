@@ -217,6 +217,11 @@ class SemestreSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('El nivel debe ser mayor que cero.')
         return value
 
+    def validate_horas_practicas(self, value):
+        if value < 0:
+            raise serializers.ValidationError('Las horas de prácticas no pueden ser negativas.')
+        return value
+
     def validate(self, attrs):
         carrera = attrs.get('carrera', getattr(self.instance, 'carrera', None))
         nivel = attrs.get('nivel', getattr(self.instance, 'nivel', None))

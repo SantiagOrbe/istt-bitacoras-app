@@ -3,6 +3,7 @@ class SemestreModel {
   final String careerId;
   final String name;
   final int level;
+  final int hoursPracticas;
   final bool isActive;
 
   const SemestreModel({
@@ -10,6 +11,7 @@ class SemestreModel {
     this.careerId = '',
     required this.name,
     required this.level,
+    this.hoursPracticas = 0,
     this.isActive = true,
   });
 
@@ -22,6 +24,10 @@ class SemestreModel {
           (json['nivel'] as num?)?.toInt() ??
           (json['level'] as num?)?.toInt() ??
           0,
+      hoursPracticas:
+          (json['horas_practicas'] as num?)?.toInt() ??
+          (json['hours_practicas'] as num?)?.toInt() ??
+          0,
       isActive: json['estado'] as bool? ?? json['is_active'] as bool? ?? true,
     );
   }
@@ -31,6 +37,7 @@ class SemestreModel {
       'id': id,
       'nombre': name,
       'nivel': level,
+      'horas_practicas': hoursPracticas,
       'carrera': careerId,
       'estado': isActive,
     };
@@ -41,6 +48,7 @@ class SemestreModel {
     String? careerId,
     String? name,
     int? level,
+    int? hoursPracticas,
     bool? isActive,
   }) {
     return SemestreModel(
@@ -48,6 +56,7 @@ class SemestreModel {
       careerId: careerId ?? this.careerId,
       name: name ?? this.name,
       level: level ?? this.level,
+      hoursPracticas: hoursPracticas ?? this.hoursPracticas,
       isActive: isActive ?? this.isActive,
     );
   }

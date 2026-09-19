@@ -26,6 +26,7 @@ class _InicioEstudianteScreenState extends State<InicioEstudianteScreen>
     with WidgetsBindingObserver {
   bool _isLoading = true;
   RegistroAsistenciaModel? _todayRecord;
+  Map<String, dynamic>? _practiceProgress;
   Timer? _refreshTimer;
 
   @override
@@ -33,9 +34,13 @@ class _InicioEstudianteScreenState extends State<InicioEstudianteScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadCurrentRecord();
+    _loadPracticeProgress();
     _refreshTimer = Timer.periodic(
       const Duration(seconds: 5),
-      (_) => _loadCurrentRecord(),
+      (_) {
+        _loadCurrentRecord();
+        _loadPracticeProgress();
+      },
     );
   }
 
@@ -48,7 +53,10 @@ class _InicioEstudianteScreenState extends State<InicioEstudianteScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadCurrentRecord();
+    if (state == AppLifecycleState.resumed) {
+      _loadCurrentRecord();
+      _loadPracticeProgress();
+    }
   }
 
   Future<void> _loadCurrentRecord() async {
@@ -66,6 +74,24 @@ class _InicioEstudianteScreenState extends State<InicioEstudianteScreen>
     }
   }
 
+  Future<void> _loadPracticeProgress() async {
+    try {
+      final progress = await context
+          .read<IAsistenciaRepository>()
+          .getStudentPracticeProgress();
+      if (!mounted) return;
+      setState(() {
+        _practiceProgress = progress;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _practiceProgress = null;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = widget.currentUser ?? FakeUsuarioRepository.student;
@@ -73,18 +99,19 @@ class _InicioEstudianteScreenState extends State<InicioEstudianteScreen>
     final hasRecord = _todayRecord != null;
     final hasActivities = _todayRecord?.hasActivities ?? false;
     final isClosed = _todayRecord?.exitTime != null;
+    final isComplete = (_practiceProgress?['completo'] ?? false) == true;
     final actions = baseActions.map((action) {
       if (action.route == AppRoutes.attendance) {
-        return action.copyWith(enabled: !hasRecord && !_isLoading);
+        return action.copyWith(enabled: !hasRecord && !_isLoading && !isComplete);
       }
       if (action.route == AppRoutes.registerActivity) {
         return action.copyWith(
-          enabled: hasRecord && !hasActivities && !isClosed && !_isLoading,
+          enabled: hasRecord && !hasActivities && !isClosed && !_isLoading && !isComplete,
         );
       }
       if (action.route == AppRoutes.registerExitAttendance) {
         return action.copyWith(
-          enabled: hasRecord && hasActivities && !isClosed && !_isLoading,
+          enabled: hasRecord && hasActivities && !isClosed && !_isLoading && !isComplete,
         );
       }
       return action;
@@ -101,10 +128,10 @@ class _InicioEstudianteScreenState extends State<InicioEstudianteScreen>
           user: user,
           actions: actions,
           drawerSections: getOpcionesDrawerEstudiante(
-            canEnter: !hasRecord && !_isLoading,
+            canEnter: !hasRecord && !_isLoading && !isComplete,
             canActivities:
-                hasRecord && !hasActivities && !isClosed && !_isLoading,
-            canExit: hasRecord && hasActivities && !isClosed && !_isLoading,
+                hasRecord && !hasActivities && !isClosed && !_isLoading && !isComplete,
+            canExit: hasRecord && hasActivities && !isClosed && !_isLoading && !isComplete,
           ),
           todayRecord: _todayRecord,
           isAttendanceLoading: _isLoading,

@@ -39,6 +39,14 @@ class GeofencingService:
         if not estudiante.empresa:
             raise ValidationError({'error': 'El estudiante no tiene una empresa asignada.'})
 
+        horas_requeridas = estudiante.semestre.horas_practicas if estudiante.semestre else 0
+        horas_acumuladas = estudiante.recalcular_horas_acumuladas()
+        if horas_requeridas and horas_acumuladas >= horas_requeridas:
+            raise ValidationError({
+                'error': f'Ya completaste tus {horas_requeridas} horas de práctica del semestre. '
+                'No puedes registrar más entradas.'
+            })
+
         if latitud is None or longitud is None:
             raise ValidationError({'error': 'Se requieren latitud y longitud.'})
 
@@ -77,9 +85,10 @@ class GeofencingService:
         radio_permitido = empresa.radio_permitido if empresa.radio_permitido is not None else 50.0
 
         if distancia_metros <= radio_permitido:
+            hora_local = timezone.localtime(timezone.now()).time()
             registro = RegistroPractica.objects.create(
                 fecha=today,
-                hora_entrada=timezone.now().time(),
+                hora_entrada=hora_local,
                 ubicacion_entrada=punto_enviado,
                 estudiante=estudiante,
                 estado=True
@@ -138,9 +147,10 @@ class GeofencingService:
                 'radio_permitido': radio_permitido,
             })
 
-        registro.hora_salida = timezone.now().time()
+        registro.hora_salida = timezone.localtime(timezone.now()).time()
         registro.ubicacion_salida = punto_salida
         registro.estado = False
         registro.save()
 
+        estudiante.recalcular_horas_acumuladas()
         return registro

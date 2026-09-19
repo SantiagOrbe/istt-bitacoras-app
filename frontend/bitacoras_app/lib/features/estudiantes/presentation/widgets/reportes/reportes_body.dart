@@ -36,18 +36,6 @@ class ReportesBody extends StatelessWidget {
           GeneradorPdfCard(onGeneratePressed: onGeneratePdf),
 
           AppSizes.gapV16,
-
-          Text(
-            'Vista Previa del Formato',
-            style: AppTextStyles.bodyBold.copyWith(
-              fontSize: 13,
-              color: AppColors.textPrimary,
-            ),
-          ),
-
-          AppSizes.gapV8,
-
-          const VistaPreviaPdfCard(),
         ],
       ),
     );

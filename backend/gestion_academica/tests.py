@@ -177,6 +177,39 @@ class ParaleloEstudiantesTests(APITestCase):
 		self.assertFalse(config_serializer.is_valid())
 		self.assertIn('carrera', config_serializer.errors)
 
+	def test_semestre_guarda_horas_practicas_y_permite_actualizarlas(self):
+		carrera = Carrera.objects.create(
+			nombre='Electrónica',
+			descripcion='Carrera con prácticas',
+			codigo_carrera='ELE-2026',
+			sigla_carrera='ELE',
+			modalidad='Presencial',
+			total_semestres=8,
+		)
+		semestre = Semestre.objects.create(
+			nombre='Primero',
+			nivel=1,
+			carrera=carrera,
+			horas_practicas=120,
+		)
+
+		self.assertEqual(semestre.horas_practicas, 120)
+
+		serializer = SemestreSerializer(
+			instance=semestre,
+			data={
+				'nombre': 'Primero',
+				'nivel': 1,
+				'carrera': carrera.pk,
+				'horas_practicas': 180,
+				'estado': True,
+			},
+			partial=True,
+		)
+		self.assertTrue(serializer.is_valid(), serializer.errors)
+		updated = serializer.save()
+		self.assertEqual(updated.horas_practicas, 180)
+
 	def test_periodo_puede_aceptar_nombre_con_guion_y_guardar_semestres_activos(self):
 		periodo = Periodo.objects.create(
 			nombre=f'2026-IS-EXISTENTE-{uuid.uuid4().hex[:8]}',

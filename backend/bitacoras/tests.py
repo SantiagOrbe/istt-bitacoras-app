@@ -62,6 +62,7 @@ class BitacorasGeofencingTests(APITestCase):
 
         self.check_in_url = reverse('registropractica-check-in')
         self.check_out_url = reverse('registropractica-check-out')
+        self.mi_avance_url = reverse('registropractica-mi-avance')
         self.registros_url = reverse('registropractica-list')
         self.actividades_url = reverse('actividad-list')
 
@@ -140,3 +141,31 @@ class BitacorasGeofencingTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         records = response.data['results'] if 'results' in response.data else response.data
         self.assertEqual(len(records), 1)
+
+    def test_mi_avance_returns_hours_and_blocks_new_checkin_when_goal_is_reached(self):
+        from datetime import time
+
+        self.semestre.horas_practicas = 6
+        self.semestre.save(update_fields=['horas_practicas'])
+        self.estudiante.semestre = self.semestre
+        self.estudiante.save(update_fields=['semestre'])
+
+        RegistroPractica.objects.create(
+            estudiante=self.estudiante,
+            fecha='2026-09-19',
+            hora_entrada=time(8, 0),
+            hora_salida=time(14, 0),
+            estado=False,
+        )
+
+        self.client.force_authenticate(user=self.user_estudiante)
+        advance_response = self.client.get(self.mi_avance_url)
+        self.assertEqual(advance_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(float(advance_response.data['horas_acumuladas']), 6.0)
+        self.assertEqual(float(advance_response.data['horas_requeridas']), 6.0)
+        self.assertEqual(float(advance_response.data['porcentaje']), 100.0)
+        self.assertTrue(advance_response.data['completo'])
+
+        response = self.client.post(self.check_in_url, {'latitud': -0.1807, 'longitud': -78.4834}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('horas de práctica', str(response.data))

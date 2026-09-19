@@ -59,6 +59,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
       careerId: result.careerId,
       name: result.name,
       level: result.level,
+      hoursPracticas: result.hoursPracticas,
       isActive: result.isActive,
     );
 
@@ -211,6 +212,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
                                     _openCycleForm(cycle: cycle);
                                   }
                                 },
+                                onEdit: () => _openCycleForm(cycle: cycle),
                                 onToggleStatus: () => _toggleStatus(cycle),
                               );
                             },

@@ -151,6 +151,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
                         profile.empresa.nombre if profile.empresa else None
                     ),
                     'carrera_id': profile.carrera_id,
+                    'semestre_id': profile.semestre_id,
+                    'semestre_nombre': profile.semestre.nombre if profile.semestre else None,
+                    'horas_practicas': (
+                        profile.semestre.horas_practicas if profile.semestre else 0
+                    ),
+                    'horas_acumuladas': profile.recalcular_horas_acumuladas(),
                 })
                 data['career_name'] = (
                     profile.carrera.nombre if profile.carrera else None
@@ -624,6 +630,9 @@ class TutorEmpresarialSerializer(serializers.ModelSerializer):
 
 class EstudianteSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer(read_only=True)
+    semestre_nombre = serializers.SerializerMethodField()
+    horas_practicas = serializers.SerializerMethodField()
+    horas_acumuladas = serializers.SerializerMethodField()
 
     class Meta:
         model = Estudiante
@@ -633,8 +642,20 @@ class EstudianteSerializer(serializers.ModelSerializer):
             'cedula',
             'carrera',
             'semestre',
+            'semestre_nombre',
+            'horas_practicas',
+            'horas_acumuladas',
             'paralelo',
             'empresa',
             'tutor_academico',
             'tutor_empresarial',
         ]
+
+    def get_semestre_nombre(self, obj):
+        return obj.semestre.nombre if obj.semestre else None
+
+    def get_horas_practicas(self, obj):
+        return obj.semestre.horas_practicas if obj.semestre else 0
+
+    def get_horas_acumuladas(self, obj):
+        return obj.recalcular_horas_acumuladas()

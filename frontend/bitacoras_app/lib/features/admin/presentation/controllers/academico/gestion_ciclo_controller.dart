@@ -98,6 +98,7 @@ class GestionCicloController extends ChangeNotifier {
     required String careerId,
     required String name,
     required int level,
+    required int hoursPracticas,
     required bool isActive,
   }) async {
     _setLoading(true);
@@ -112,6 +113,11 @@ class GestionCicloController extends ChangeNotifier {
 
       if (level <= 0) {
         _errorMessage = 'El nivel debe ser mayor que cero.';
+        return false;
+      }
+
+      if (hoursPracticas < 0) {
+        _errorMessage = 'Las horas de prácticas no pueden ser negativas.';
         return false;
       }
 
@@ -150,6 +156,7 @@ class GestionCicloController extends ChangeNotifier {
         careerId: careerId,
         name: normalizedName,
         level: level,
+        hoursPracticas: hoursPracticas,
         isActive: isActive,
       );
 
@@ -187,6 +194,7 @@ class GestionCicloController extends ChangeNotifier {
       careerId: cycle.careerId,
       name: cycle.name,
       level: cycle.level,
+      hoursPracticas: cycle.hoursPracticas,
       isActive: !cycle.isActive,
     );
   }

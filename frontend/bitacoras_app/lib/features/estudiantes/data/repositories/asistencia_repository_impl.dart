@@ -42,6 +42,11 @@ class AsistenciaRepositoryImpl implements IAsistenciaRepository {
   }
 
   @override
+  Future<Map<String, dynamic>> getStudentPracticeProgress() {
+    return remoteDataSource.obtenerProgresoPracticas();
+  }
+
+  @override
   Future<bool> registerAttendance({
     required String type,
     required double latitude,

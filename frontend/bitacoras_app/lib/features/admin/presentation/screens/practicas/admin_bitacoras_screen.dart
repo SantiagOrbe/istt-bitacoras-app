@@ -189,7 +189,7 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '${log.entryTime} - ${log.exitTime ?? 'En curso'}',
+                  '${log.entryTimeLabel} - ${log.exitTime != null ? log.exitTimeLabel : 'En curso'}',
                   style: const TextStyle(fontSize: 12),
                 ),
               ],

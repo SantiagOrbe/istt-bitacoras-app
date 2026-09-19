@@ -114,7 +114,7 @@ class HistorialCard extends StatelessWidget {
                     ),
                     AppSizes.gapV4,
                     Text(
-                      record.entryTime,
+                      record.entryTimeLabel,
                       style: AppTextStyles.bodyBold.copyWith(
                         fontSize: 15,
                         color: AppColors.textPrimary,
@@ -136,7 +136,7 @@ class HistorialCard extends StatelessWidget {
                     ),
                     AppSizes.gapV4,
                     Text(
-                      record.exitTime ?? '--:--',
+                      record.exitTime != null ? record.exitTimeLabel : '--:--',
                       style: AppTextStyles.bodyBold.copyWith(
                         fontSize: 15,
                         color: AppColors.textPrimary,
@@ -150,7 +150,6 @@ class HistorialCard extends StatelessWidget {
 
           AppSizes.gapV16,
 
-          // Botón Ver Detalle
           Align(
             alignment: Alignment.centerRight,
             child: OutlinedButton(
@@ -169,7 +168,7 @@ class HistorialCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Ver Detalle',
+                    'Ver actividades',
                     style: AppTextStyles.caption.copyWith(
                       color: AppColors.primary,
                       fontSize: 12,

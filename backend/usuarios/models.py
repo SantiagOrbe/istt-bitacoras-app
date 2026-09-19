@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
@@ -103,6 +105,48 @@ class Estudiante(models.Model):
     tutor_empresarial = models.ForeignKey(
         TutorEmpresarial, on_delete=models.CASCADE, null=True, blank=True
     )
+    horas_acumuladas = models.FloatField(default=0.0)
+
+    def recalcular_horas_acumuladas(self):
+        from bitacoras.models import RegistroPractica
+
+        total_horas = 0.0
+        registros = RegistroPractica.objects.filter(
+            estudiante=self,
+            hora_salida__isnull=False,
+        )
+
+        for registro in registros:
+            if not registro.hora_entrada or not registro.hora_salida:
+                continue
+
+            entrada = datetime.combine(registro.fecha, registro.hora_entrada)
+            salida = datetime.combine(registro.fecha, registro.hora_salida)
+
+            if salida < entrada:
+                salida += timedelta(days=1)
+
+            total_horas += (salida - entrada).total_seconds() / 3600
+
+        self.horas_acumuladas = round(total_horas, 2)
+        self.save(update_fields=['horas_acumuladas'])
+        return self.horas_acumuladas
+
+    def get_avance_practicas(self):
+        horas_requeridas = self.semestre.horas_practicas if self.semestre else 0
+        horas_acumuladas = self.recalcular_horas_acumuladas()
+        porcentaje = 0.0
+
+        if horas_requeridas:
+            porcentaje = round((horas_acumuladas / horas_requeridas) * 100, 2)
+            porcentaje = min(porcentaje, 100.0)
+
+        return {
+            'horas_acumuladas': round(horas_acumuladas, 2),
+            'horas_requeridas': horas_requeridas,
+            'porcentaje': porcentaje,
+            'completo': horas_requeridas > 0 and horas_acumuladas >= horas_requeridas,
+        }
 
     def __str__(self):
         return f'{self.usuario.username} - {self.matricula}'

@@ -6,12 +6,14 @@ class CicloCard extends StatelessWidget {
   final CicloModel cycle;
   final VoidCallback onTap;
   final VoidCallback onToggleStatus;
+  final VoidCallback? onEdit;
 
   const CicloCard({
     super.key,
     required this.cycle,
     required this.onTap,
     required this.onToggleStatus,
+    this.onEdit,
   });
 
   @override
@@ -59,6 +61,13 @@ class CicloCard extends StatelessWidget {
                         color: AppColors.textSecondary,
                       ),
                     ),
+                    AppSizes.gapV4,
+                    Text(
+                      'Prácticas: ${cycle.hoursPracticas} h',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     AppSizes.gapV8,
                     AdminStatusChip(isActive: cycle.isActive),
                   ],
@@ -68,10 +77,23 @@ class CicloCard extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (onEdit != null)
+                    IconButton(
+                      onPressed: onEdit,
+                      tooltip: 'Editar semestre',
+                      icon: const Icon(
+                        Icons.edit_outlined,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
                   Switch.adaptive(
                     value: cycle.isActive,
                     onChanged: (_) => onToggleStatus(),
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
+                    activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,

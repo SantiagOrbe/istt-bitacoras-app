@@ -1,6 +1,4 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import '../../controllers/reportes_controller.dart';
-import '../../widgets/reportes/reportes_body.dart';
 
 class ReportesScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -22,7 +20,11 @@ class _ReportesScreenState extends State<ReportesScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = ReportesController(repository: widget.attendanceRepository);
+    _controller = ReportesController(
+      repository: widget.attendanceRepository,
+      currentUser: widget.currentUser,
+    );
+    _controller.loadReportData();
   }
 
   @override
@@ -44,7 +46,23 @@ class _ReportesScreenState extends State<ReportesScreen> {
       ),
     );
 
-    await _controller.generatePdfReport();
+    final statusMessage = await _controller.generatePdfReport();
+
+    if (!mounted) return;
+
+    final isSuccess = statusMessage == 'Generacion de pdf completa';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          statusMessage,
+          style: AppTextStyles.body.copyWith(color: AppColors.surface),
+        ),
+        backgroundColor: isSuccess ? AppColors.success : AppColors.error,
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override

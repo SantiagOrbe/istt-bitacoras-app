@@ -38,12 +38,6 @@ class AdminDashboardScreen extends StatelessWidget {
         Icons.business_outlined,
         AppRoutes.companyManagement,
       ),
-      _AdminModule(
-        'Bitácoras',
-        'Supervisión de prácticas',
-        Icons.assignment_outlined,
-        AppRoutes.adminPracticeLogs,
-      ),
     ];
 
     return Scaffold(

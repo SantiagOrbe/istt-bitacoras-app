@@ -7,6 +7,7 @@ abstract class IAsistenciaRepository {
   Future<RegistroAsistenciaModel?> getCurrentRecord();
   Future<RegistroAsistenciaModel?> getTodayRecord();
   Future<List<RegistroAsistenciaModel>> getAttendanceHistory();
+  Future<Map<String, dynamic>> getStudentPracticeProgress();
   Future<bool> registerAttendance({
     required String type, // 'ENTRY' o 'EXIT'
     required double latitude,

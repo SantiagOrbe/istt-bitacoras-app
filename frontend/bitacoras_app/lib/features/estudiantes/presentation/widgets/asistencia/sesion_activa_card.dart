@@ -94,7 +94,7 @@ class SesionActivaCard extends StatelessWidget {
                     ),
                   ),
                   AppSizes.gapV4,
-                  Text(record.entryTime, style: AppTextStyles.bodyBold),
+                  Text(record.entryTimeLabel, style: AppTextStyles.bodyBold),
                 ],
               ),
               Column(
@@ -108,7 +108,7 @@ class SesionActivaCard extends StatelessWidget {
                   ),
                   AppSizes.gapV4,
                   Text(
-                    record.exitTime ?? 'Esperando marcación...',
+                    record.exitTime != null ? record.exitTimeLabel : 'Esperando marcación...',
                     style: AppTextStyles.caption.copyWith(
                       fontStyle: record.exitTime == null
                           ? FontStyle.italic

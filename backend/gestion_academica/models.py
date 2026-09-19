@@ -63,6 +63,7 @@ class CarreraPeriodo(models.Model):
 class Semestre(models.Model):
     nombre = models.CharField(max_length=50)
     nivel = models.IntegerField()
+    horas_practicas = models.PositiveIntegerField(default=0)
     estado = models.BooleanField(default=True)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
 

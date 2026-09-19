@@ -13,6 +13,7 @@ class RegistroAsistenciaController extends ChangeNotifier {
   bool isLoading = false;
   bool canRegister = false;
   bool hasCompanyAssigned = false;
+  bool hasReachedHourLimit = false;
   UbicacionEmpresaModel? companyLocation;
   Position? currentPosition;
   String? validationMessage;
@@ -48,15 +49,41 @@ class RegistroAsistenciaController extends ChangeNotifier {
       return;
     }
 
+    await _loadPracticeProgress();
     await validateLocation();
     isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> _loadPracticeProgress() async {
+    try {
+      final progress = await repository.getStudentPracticeProgress();
+      final completo = progress['completo'] == true;
+      hasReachedHourLimit = completo;
+
+      if (completo) {
+        warningTitle = 'Límite de horas alcanzado';
+        validationMessage =
+            'Ya completaste tus horas requeridas del semestre. No puedes registrar más entradas.';
+      }
+    } catch (_) {
+      hasReachedHourLimit = false;
+    }
   }
 
   Future<bool> validateLocation() async {
     if (!hasCompanyAssigned || companyLocation == null) {
       validationMessage =
           'Usted no tiene empresa asignada. Comuníquese con el responsable del proceso de prácticas para que le asigne una empresa.';
+      canRegister = false;
+      notifyListeners();
+      return false;
+    }
+
+    if (hasReachedHourLimit) {
+      warningTitle = 'Límite de horas alcanzado';
+      validationMessage =
+          'Ya completaste tus horas requeridas del semestre. No puedes registrar más entradas.';
       canRegister = false;
       notifyListeners();
       return false;
@@ -112,13 +139,13 @@ class RegistroAsistenciaController extends ChangeNotifier {
 
       if (distanceInMeters <= companyLocation!.allowedRadiusMeters) {
         validationMessage = null;
-        canRegister = true;
+        canRegister = !hasReachedHourLimit;
         notifyListeners();
-        return true;
+        return !hasReachedHourLimit;
       }
 
-        warningTitle = 'Fuera del rango permitido';
-        validationMessage =
+      warningTitle = 'Fuera del rango permitido';
+      validationMessage =
           'No se encuentra dentro del rango permitido para ${companyLocation!.name}.';
       canRegister = false;
       notifyListeners();

@@ -26,6 +26,20 @@ class RegistroPracticaViewSet(viewsets.ModelViewSet):
         else:
             serializer.save()
 
+    @action(detail=False, methods=['get'], url_path='mi-avance')
+    def mi_avance(self, request):
+        usuario = request.user
+        estudiante = Estudiante.objects.filter(usuario=usuario).first()
+
+        if not estudiante:
+            return Response(
+                {'error': 'El usuario autenticado no tiene un perfil de estudiante asociado.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        avance = estudiante.get_avance_practicas()
+        return Response(avance, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'], url_path='check-in')
     def check_in(self, request):
         user = request.user

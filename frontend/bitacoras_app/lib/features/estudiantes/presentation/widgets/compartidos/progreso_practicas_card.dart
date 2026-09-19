@@ -2,8 +2,8 @@ import 'package:bitacoras_app/shared/exports.dart';
 
 class ProgresoPracticasCard extends StatelessWidget {
   final String period;
-  final int completedHours;
-  final int totalHours;
+  final num completedHours;
+  final num totalHours;
   final VoidCallback? onPeriodTap;
 
   const ProgresoPracticasCard({
@@ -16,9 +16,10 @@ class ProgresoPracticasCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculamos el progreso de forma segura evitando división por cero
-    final double safeTotal = totalHours > 0 ? totalHours.toDouble() : 1.0;
-    final double progress = (completedHours / safeTotal).clamp(0.0, 1.0);
+    final double completedValue = completedHours.toDouble();
+    final double totalValue = totalHours.toDouble();
+    final double safeTotal = totalValue > 0 ? totalValue : 1.0;
+    final double progress = (completedValue / safeTotal).clamp(0.0, 1.0);
     final int percentage = (progress * 100).toInt();
 
     return Container(
@@ -101,14 +102,14 @@ class ProgresoPracticasCard extends StatelessWidget {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: '$completedHours ',
+                      text: '${completedValue.toStringAsFixed(1)} ',
                       style: AppTextStyles.bodyBold.copyWith(
                         fontSize: 16,
                         color: AppColors.primary,
                       ),
                     ),
                     TextSpan(
-                      text: '/ $totalHours hrs',
+                      text: '/ ${totalValue.toStringAsFixed(0)} hrs',
                       style: AppTextStyles.caption.copyWith(
                         fontSize: 13,
                         color: AppColors.textSecondary,
@@ -128,7 +129,7 @@ class ProgresoPracticasCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 10,
-              backgroundColor: AppColors.outline.withOpacity(0.4),
+              backgroundColor: AppColors.outline.withValues(alpha: 0.4),
               valueColor: const AlwaysStoppedAnimation<Color>(
                 AppColors.secondary,
               ),
