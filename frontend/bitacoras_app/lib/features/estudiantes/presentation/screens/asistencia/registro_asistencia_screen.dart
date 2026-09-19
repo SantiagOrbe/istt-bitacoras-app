@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class RegistroAsistenciaScreen extends StatefulWidget {
@@ -64,16 +65,7 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
       );
 
       if (widget.isEntry) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RegistroActividadScreen(
-              currentUser: widget.currentUser,
-              attendanceRepository: widget.attendanceRepository,
-              bitacoraRepository: widget.bitacoraRepository,
-            ),
-          ),
-        );
+        context.go(AppRoutes.studentHome);
       } else {
         Navigator.pop(context);
       }

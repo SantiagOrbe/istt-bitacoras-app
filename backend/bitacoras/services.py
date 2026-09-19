@@ -49,14 +49,16 @@ class GeofencingService:
             raise ValidationError({'error': 'Latitud y longitud deben ser valores numéricos válidos.'})
 
         today = date.today()
-        existing_active = RegistroPractica.objects.filter(
+        existing_today = RegistroPractica.objects.filter(
             estudiante=estudiante,
             fecha=today,
-            hora_salida__isnull=True
         ).first()
 
-        if existing_active:
-            raise ValidationError({'error': 'Ya existe un registro de práctica activo para hoy sin hora de salida.'})
+        if existing_today:
+            raise ValidationError({
+                'error': 'Ya existe un registro de asistencia para hoy. '
+                'La entrada, actividades y salida solo pueden registrarse una vez al día.'
+            })
 
         punto_enviado = Point(lon, lat, srid=4326)
         empresa = estudiante.empresa

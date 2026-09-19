@@ -5,6 +5,7 @@ import '../models/registro_asistencia_model.dart';
 abstract class IAsistenciaRepository {
   Future<UbicacionEmpresaModel> getAssignedCompanyLocation();
   Future<RegistroAsistenciaModel?> getCurrentRecord();
+  Future<RegistroAsistenciaModel?> getTodayRecord();
   Future<List<RegistroAsistenciaModel>> getAttendanceHistory();
   Future<bool> registerAttendance({
     required String type, // 'ENTRY' o 'EXIT'

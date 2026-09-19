@@ -1,8 +1,12 @@
 import 'package:bitacoras_app/app/apps.dart';
 import 'package:bitacoras_app/features/admin/domain/models/item_menu_model.dart';
 
-List<SeccionMenuModel> getOpcionesDrawerEstudiante() {
-  return const [
+List<SeccionMenuModel> getOpcionesDrawerEstudiante({
+  bool canEnter = true,
+  bool canActivities = false,
+  bool canExit = false,
+}) {
+  return [
     SeccionMenuModel(
       title: 'Principal',
       items: [
@@ -15,6 +19,19 @@ List<SeccionMenuModel> getOpcionesDrawerEstudiante() {
           icon: Icons.app_registration_outlined,
           title: 'Registrar Asistencia',
           route: AppRoutes.attendance,
+          enabled: canEnter,
+        ),
+        ItemMenuModel(
+          icon: Icons.edit_note_outlined,
+          title: 'Registrar Actividades',
+          route: AppRoutes.registerActivity,
+          enabled: canActivities,
+        ),
+        ItemMenuModel(
+          icon: Icons.logout_outlined,
+          title: 'Registrar Salida',
+          route: AppRoutes.registerExitAttendance,
+          enabled: canExit,
         ),
       ],
     ),
@@ -23,7 +40,7 @@ List<SeccionMenuModel> getOpcionesDrawerEstudiante() {
       items: [
         ItemMenuModel(
           icon: Icons.history_toggle_off_rounded,
-          title: 'Historial de Prácticas',
+          title: 'Avance de Prácticas',
           route: AppRoutes.history,
         ),
         ItemMenuModel(

@@ -4,11 +4,13 @@ class ItemMenuModel {
   final IconData icon;
   final String title;
   final String route;
+  final bool enabled;
 
   const ItemMenuModel({
     required this.icon,
     required this.title,
     required this.route,
+    this.enabled = true,
   });
 }
 

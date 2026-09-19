@@ -16,10 +16,19 @@ class AsistenciaRepositoryImpl implements IAsistenciaRepository {
 
   @override
   Future<RegistroAsistenciaModel?> getCurrentRecord() async {
+    final record = await getTodayRecord();
+    return record?.exitTime == null ? record : null;
+  }
+
+  @override
+  Future<RegistroAsistenciaModel?> getTodayRecord() async {
     final records = await remoteDataSource.obtenerHistorial();
+    final today = DateTime.now();
+    final todayText =
+        '${today.year.toString().padLeft(4, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
     for (final record in records) {
-      if (record.status == 'En curso' || record.exitTime == null) {
+      if (record.date == todayText) {
         return record;
       }
     }

@@ -7,7 +7,9 @@ import '../../domain/repositories/i_tablero_repository.dart';
 
 class FakeTableroRepository implements ITableroRepository {
   @override
-  Future<List<AccionRapidaModel>> getActionsForRole(RolUsuarioModel role) async {
+  Future<List<AccionRapidaModel>> getActionsForRole(
+    RolUsuarioModel role,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
     switch (role) {
@@ -48,11 +50,11 @@ class FakeTableroRepository implements ITableroRepository {
         onTap: () {},
       ),
       AccionRapidaModel(
-        title: 'Historial',
-        subtitle: 'Asistencias e incidencias',
-        icon: Icons.history_rounded,
+        title: 'Registrar actividades',
+        subtitle: 'Describir las actividades de hoy',
+        icon: Icons.edit_note_rounded,
         iconBackgroundColor: const Color(0xFFF57C00),
-        route: AppRoutes.history,
+        route: AppRoutes.registerActivity,
         onTap: () {},
       ),
       AccionRapidaModel(
@@ -139,7 +141,6 @@ class FakeTableroRepository implements ITableroRepository {
         route: AppRoutes.academicTutorRegisterDeparture,
         onTap: () {},
       ),
-
     ];
   }
 
@@ -210,6 +211,7 @@ class FakeTableroRepository implements ITableroRepository {
       ),
     ];
   }
+
   @override
   List<AccionRapidaModel> practiceManagerActions() {
     return [
@@ -239,6 +241,7 @@ class FakeTableroRepository implements ITableroRepository {
       ),
     ];
   }
+
   @override
   List<AccionRapidaModel> adminActions() {
     return [

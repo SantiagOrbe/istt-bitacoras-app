@@ -3,28 +3,57 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bitacoras_app/config/constants/app_colors.dart';
 import 'package:bitacoras_app/features/estudiantes/presentation/controllers/asistencia_provider.dart';
+import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 
 class EstadoCard extends StatelessWidget {
-  const EstadoCard({super.key});
+  final RegistroAsistenciaModel? todayRecord;
+  final bool isLoading;
+
+  const EstadoCard({super.key, this.todayRecord, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
-    // Escucha automáticamente el estado global de la asistencia
     final provider = context.watch<AsistenciaProvider>();
-    final hasCheckedIn = provider.hasCheckedIn;
-    final checkInTime = provider.checkInTime;
+    final hasCheckedIn = todayRecord != null && todayRecord!.exitTime == null;
+    final hasActivities = todayRecord?.hasActivities ?? false;
+    final isCompleted = todayRecord?.exitTime != null;
+    final checkInTime = todayRecord?.entryTime ?? provider.checkInTime?.toString();
 
-    final statusColor = hasCheckedIn ? AppColors.success : AppColors.warning;
-    final titleText = hasCheckedIn ? "JORNADA ACTIVA" : "ATENCIÓN REQUERIDA";
-    final mainDescription = hasCheckedIn
-        ? "Entrada Registrada"
-        : "No has registrado entrada";
-    final detailText = hasCheckedIn
-        ? "Entrada marcada a las ${checkInTime ?? '08:00 AM'}. Recuerda registrar tu salida al finalizar tus actividades."
-        : "Debes registrar tu entrada en el centro de prácticas para comenzar a contabilizar tus horas del día de hoy.";
-    final statusIcon = hasCheckedIn
-        ? Icons.check_circle_rounded
-        : Icons.warning_amber_rounded;
+    final statusColor = isCompleted
+      ? AppColors.success
+      : todayRecord == null
+        ? AppColors.warning
+        : AppColors.primary;
+    final titleText = isLoading
+      ? 'CONSULTANDO JORNADA'
+      : isCompleted
+        ? 'JORNADA COMPLETADA'
+        : todayRecord == null
+          ? 'ATENCIÓN REQUERIDA'
+          : 'JORNADA EN PROCESO';
+    final mainDescription = isLoading
+      ? 'Cargando estado...'
+      : todayRecord == null
+        ? 'Sin registro de asistencia'
+        : !hasActivities
+          ? 'Entrada registrada'
+          : !hasCheckedIn
+            ? 'Jornada completada'
+            : 'Actividades registradas';
+    final detailText = isLoading
+      ? 'Consultando el registro real del día.'
+      : todayRecord == null
+        ? 'Usted aún no realiza ningún registro de asistencia.'
+        : !hasActivities
+          ? 'Entrada marcada a las $checkInTime. Falta registrar sus actividades.'
+          : !hasCheckedIn
+            ? 'La entrada, actividades y salida de hoy ya fueron registradas.'
+            : 'Sus actividades ya fueron registradas. Falta registrar la salida.';
+    final statusIcon = isCompleted
+      ? Icons.check_circle_rounded
+      : todayRecord == null
+        ? Icons.warning_amber_rounded
+        : Icons.pending_actions_rounded;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -34,7 +63,7 @@ class EstadoCard extends StatelessWidget {
         border: Border(left: BorderSide(color: statusColor, width: 5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

@@ -4,6 +4,7 @@
   final String entryTime;
   final String? exitTime;
   final String status; // 'Completado' o 'En curso'
+  final List<Map<String, dynamic>> activities;
 
   RegistroAsistenciaModel({
     required this.id,
@@ -11,6 +12,7 @@
     required this.entryTime,
     this.exitTime,
     required this.status,
+    this.activities = const [],
   });
 
   // Deserialización desde Django API
@@ -25,8 +27,13 @@
       status: rawStatus is bool
           ? (rawStatus ? 'En curso' : 'Completado')
           : rawStatus as String? ?? 'En curso',
+        activities: (json['actividades'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .toList(),
     );
   }
+
+      bool get hasActivities => activities.isNotEmpty;
 
   // Serialización para peticiones POST/PUT
   Map<String, dynamic> toJson() {

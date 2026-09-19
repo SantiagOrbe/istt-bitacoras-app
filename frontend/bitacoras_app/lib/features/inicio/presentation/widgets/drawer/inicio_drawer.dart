@@ -6,11 +6,7 @@ class InicioDrawer extends StatelessWidget {
   final UsuarioModel user;
   final List<SeccionMenuModel> sections;
 
-  const InicioDrawer({
-    super.key,
-    required this.user,
-    required this.sections,
-  });
+  const InicioDrawer({super.key, required this.user, required this.sections});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +16,14 @@ class InicioDrawer extends StatelessWidget {
         children: [
           // Header con el azul principal (0xFF0F52BA) y acentos en verde hoja
           UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-            ),
+            decoration: const BoxDecoration(color: AppColors.primary),
             currentAccountPicture: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.success, width: 2.5), // Toque verde
+                border: Border.all(
+                  color: AppColors.success,
+                  width: 2.5,
+                ), // Toque verde
               ),
               child: CircleAvatar(
                 backgroundColor: AppColors.surface,
@@ -54,7 +51,10 @@ class InicioDrawer extends StatelessWidget {
                 ),
                 // Badge con el verde del IST Tena
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   margin: const EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
                     color: AppColors.success,
@@ -97,7 +97,11 @@ class InicioDrawer extends StatelessWidget {
                   children: [
                     if (section.title != null)
                       Padding(
-                        padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          top: 8,
+                          bottom: 4,
+                        ),
                         child: Text(
                           section.title!.toUpperCase(),
                           style: const TextStyle(
@@ -112,7 +116,9 @@ class InicioDrawer extends StatelessWidget {
                       (item) => ListTile(
                         leading: Icon(
                           item.icon,
-                          color: AppColors.primary, // Iconos en Azul Petróleo
+                          color: item.enabled
+                              ? AppColors.primary
+                              : AppColors.disabled,
                         ),
                         title: Text(
                           item.title,
@@ -123,10 +129,12 @@ class InicioDrawer extends StatelessWidget {
                           ),
                         ),
                         horizontalTitleGap: 0,
-                        onTap: () {
-                          Navigator.pop(context);
-                          context.push(item.route);
-                        },
+                        onTap: item.enabled
+                            ? () {
+                                Navigator.pop(context);
+                                context.push(item.route);
+                              }
+                            : null,
                       ),
                     ),
                   ],

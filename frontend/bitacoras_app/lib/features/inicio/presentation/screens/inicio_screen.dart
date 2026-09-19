@@ -2,6 +2,7 @@ import 'package:bitacoras_app/features/admin/domain/models/item_menu_model.dart'
 import 'package:bitacoras_app/features/inicio/presentation/widgets/drawer/opciones_drawer_factory.dart';
 import 'package:bitacoras_app/features/screens.dart';
 import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 
 //Pantalla de inicio que filtra por Roles y muestra la pantalla de inicio según Rol
 
@@ -9,11 +10,16 @@ class InicioScreen extends StatelessWidget {
   final UsuarioModel user;
   final List<AccionRapidaModel> actions;
   final List<SeccionMenuModel>? drawerSections;
+  final RegistroAsistenciaModel? todayRecord;
+  final bool isAttendanceLoading;
 
   const InicioScreen({
     super.key,
     required this.user,
-    required this.actions, this.drawerSections,
+    required this.actions,
+    this.drawerSections,
+    this.todayRecord,
+    this.isAttendanceLoading = false,
   });
 
   @override
@@ -43,7 +49,10 @@ class InicioScreen extends StatelessWidget {
             // Si es estudiante, mostramos la tarjeta de estado actual
             if (isStudent) ...[
               const SizedBox(height: 16),
-              const EstadoCard(),
+              EstadoCard(
+                todayRecord: todayRecord,
+                isLoading: isAttendanceLoading,
+              ),
             ],
 
             const SizedBox(height: 24),
