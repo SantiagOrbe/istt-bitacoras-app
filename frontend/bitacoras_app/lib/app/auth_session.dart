@@ -12,6 +12,11 @@ class AuthSession extends ChangeNotifier {
     notifyListeners();
   }
 
+  void restoreUser(UsuarioModel? user) {
+    _currentUser = user;
+    notifyListeners();
+  }
+
   void clear() {
     _currentUser = null;
     notifyListeners();

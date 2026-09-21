@@ -10,6 +10,7 @@ export 'package:bitacoras_app/shared/exports.dart';
 // --- Models ---
 export 'package:bitacoras_app/features/tutores/domain/models/estudiante_asignado_model.dart';
 export 'package:bitacoras_app/features/tutores/domain/models/visita_academica_model.dart';
+export 'package:bitacoras_app/features/tutores/domain/models/estado_visita_tutor_model.dart';
 
 // --- Data y Repositories ---
 export 'package:bitacoras_app/features/tutores/data/opciones_drawer_tutor.dart';
@@ -23,8 +24,11 @@ export 'package:bitacoras_app/features/tutores/presentation/screens/seguimiento/
 export 'package:bitacoras_app/features/tutores/presentation/screens/visitas/formulario_actividad_visita_screen.dart';
 export 'package:bitacoras_app/features/tutores/presentation/screens/visitas/registro_salida_visita_screen.dart';
 export 'package:bitacoras_app/features/tutores/presentation/screens/visitas/registro_visita_screen.dart';
+export 'package:bitacoras_app/features/tutores/presentation/screens/visitas/registrar_actividades_tutor_screen.dart';
+export 'package:bitacoras_app/features/tutores/presentation/screens/reportes/reportes_tutor_screen.dart';
 
 // --- Widgets ---
 export 'package:bitacoras_app/features/tutores/presentation/widgets/estudiantes_asignados/estudiante_tutorizado_card.dart';
 export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/seguimiento_estudiante_card.dart';
 export 'package:bitacoras_app/features/tutores/presentation/widgets/visitas/cabecera_visita_card.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/visitas/ubicacion_no_asignada_card.dart';

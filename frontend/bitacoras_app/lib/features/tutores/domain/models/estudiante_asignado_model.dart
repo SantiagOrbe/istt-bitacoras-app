@@ -31,19 +31,30 @@ class EstudianteAsignadoModel {
   double get progressPercentage => totalHoursRequired > 0 ? (totalHoursCompleted / totalHoursRequired).clamp(0.0, 1.0) : 0.0;
 
   factory EstudianteAsignadoModel.fromJson(Map<String, dynamic> json) {
+    final totalHoursRequiredRaw = json['total_hours_required'];
+    final totalHoursCompletedRaw = json['total_hours_completed'];
+
     return EstudianteAsignadoModel(
       student: UsuarioModel.fromJson(json['student'] ?? {}),
       academicTutorId: json['academic_tutor_id']?.toString() ?? '',
       companyTutorId: json['company_tutor_id']?.toString() ?? '',
       companyTutorName: json['company_tutor_name'] ?? '',
       companyTutorPhone: json['company_tutor_phone'] ?? '',
-      totalHoursRequired: json['total_hours_required'] ?? 240,
-      totalHoursCompleted: json['total_hours_completed'] ?? 0,
+      totalHoursRequired: _toInt(totalHoursRequiredRaw, fallback: 240),
+      totalHoursCompleted: _toInt(totalHoursCompletedRaw, fallback: 0),
       status: json['status'] ?? 'En Proceso',
       lastActivityDescription: json['last_activity_description'],
       lastActivityDate: json['last_activity_date'],
       lastAttendanceTime: json['last_attendance_time'],
     );
+  }
+
+  static int _toInt(dynamic value, {required int fallback}) {
+    if (value == null) return fallback;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? fallback;
+    return fallback;
   }
 
   Map<String, dynamic> toJson() {

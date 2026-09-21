@@ -31,11 +31,22 @@ class _EstudiantesAsignadosScreenState extends State<EstudiantesAsignadosScreen>
   }
 
   Future<void> _loadData() async {
-    final data = await _repository.getAssignedStudents(widget.currentUser.id, isAcademic: widget.isAcademic);
-    setState(() {
-      _assignedList = data;
-      _isLoading = false;
-    });
+    try {
+      final data = await _repository.getAssignedStudents(widget.currentUser.id, isAcademic: widget.isAcademic);
+      setState(() {
+        _assignedList = data;
+      });
+    } catch (_) {
+      setState(() {
+        _assignedList = [];
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -54,7 +65,16 @@ class _EstudiantesAsignadosScreenState extends State<EstudiantesAsignadosScreen>
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   : _assignedList.isEmpty
-                      ? const Center(child: Text('No hay estudiantes asignados.'))
+                      ? Center(
+                          child: Text(
+                            'No hay estudiantes asignados para ${widget.currentUser.name}.',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        )
                       : ListView.builder(
                           itemCount: _assignedList.length,
                           itemBuilder: (context, index) {

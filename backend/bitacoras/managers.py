@@ -25,7 +25,7 @@ class PracticaQuerySet(models.QuerySet):
             return self.filter(estudiante__tutor_empresarial=tutor_empresarial)
 
         rol = getattr(user, 'rol', None)
-        if rol in ['coordinador', 'docente']:
+        if rol == 'coordinador':
             return self.all()
 
         return self.none()

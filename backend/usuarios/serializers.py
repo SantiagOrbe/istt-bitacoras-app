@@ -14,7 +14,6 @@ from gestion_academica.models import (
 
 from .models import (
     Coordinador,
-    Docente,
     Estudiante,
     ResponsablePracticas,
     TutorAcademico,
@@ -172,14 +171,16 @@ class UsuarioSerializer(serializers.ModelSerializer):
         elif instance.rol == 'tutor_academico':
             profile = TutorAcademico.objects.filter(usuario=instance).first()
             if profile:
+                empresa = profile.get_empresa_asignada()
                 data['cedula'] = profile.cedula
-                data['empresa_id'] = profile.empresa_id
+                data['empresa'] = empresa.id if empresa else None
+                data['empresa_id'] = empresa.id if empresa else None
                 data['carrera_id'] = profile.carrera_id
                 data['career_name'] = (
                     profile.carrera.nombre if profile.carrera else None
                 )
                 data['company_name'] = (
-                    profile.empresa.nombre if profile.empresa else None
+                    empresa.nombre if empresa else None
                 )
         elif instance.rol == 'tutor_empresarial':
             profile = TutorEmpresarial.objects.filter(usuario=instance).first()
@@ -191,10 +192,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
                     'empresa_id': profile.empresa_id,
                     'company_name': profile.empresa.nombre,
                 })
-        elif instance.rol == 'docente':
-            profile = Docente.objects.filter(usuario=instance).first()
-            if profile:
-                data['cedula'] = profile.cedula
         elif instance.rol == 'coordinador':
             profile = Coordinador.objects.filter(usuario=instance).first()
             if profile:
@@ -334,7 +331,6 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('La cédula no es válida.')
         profile_querysets = (
             Estudiante.objects.filter(cedula=cedula),
-            Docente.objects.filter(cedula=cedula),
             Coordinador.objects.filter(cedula=cedula),
             ResponsablePracticas.objects.filter(cedula=cedula),
             TutorAcademico.objects.filter(cedula=cedula),
@@ -355,7 +351,6 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
         allowed_roles = {
             'admin',
             'estudiante',
-            'docente',
             'coordinador',
             'tutor_academico',
             'tutor_empresarial',
@@ -454,11 +449,6 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                         'empresa', current_profile.empresa if current_profile else None
                     ),
                 },
-            )
-        elif usuario.rol == 'docente':
-            Docente.objects.update_or_create(
-                usuario=usuario,
-                defaults={'cedula': profile_data.get('cedula', '')},
             )
         elif usuario.rol == 'coordinador':
             Coordinador.objects.update_or_create(
@@ -569,10 +559,6 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                     'empresa_id': profile.empresa_id,
                     'company_name': profile.empresa.nombre,
                 })
-        elif instance.rol == 'docente':
-            profile = Docente.objects.filter(usuario=instance).first()
-            if profile:
-                data['cedula'] = profile.cedula
         elif instance.rol == 'coordinador':
             profile = Coordinador.objects.filter(usuario=instance).first()
             if profile:
@@ -586,14 +572,6 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
             if profile:
                 data['cedula'] = profile.cedula
         return data
-
-
-class DocenteSerializer(serializers.ModelSerializer):
-    usuario = UsuarioSerializer(read_only=True)
-
-    class Meta:
-        model = Docente
-        fields = ['id', 'usuario', 'cedula']
 
 
 class CoordinadorSerializer(serializers.ModelSerializer):

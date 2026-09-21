@@ -118,14 +118,6 @@ class FakeTableroRepository implements ITableroRepository {
         onTap: () {},
       ),
       AccionRapidaModel(
-        title: 'Seguimiento',
-        subtitle: 'Monitoreo en empresas',
-        icon: Icons.track_changes_rounded,
-        iconBackgroundColor: const Color(0xFFF57C00),
-        route: AppRoutes.academicTutorTracking,
-        onTap: () {},
-      ),
-      AccionRapidaModel(
         title: 'Registrar Entrada',
         subtitle: 'Hoja de ruta inicial',
         icon: Icons.assignment_turned_in_rounded,
@@ -139,6 +131,14 @@ class FakeTableroRepository implements ITableroRepository {
         icon: Icons.exit_to_app_rounded,
         iconBackgroundColor: const Color(0xFF00897B),
         route: AppRoutes.academicTutorRegisterDeparture,
+        onTap: () {},
+      ),
+      AccionRapidaModel(
+        title: 'Registrar actividades',
+        subtitle: 'Detalle de la visita realizada',
+        icon: Icons.edit_note_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.academicTutorActivities,
         onTap: () {},
       ),
     ];

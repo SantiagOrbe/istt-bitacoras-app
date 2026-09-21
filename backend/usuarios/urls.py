@@ -7,6 +7,7 @@ from .views import (
     PerfilView,
     RegistroView,
     ResponsablePracticasDatosView,
+    TutorAcademicoDatosView,
     UsuarioViewSet,
 )
 
@@ -22,6 +23,11 @@ urlpatterns = [
     path('login/', LoginTokenView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('perfil/', PerfilView.as_view(), name='perfil'),
+    path(
+        'tutor-academico/mis-tutoriados/',
+        TutorAcademicoDatosView.as_view(),
+        name='tutor-academico-mis-tutoriados',
+    ),
     path(
         'responsable-practicas/datos/',
         ResponsablePracticasDatosView.as_view(),

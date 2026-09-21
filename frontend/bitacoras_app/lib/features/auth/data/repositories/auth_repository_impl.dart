@@ -30,6 +30,8 @@ class AuthRepositoryImpl implements IAuthRepository {
     if (token == null || token.isEmpty) {
       throw Exception('La respuesta no contiene un token de acceso.');
     }
+
+    await tokenStorage.deleteToken();
     await tokenStorage.saveToken(token);
     return getCurrentUser();
   }

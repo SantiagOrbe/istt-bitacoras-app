@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 
 from .models import (
     Coordinador,
-    Docente,
     Estudiante,
     ResponsablePracticas,
     TutorAcademico,
@@ -18,7 +17,6 @@ from .models import (
 )
 from .serializers import (
     CoordinadorSerializer,
-    DocenteSerializer,
     EstudianteSerializer,
     ResponsablePracticasSerializer,
     TutorAcademicoSerializer,
@@ -123,7 +121,6 @@ class PerfilView(APIView):
 
         perfil_map = {
             'estudiante': (Estudiante, EstudianteSerializer),
-            'docente': (Docente, DocenteSerializer),
             'coordinador': (Coordinador, CoordinadorSerializer),
             'responsable_practicas': (
                 ResponsablePracticas,
@@ -145,6 +142,124 @@ class PerfilView(APIView):
 
         data['perfil'] = perfil
         return Response(data)
+
+
+class TutorAcademicoDatosView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        tutor = TutorAcademico.objects.select_related(
+            'usuario',
+            'carrera',
+            'empresa',
+        ).filter(usuario=request.user).first()
+
+        if tutor is None:
+            return Response(
+                {'detail': 'El usuario no es tutor académico.'},
+                status=403,
+            )
+
+        from bitacoras.models import RegistroPractica
+
+        estudiantes = (
+            Estudiante.objects.filter(tutor_academico=tutor)
+            .select_related(
+                'usuario',
+                'carrera',
+                'semestre',
+                'empresa',
+                'tutor_empresarial__usuario',
+                'tutor_empresarial__empresa',
+            )
+            .order_by('usuario__last_name', 'usuario__first_name', 'id')
+        )
+
+        estudiantes_data = []
+        registros_data = []
+
+        for estudiante in estudiantes:
+            avance = estudiante.get_avance_practicas()
+            ultimo_registro = (
+                RegistroPractica.objects.filter(estudiante=estudiante)
+                .order_by('-fecha', '-hora_entrada', '-id')
+                .select_related('estudiante__usuario', 'estudiante__empresa')
+                .first()
+            )
+            ultima_actividad = None
+            if ultimo_registro is not None:
+                ultima_actividad = ultimo_registro.actividades.order_by('-id').first()
+
+            nombre_completo = estudiante.usuario.get_full_name() or estudiante.usuario.email
+            company_tutor = estudiante.tutor_empresarial
+            company_tutor_name = (
+                company_tutor.usuario.get_full_name() or company_tutor.usuario.email
+                if company_tutor and company_tutor.usuario_id
+                else ''
+            )
+            company_tutor_phone = (
+                company_tutor.usuario.telefono if company_tutor and company_tutor.usuario_id else ''
+            )
+
+            student_payload = {
+                'id': estudiante.usuario_id,
+                'username': estudiante.usuario.username,
+                'email': estudiante.usuario.email,
+                'first_name': estudiante.usuario.first_name,
+                'last_name': estudiante.usuario.last_name,
+                'name': nombre_completo,
+                'phone': estudiante.usuario.telefono,
+                'cedula': estudiante.cedula,
+                'company': estudiante.empresa.nombre if estudiante.empresa else None,
+                'company_name': estudiante.empresa.nombre if estudiante.empresa else None,
+                'career_name': estudiante.carrera.nombre if estudiante.carrera else None,
+                'period_name': None,
+                'carrera_id': estudiante.carrera_id,
+                'semestre_id': estudiante.semestre_id,
+                'semestre_nombre': estudiante.semestre.nombre if estudiante.semestre else None,
+                'horas_practicas': avance['horas_requeridas'],
+                'rol': 'estudiante',
+                'estado': estudiante.usuario.estado,
+                'is_active': estudiante.usuario.is_active,
+            }
+
+            estudiante_data = {
+                'id': estudiante.id,
+                'student': student_payload,
+                'academic_tutor_id': tutor.id,
+                'company_tutor_id': company_tutor.id if company_tutor else None,
+                'company_tutor_name': company_tutor_name,
+                'company_tutor_phone': company_tutor_phone,
+                'total_hours_required': avance['horas_requeridas'],
+                'total_hours_completed': round(float(avance['horas_acumuladas']), 2),
+                'status': 'Completado' if avance['completo'] else 'En Proceso',
+                'last_activity_description': ultima_actividad.descripcion if ultima_actividad else None,
+                'last_activity_date': ultimo_registro.fecha.isoformat() if ultimo_registro else None,
+                'last_attendance_time': (
+                    ultimo_registro.hora_entrada.strftime('%H:%M') if ultimo_registro else None
+                ),
+            }
+            estudiantes_data.append(estudiante_data)
+
+            for registro in RegistroPractica.objects.filter(estudiante=estudiante).order_by('-fecha', '-hora_entrada', '-id'):
+                actividad = registro.actividades.order_by('-id').first()
+                registros_data.append({
+                    'id': registro.id,
+                    'student_id': estudiante.usuario_id,
+                    'student_name': nombre_completo,
+                    'company_name': estudiante.empresa.nombre if estudiante.empresa else '',
+                    'fecha': registro.fecha.isoformat(),
+                    'hora_entrada': registro.hora_entrada.strftime('%H:%M:%S') if registro.hora_entrada else '',
+                    'hora_salida': registro.hora_salida.strftime('%H:%M:%S') if registro.hora_salida else None,
+                    'actividad_descripcion': actividad.descripcion if actividad else '',
+                    'estado': 'Aprobado' if registro.estado else 'Pendiente',
+                })
+
+        return Response({
+            'total': len(estudiantes_data),
+            'estudiantes': estudiantes_data,
+            'registros': registros_data,
+        })
 
 
 class ResponsablePracticasDatosView(APIView):
@@ -309,4 +424,6 @@ class ResponsablePracticasDatosView(APIView):
         estudiante.tutor_empresarial = company_tutor
         estudiante.empresa = company
         estudiante.save(update_fields=['tutor_academico', 'tutor_empresarial', 'empresa'])
+        academic_tutor.empresa = company
+        academic_tutor.save(update_fields=['empresa'])
         return Response({'detail': 'Asignación guardada correctamente.'})

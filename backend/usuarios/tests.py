@@ -160,7 +160,7 @@ class AutenticacionTests(APITestCase):
 				'first_name': 'Nuevo',
 				'last_name': 'Administrador',
 				'telefono': '0999999999',
-				'rol': 'docente',
+				'rol': 'coordinador',
 				'estado': True,
 				'is_active': True,
 				'password': 'ClaveSegura123',
@@ -196,11 +196,11 @@ class AutenticacionTests(APITestCase):
 	def test_admin_rechaza_cedula_y_telefono_repetidos(self):
 		self.client.force_authenticate(user=self.admin)
 		base_data = {
-			'email': 'docente.base@est.itstena.edu.ec',
-			'first_name': 'Docente',
+			'email': 'coordinador.base@est.itstena.edu.ec',
+			'first_name': 'Coordinador',
 			'last_name': 'Base',
 			'telefono': '0991234567',
-			'rol': 'docente',
+			'rol': 'coordinador',
 			'cedula': '1500000003',
 			'password': 'ClaveSegura123',
 		}
@@ -211,7 +211,7 @@ class AutenticacionTests(APITestCase):
 
 		duplicate_phone = dict(base_data)
 		duplicate_phone.update({
-			'email': 'docente.telefono@est.itstena.edu.ec',
+			'email': 'coordinador.telefono@est.itstena.edu.ec',
 			'cedula': '1500000011',
 		})
 		phone_response = self.client.post(
@@ -222,7 +222,7 @@ class AutenticacionTests(APITestCase):
 
 		duplicate_cedula = dict(base_data)
 		duplicate_cedula.update({
-			'email': 'docente.cedula@est.itstena.edu.ec',
+			'email': 'coordinador.cedula@est.itstena.edu.ec',
 			'telefono': '0997654321',
 		})
 		cedula_response = self.client.post(
@@ -256,6 +256,49 @@ class AutenticacionTests(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 		usuario = Usuario.objects.get(email='tutor@est.itstena.edu.ec')
 		self.assertTrue(TutorAcademico.objects.filter(usuario=usuario).exists())
+
+	def test_tutor_academico_recibe_sus_estudiantes_asignados(self):
+		carrera = Carrera.objects.create(
+			nombre='Desarrollo de Software',
+			descripcion='Carrera de prueba',
+			codigo_carrera='DS2',
+			sigla_carrera='DS2',
+			modalidad='Presencial',
+		)
+		usuario_tutor = Usuario.objects.create_user(
+			username='tutor2',
+			email='tutor2@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='tutor_academico',
+			first_name='Ana',
+			last_name='Tutor',
+		)
+		tutor = TutorAcademico.objects.create(
+			usuario=usuario_tutor,
+			cedula='1500000100',
+			carrera=carrera,
+		)
+		usuario_estudiante = Usuario.objects.create_user(
+			username='estudiante2',
+			email='estudiante2@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='estudiante',
+			first_name='Luis',
+			last_name='Estudiante',
+		)
+		Estudiante.objects.create(
+			usuario=usuario_estudiante,
+			cedula='1500000101',
+			carrera=carrera,
+			tutor_academico=tutor,
+		)
+
+		self.client.force_authenticate(user=usuario_tutor)
+		response = self.client.get(reverse('tutor-academico-mis-tutoriados'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['total'], 1)
+		self.assertEqual(response.data['estudiantes'][0]['student']['name'], 'Luis Estudiante')
 
 	def test_admin_crea_perfil_de_responsable_de_practicas(self):
 		self.client.force_authenticate(user=self.admin)

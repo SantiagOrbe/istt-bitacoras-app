@@ -69,6 +69,18 @@ class TutorAcademico(models.Model):
         Empresa, on_delete=models.CASCADE, null=True, blank=True
     )
 
+    def get_empresa_asignada(self):
+        if self.empresa_id:
+            return self.empresa
+
+        estudiante = (
+            self.estudiante_set.filter(empresa__isnull=False)
+            .select_related('empresa')
+            .order_by('id')
+            .first()
+        )
+        return estudiante.empresa if estudiante else None
+
     def __str__(self):
         return self.usuario.username
 

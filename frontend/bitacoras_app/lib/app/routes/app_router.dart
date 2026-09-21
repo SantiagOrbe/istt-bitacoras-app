@@ -24,13 +24,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.studentHome,
       builder: (context, state) => InicioEstudianteScreen(
-        currentUser: context.read<AuthSession>().currentUser,
+        currentUser: context.watch<AuthSession>().currentUser,
       ),
     ),
     GoRoute(
       path: AppRoutes.registerExitAttendance,
       builder: (context, state) => RegistroSalidaScreen(
-        currentUser: context.read<AuthSession>().currentUser ??
+        currentUser: context.watch<AuthSession>().currentUser ??
             FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
@@ -38,7 +38,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.attendance,
       builder: (context, state) => RegistroAsistenciaScreen(
-        currentUser: context.read<AuthSession>().currentUser!,
+        currentUser: context.watch<AuthSession>().currentUser!,
         attendanceRepository: context.read<IAsistenciaRepository>(),
         bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
       ),
@@ -46,7 +46,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.registerActivity,
       builder: (context, state) => RegistroActividadScreen(
-        currentUser: context.read<AuthSession>().currentUser ??
+        currentUser: context.watch<AuthSession>().currentUser ??
             FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
         bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
@@ -55,29 +55,34 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.history,
       builder: (context, state) => HistorialScreen(
-        currentUser: context.read<AuthSession>().currentUser ??
+        currentUser: context.watch<AuthSession>().currentUser ??
             FakeUsuarioRepository.student,
         attendanceRepository: context.read<IAsistenciaRepository>(),
       ),
     ),
     GoRoute(
       path: AppRoutes.reports,
-      builder: (context, state) => ReportesScreen(
-        currentUser: context.read<AuthSession>().currentUser ??
-            FakeUsuarioRepository.student,
-        attendanceRepository: context.read<IAsistenciaRepository>(),
-      ),
+      builder: (context, state) {
+        final user = context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.student;
+        if (user.role == RolUsuarioModel.academicTutor || user.role == RolUsuarioModel.companyTutor) {
+          return ReportesTutorScreen(currentUser: user);
+        }
+        return ReportesScreen(
+          currentUser: user,
+          attendanceRepository: context.read<IAsistenciaRepository>(),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.perfil,
       builder: (context, state) => PerfilScreen(
-        currentUser: context.read<AuthSession>().currentUser!,
+        currentUser: context.watch<AuthSession>().currentUser!,
       ),
     ),
     GoRoute(
       path: AppRoutes.adminHome,
       builder: (context, state) => AdminDashboardScreen(
-        currentUser: context.read<AuthSession>().currentUser ??
+        currentUser: context.watch<AuthSession>().currentUser ??
             FakeUsuarioRepository.admin,
       ),
     ),
@@ -187,11 +192,16 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.academicTutorHome,
-      builder: (context, state) => const InicioTutorAcademicoScreen(),
+      builder: (context, state) => InicioTutorAcademicoScreen(
+        user: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.academicTutor,
+        refreshToken: state.uri.queryParameters['refresh'],
+      ),
     ),
     GoRoute(
       path: AppRoutes.companyTutorHome,
-      builder: (context, state) => const InicioTutorEmpresarialScreen(),
+      builder: (context, state) => InicioTutorEmpresarialScreen(
+        user: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.companyTutor,
+      ),
     ),
     GoRoute(
       path: AppRoutes.coordinatorHome,
@@ -208,42 +218,35 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.assignedStudents,
-      builder: (context, state) => const EstudiantesAsignadosScreen(
-        currentUser: FakeUsuarioRepository.academicTutor,
+      builder: (context, state) => EstudiantesAsignadosScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.academicTutor,
         isAcademic: true,
       ),
     ),
     GoRoute(
-      path: AppRoutes.companyTutorHome,
-      builder: (context, state) => const EstudiantesAsignadosScreen(
-        currentUser: FakeUsuarioRepository.companyTutor,
-        isAcademic: false,
-      ),
-    ),
-    GoRoute(
       path: AppRoutes.academicTutorRegisterVisit,
-      builder: (context, state) => const RegistroVisitaScreen(
-        currentUser: FakeUsuarioRepository.companyTutor,
+      builder: (context, state) => RegistroVisitaScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.companyTutor,
       ),
     ),
     GoRoute(
       path: AppRoutes.academicTutorTracking,
-      builder: (context, state) => const SeguimientoEstudiantesScreen(
-        currentUser: FakeUsuarioRepository.academicTutor,
+      builder: (context, state) => SeguimientoEstudiantesScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.academicTutor,
         isAcademic: true,
       ),
     ),
     GoRoute(
       path: AppRoutes.companyTutorTracking,
-      builder: (context, state) => const SeguimientoEstudiantesScreen(
-        currentUser: FakeUsuarioRepository.companyTutor,
+      builder: (context, state) => SeguimientoEstudiantesScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.companyTutor,
         isAcademic: false,
       ),
     ),
     GoRoute(
       path: AppRoutes.academicTutorRegisterVisit,
-      builder: (context, state) => const RegistroVisitaScreen(
-        currentUser: FakeUsuarioRepository.academicTutor,
+      builder: (context, state) => RegistroVisitaScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.academicTutor,
       ),
     ),
     GoRoute(
@@ -255,8 +258,14 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.academicTutorRegisterDeparture,
-      builder: (context, state) => const RegistroSalidaVisitaScreen(
-        currentUser: FakeUsuarioRepository.academicTutor,
+      builder: (context, state) => RegistroSalidaVisitaScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.academicTutor,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.academicTutorActivities,
+      builder: (context, state) => RegistrarActividadesTutorScreen(
+        currentUser: context.watch<AuthSession>().currentUser ?? FakeUsuarioRepository.academicTutor,
       ),
     ),
 

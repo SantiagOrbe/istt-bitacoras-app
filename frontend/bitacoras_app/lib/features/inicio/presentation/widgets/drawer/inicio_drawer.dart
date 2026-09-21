@@ -61,7 +61,7 @@ class InicioDrawer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    user.role.name.toUpperCase(),
+                    user.role.label,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,

@@ -7,7 +7,8 @@ class RegistroPracticaModel {
   final String entryTime;
   final String? exitTime;
   final String activityDescription;
-  final String status; // 'Aprobado', 'Pendiente', 'Rechazado'
+  final String status; // 'Aprobado', 'En curso', 'Desactivado'
+  final bool isActive;
 
   static String formatTimeToAmPm(String? rawTime) {
     if (rawTime == null || rawTime.trim().isEmpty) {
@@ -30,6 +31,66 @@ class RegistroPracticaModel {
     return '$hour12:$minuteText $period';
   }
 
+  static String normalizeStatus(dynamic value) {
+    if (value is bool) {
+      return value ? 'En curso' : 'En curso';
+    }
+
+    final raw = value?.toString().trim().toLowerCase();
+    if (raw == null || raw.isEmpty) {
+      return 'En curso';
+    }
+
+    switch (raw) {
+      case 'aprobado':
+      case 'approved':
+        return 'Aprobado';
+      case 'desactivado':
+      case 'inactivo':
+      case 'disabled':
+      case 'false':
+        return 'En curso';
+      case 'pendiente':
+      case 'pending':
+      case 'en espera':
+      case 'en revision':
+      case 'revision':
+        return 'En curso';
+      case 'en curso':
+      case 'activo':
+      case 'active':
+      case 'true':
+      default:
+        return 'En curso';
+    }
+  }
+
+  static bool normalizeIsActive(dynamic value, {required bool fallback}) {
+    if (value is bool) {
+      return value;
+    }
+
+    final raw = value?.toString().trim().toLowerCase();
+    if (raw == null || raw.isEmpty) {
+      return fallback;
+    }
+
+    switch (raw) {
+      case 'desactivado':
+      case 'inactivo':
+      case 'disabled':
+        return false;
+      case 'pendiente':
+      case 'pending':
+      case 'en espera':
+      case 'en revision':
+      case 'revision':
+        return true;
+      default:
+        return true;
+    }
+  }
+
   String get entryTimeLabel => formatTimeToAmPm(entryTime);
   String get exitTimeLabel => formatTimeToAmPm(exitTime);
 
@@ -43,9 +104,39 @@ class RegistroPracticaModel {
     this.exitTime,
     required this.activityDescription,
     required this.status,
+    this.isActive = true,
   });
 
+  RegistroPracticaModel copyWith({
+    String? id,
+    String? studentId,
+    String? studentName,
+    String? companyName,
+    String? date,
+    String? entryTime,
+    String? exitTime,
+    String? activityDescription,
+    String? status,
+    bool? isActive,
+  }) {
+    return RegistroPracticaModel(
+      id: id ?? this.id,
+      studentId: studentId ?? this.studentId,
+      studentName: studentName ?? this.studentName,
+      companyName: companyName ?? this.companyName,
+      date: date ?? this.date,
+      entryTime: entryTime ?? this.entryTime,
+      exitTime: exitTime ?? this.exitTime,
+      activityDescription: activityDescription ?? this.activityDescription,
+      status: status ?? this.status,
+      isActive: isActive ?? this.isActive,
+    );
+  }
+
   factory RegistroPracticaModel.fromJson(Map<String, dynamic> json) {
+    final normalizedStatus = normalizeStatus(json['estado'] ?? json['status']);
+    final activeValue = json['is_active'] ?? json['estado'];
+
     return RegistroPracticaModel(
       id: json['id']?.toString() ?? '',
       studentId: (json['student_id'] ?? json['estudiante'])?.toString() ?? '',
@@ -55,9 +146,8 @@ class RegistroPracticaModel {
       entryTime: json['hora_entrada'] as String? ?? '',
       exitTime: json['hora_salida'] as String?,
       activityDescription: json['actividad_descripcion'] as String? ?? '',
-      status: json['estado'] is bool
-          ? (json['estado'] as bool ? 'Aprobado' : 'Pendiente')
-          : json['estado'] as String? ?? 'Pendiente',
+      status: normalizedStatus,
+      isActive: normalizeIsActive(activeValue, fallback: normalizedStatus != 'Desactivado'),
     );
   }
 
@@ -71,7 +161,8 @@ class RegistroPracticaModel {
       'hora_entrada': entryTime,
       'hora_salida': exitTime,
       'actividad_descripcion': activityDescription,
-      'estado': status,
+      'estado': status == 'Aprobado',
+      'is_active': isActive,
     };
   }
 }

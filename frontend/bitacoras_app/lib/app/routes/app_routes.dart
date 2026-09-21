@@ -49,6 +49,7 @@ class AppRoutes {
   static const String academicTutorTracking = '/academic-tutor/tracking';
   static const String academicTutorRegisterDeparture =
       '/tutor/register-departure';
+    static const String academicTutorActivities = '/tutor/activities';
 
   // Responsable de Prácticas
   static const String responsablePracticasHome = '/responsable-practicas';

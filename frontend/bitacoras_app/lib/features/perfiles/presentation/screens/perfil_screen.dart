@@ -113,13 +113,23 @@ class PerfilScreen extends StatelessWidget {
           ),
         );
         if (currentUser.role == RolUsuarioModel.academicTutor) {
-          details.add(
+          details.addAll([
             PerfilInfoTile(
               icon: Icons.school_outlined,
               title: 'Carrera asignada',
               value: currentUser.careerName ?? 'No asignada',
             ),
-          );
+            PerfilInfoTile(
+              icon: Icons.badge_outlined,
+              title: 'Rol',
+              value: currentUser.role.label,
+            ),
+            PerfilInfoTile(
+              icon: Icons.verified_user_outlined,
+              title: 'Estado de la cuenta',
+              value: currentUser.isActive ? 'Activa' : 'Inactiva',
+            ),
+          ]);
         }
       case RolUsuarioModel.practiceManager:
         details.add(

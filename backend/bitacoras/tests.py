@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from empresas.models import Empresa
 from gestion_academica.models import Carrera, Paralelo, Semestre
 from usuarios.models import Estudiante, TutorAcademico, TutorEmpresarial, Usuario
-from bitacoras.models import Actividad, RegistroPractica
+from bitacoras.models import Actividad, RegistroPractica, VisitaTutorAcademico
 
 
 class BitacorasGeofencingTests(APITestCase):
@@ -41,7 +41,11 @@ class BitacorasGeofencingTests(APITestCase):
 
         # Create Tutors
         self.user_tutor_acad = Usuario.objects.create_user(username='tutor_acad', email='acad@test.com', password='password123', rol='tutor_academico')
-        self.tutor_acad = TutorAcademico.objects.create(usuario=self.user_tutor_acad, cedula='1111111111')
+        self.tutor_acad = TutorAcademico.objects.create(
+            usuario=self.user_tutor_acad,
+            cedula='1111111111',
+            empresa=self.empresa,
+        )
 
         self.user_tutor_emp = Usuario.objects.create_user(username='tutor_emp', email='emp@test.com', password='password123', rol='tutor_empresarial')
         self.tutor_emp = TutorEmpresarial.objects.create(usuario=self.user_tutor_emp, cedula='2222222222', cargo='Jefe', empresa=self.empresa)
@@ -169,3 +173,131 @@ class BitacorasGeofencingTests(APITestCase):
         response = self.client.post(self.check_in_url, {'latitud': -0.1807, 'longitud': -78.4834}, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('horas de práctica', str(response.data))
+
+    def test_tutor_academico_registra_entrada_y_salida_en_su_entidad(self):
+        self.client.force_authenticate(user=self.user_tutor_acad)
+
+        entrada = self.client.post(
+            reverse('visita-tutor-entrada'),
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        self.assertEqual(entrada.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(entrada.data['empresa'], self.empresa.id)
+        self.assertIsNone(entrada.data['hora_salida'])
+
+        estado = self.client.get(reverse('visita-tutor-estado-hoy'))
+        self.assertEqual(estado.status_code, status.HTTP_200_OK)
+        self.assertEqual(estado.data['empresa'], self.empresa.id)
+
+        visita = VisitaTutorAcademico.objects.get(pk=entrada.data['id'])
+        visita.actividades = 'Visita y seguimiento del estudiante.'
+        visita.save(update_fields=['actividades'])
+
+        salida = self.client.post(
+            reverse('visita-tutor-salida'),
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+        self.assertEqual(salida.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(salida.data['hora_salida'])
+        self.assertIsNotNone(salida.data['ubicacion_salida'])
+
+    def test_tutor_sin_empresa_usa_la_empresa_de_su_estudiante_asignado(self):
+        self.tutor_acad.empresa = None
+        self.tutor_acad.save(update_fields=['empresa'])
+        self.client.force_authenticate(user=self.user_tutor_acad)
+
+        response = self.client.post(
+            reverse('visita-tutor-entrada'),
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['empresa'], self.empresa.id)
+
+    def test_salida_requiere_actividades_guardadas(self):
+        self.client.force_authenticate(user=self.user_tutor_acad)
+        entrada = self.client.post(
+            reverse('visita-tutor-entrada'),
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+        self.assertEqual(entrada.status_code, status.HTTP_201_CREATED)
+
+        salida_sin_actividades = self.client.post(
+            reverse('visita-tutor-salida'), {}, format='json'
+        )
+        self.assertEqual(salida_sin_actividades.status_code, status.HTTP_400_BAD_REQUEST)
+
+        visita = VisitaTutorAcademico.objects.get(pk=entrada.data['id'])
+        visita.actividades = 'Visita y seguimiento del estudiante.'
+        visita.save(update_fields=['actividades'])
+
+        estado = self.client.get(reverse('visita-tutor-estado-hoy'))
+        self.assertTrue(estado.data['puede_registrar_salida'])
+
+        salida_sin_gps = self.client.post(
+            reverse('visita-tutor-salida'), {}, format='json'
+        )
+        self.assertEqual(salida_sin_gps.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_tutor_can_edit_and_desactivar_un_registro_de_practica(self):
+        from datetime import time
+
+        registro = RegistroPractica.objects.create(
+            estudiante=self.estudiante,
+            fecha='2026-09-20',
+            hora_entrada=time(8, 0),
+            hora_salida=time(12, 0),
+            estado=True,
+        )
+        actividad = Actividad.objects.create(
+            registro_practica=registro,
+            descripcion='Actividad inicial',
+            estado=True,
+        )
+
+        self.client.force_authenticate(user=self.user_tutor_acad)
+        response = self.client.patch(
+            reverse('registropractica-detail', args=[registro.id]),
+            {'actividad_descripcion': 'Actividad actualizada', 'estado': False},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        registro.refresh_from_db()
+        actividad.refresh_from_db()
+        self.assertFalse(registro.estado)
+        self.assertEqual(actividad.descripcion, 'Actividad actualizada')
+
+    def test_tutor_can_edit_and_desactivar_un_registro_de_practica(self):
+        from datetime import time
+
+        registro = RegistroPractica.objects.create(
+            estudiante=self.estudiante,
+            fecha='2026-09-20',
+            hora_entrada=time(8, 0),
+            hora_salida=time(12, 0),
+            estado=True,
+        )
+        actividad = Actividad.objects.create(
+            registro_practica=registro,
+            descripcion='Actividad inicial',
+            estado=True,
+        )
+
+        self.client.force_authenticate(user=self.user_tutor_acad)
+        response = self.client.patch(
+            reverse('registropractica-detail', args=[registro.id]),
+            {'actividad_descripcion': 'Actividad actualizada', 'estado': False},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        registro.refresh_from_db()
+        actividad.refresh_from_db()
+        self.assertFalse(registro.estado)
+        self.assertEqual(actividad.descripcion, 'Actividad actualizada')
