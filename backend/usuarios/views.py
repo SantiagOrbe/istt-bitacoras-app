@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from gestion_academica.models import Paralelo, Semestre
 
 from .models import (
     Coordinador,
@@ -144,6 +145,85 @@ class PerfilView(APIView):
         return Response(data)
 
 
+class CoordinadorDatosView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        coordinador = Coordinador.objects.select_related('carrera').filter(
+            usuario=request.user,
+        ).first()
+        if coordinador is None:
+            return Response({'detail': 'El usuario no es coordinador.'}, status=403)
+        if coordinador.carrera_id is None:
+            return Response({'detail': 'El coordinador no tiene una carrera asignada.'}, status=400)
+
+        estudiantes = Estudiante.objects.filter(
+            carrera_id=coordinador.carrera_id,
+        ).select_related(
+            'usuario', 'semestre', 'paralelo', 'empresa',
+            'tutor_academico__usuario',
+        ).order_by('semestre__nivel', 'paralelo__nombre', 'usuario__last_name')
+        tutores = TutorAcademico.objects.filter(
+            carrera_id=coordinador.carrera_id,
+        ).select_related('usuario', 'carrera').order_by('usuario__last_name')
+
+        return Response({
+            'carrera': {
+                'id': coordinador.carrera_id,
+                'nombre': coordinador.carrera.nombre,
+            },
+            'semestres': [
+                {'id': semestre.id, 'nombre': semestre.nombre, 'nivel': semestre.nivel}
+                for semestre in Semestre.objects.filter(
+                    carrera_id=coordinador.carrera_id,
+                ).order_by('nivel', 'id')
+            ],
+            'paralelos': [
+                {
+                    'id': paralelo.id,
+                    'nombre': paralelo.nombre,
+                    'jornada': paralelo.jornada,
+                    'semestre_id': paralelo.semestre_id,
+                }
+                for paralelo in Paralelo.objects.filter(
+                    semestre__carrera_id=coordinador.carrera_id,
+                ).select_related('semestre').order_by('semestre__nivel', 'nombre')
+            ],
+            'estudiantes': [
+                {
+                    'id': estudiante.id,
+                    'nombre': estudiante.usuario.get_full_name() or estudiante.usuario.email,
+                    'email': estudiante.usuario.email,
+                    'semestre_id': estudiante.semestre_id,
+                    'semestre_nombre': estudiante.semestre.nombre if estudiante.semestre else None,
+                    'paralelo_id': estudiante.paralelo_id,
+                    'paralelo_nombre': estudiante.paralelo.nombre if estudiante.paralelo else None,
+                    'empresa_nombre': estudiante.empresa.nombre if estudiante.empresa else None,
+                    'tutor_academico': (
+                        estudiante.tutor_academico.usuario.get_full_name()
+                        if estudiante.tutor_academico else None
+                    ),
+                }
+                for estudiante in estudiantes
+            ],
+            'tutores': [
+                {
+                    'id': tutor.id,
+                    'nombre': tutor.usuario.get_full_name() or tutor.usuario.email,
+                    'email': tutor.usuario.email,
+                    'telefono': tutor.usuario.telefono,
+                    'cedula': tutor.cedula,
+                    'carrera_id': tutor.carrera_id,
+                    'carrera_nombre': tutor.carrera.nombre if tutor.carrera else None,
+                    'empresa_id': tutor.get_empresa_asignada().id if tutor.get_empresa_asignada() else None,
+                    'empresa_nombre': tutor.get_empresa_asignada().nombre if tutor.get_empresa_asignada() else None,
+                    'estado': tutor.usuario.estado and tutor.usuario.is_active,
+                }
+                for tutor in tutores
+            ],
+        })
+
+
 class TutorAcademicoDatosView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -253,6 +333,87 @@ class TutorAcademicoDatosView(APIView):
                     'hora_salida': registro.hora_salida.strftime('%H:%M:%S') if registro.hora_salida else None,
                     'actividad_descripcion': actividad.descripcion if actividad else '',
                     'estado': 'Aprobado' if registro.estado else 'Pendiente',
+                })
+
+        return Response({
+            'total': len(estudiantes_data),
+            'estudiantes': estudiantes_data,
+            'registros': registros_data,
+        })
+
+
+class TutorEmpresarialDatosView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        tutor = TutorEmpresarial.objects.select_related('usuario', 'empresa').filter(
+            usuario=request.user,
+        ).first()
+        if tutor is None:
+            return Response({'detail': 'El usuario no es tutor empresarial.'}, status=403)
+
+        from bitacoras.models import RegistroPractica
+
+        estudiantes = Estudiante.objects.filter(
+            tutor_empresarial=tutor,
+        ).select_related(
+            'usuario', 'carrera', 'semestre', 'empresa',
+            'tutor_academico__usuario', 'tutor_empresarial__usuario',
+        ).order_by('usuario__last_name', 'usuario__first_name', 'id')
+
+        estudiantes_data = []
+        registros_data = []
+        for estudiante in estudiantes:
+            nombre = estudiante.usuario.get_full_name() or estudiante.usuario.email
+            registros = RegistroPractica.objects.filter(
+                estudiante=estudiante,
+            ).order_by('-fecha', '-hora_entrada', '-id')
+            ultimo = registros.first()
+            actividad = ultimo.actividades.order_by('-id').first() if ultimo else None
+            estudiantes_data.append({
+                'id': estudiante.id,
+                'student': {
+                    'id': estudiante.usuario_id,
+                    'username': estudiante.usuario.username,
+                    'email': estudiante.usuario.email,
+                    'first_name': estudiante.usuario.first_name,
+                    'last_name': estudiante.usuario.last_name,
+                    'name': nombre,
+                    'phone': estudiante.usuario.telefono,
+                    'cedula': estudiante.cedula,
+                    'company': estudiante.empresa.nombre if estudiante.empresa else None,
+                    'company_name': estudiante.empresa.nombre if estudiante.empresa else None,
+                    'career_name': estudiante.carrera.nombre if estudiante.carrera else None,
+                    'carrera_id': estudiante.carrera_id,
+                    'semestre_id': estudiante.semestre_id,
+                    'semestre_nombre': estudiante.semestre.nombre if estudiante.semestre else None,
+                    'rol': 'estudiante',
+                    'estado': estudiante.usuario.estado,
+                    'is_active': estudiante.usuario.is_active,
+                },
+                'academic_tutor_id': estudiante.tutor_academico_id,
+                'company_tutor_id': tutor.id,
+                'company_tutor_name': tutor.usuario.get_full_name() or tutor.usuario.email,
+                'company_tutor_phone': tutor.usuario.telefono,
+                'total_hours_required': estudiante.get_avance_practicas()['horas_requeridas'],
+                'total_hours_completed': round(float(estudiante.get_avance_practicas()['horas_acumuladas']), 2),
+                'status': 'Completado' if estudiante.get_avance_practicas()['completo'] else 'En Proceso',
+                'last_activity_description': actividad.descripcion if actividad else None,
+                'last_activity_date': ultimo.fecha.isoformat() if ultimo else None,
+                'last_attendance_time': ultimo.hora_entrada.strftime('%H:%M') if ultimo else None,
+            })
+            for registro in registros:
+                actividad = registro.actividades.order_by('-id').first()
+                registros_data.append({
+                    'id': registro.id,
+                    'student_id': estudiante.usuario_id,
+                    'student_name': nombre,
+                    'company_name': estudiante.empresa.nombre if estudiante.empresa else '',
+                    'fecha': registro.fecha.isoformat(),
+                    'hora_entrada': registro.hora_entrada.strftime('%H:%M:%S') if registro.hora_entrada else '',
+                    'hora_salida': registro.hora_salida.strftime('%H:%M:%S') if registro.hora_salida else None,
+                    'actividad_descripcion': actividad.descripcion if actividad else '',
+                    'estado': registro.estado,
                 })
 
         return Response({

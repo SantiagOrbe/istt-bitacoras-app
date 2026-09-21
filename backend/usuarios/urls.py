@@ -8,6 +8,8 @@ from .views import (
     RegistroView,
     ResponsablePracticasDatosView,
     TutorAcademicoDatosView,
+    TutorEmpresarialDatosView,
+    CoordinadorDatosView,
     UsuarioViewSet,
 )
 
@@ -23,10 +25,16 @@ urlpatterns = [
     path('login/', LoginTokenView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('perfil/', PerfilView.as_view(), name='perfil'),
+    path('coordinador/datos/', CoordinadorDatosView.as_view(), name='coordinador-datos'),
     path(
         'tutor-academico/mis-tutoriados/',
         TutorAcademicoDatosView.as_view(),
         name='tutor-academico-mis-tutoriados',
+    ),
+    path(
+        'tutor-empresarial/mis-pasantes/',
+        TutorEmpresarialDatosView.as_view(),
+        name='tutor-empresarial-mis-pasantes',
     ),
     path(
         'responsable-practicas/datos/',

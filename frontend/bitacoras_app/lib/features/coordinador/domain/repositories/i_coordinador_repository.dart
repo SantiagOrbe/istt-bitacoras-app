@@ -7,4 +7,5 @@ abstract class ICoordinadorRepository {
 
   /// Consulta exclusivamente de lectura para tutores.
   Future<List<Map<String, dynamic>>> getTutores();
+  Future<Map<String, dynamic>> getDatosCarrera();
 }

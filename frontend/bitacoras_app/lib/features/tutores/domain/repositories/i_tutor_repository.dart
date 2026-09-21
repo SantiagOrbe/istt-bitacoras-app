@@ -6,7 +6,7 @@ import '../models/estado_visita_tutor_model.dart';
 
 abstract class ITutorRepository {
   Future<List<EstudianteAsignadoModel>> getAssignedStudents(String tutorId, {required bool isAcademic});
-  Future<List<RegistroPracticaModel>> getStudentLogs(String studentId);
+  Future<List<RegistroPracticaModel>> getStudentLogs(String studentId, {bool isAcademic = true});
   Future<EstadoVisitaTutorModel> getTodayVisitStatus();
   Future<EstadoVisitaTutorModel> registerTutorEntry({required double latitude, required double longitude});
   Future<EstadoVisitaTutorModel> registerTutorExit({required double latitude, required double longitude});

@@ -46,9 +46,9 @@ List<SeccionMenuModel> getOpcionesDrawerTutorEmpresarial() {
           route: AppRoutes.assignedStudents,
         ),
         ItemMenuModel(
-          icon: Icons.description_outlined,
-          title: 'Reportes',
-          route: AppRoutes.reports,
+          icon: Icons.analytics_outlined,
+          title: 'Seguimiento',
+          route: AppRoutes.companyTutorTracking,
         ),
       ],
     ),

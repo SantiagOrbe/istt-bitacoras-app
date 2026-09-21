@@ -17,10 +17,12 @@ class FakeTutorRepository implements ITutorRepository {
     String tutorId, {
     required bool isAcademic,
   }) async {
-    if (!isAcademic) return [];
-
     try {
-      final response = await _apiClient.get('usuarios/tutor-academico/mis-tutoriados/');
+      final response = await _apiClient.get(
+        isAcademic
+        ? 'usuarios/tutor-academico/mis-tutoriados/'
+        : 'usuarios/tutor-empresarial/mis-pasantes/',
+      );
       debugPrint('=== DEBUG TUTOR LIST ===');
       debugPrint('tutorId: $tutorId');
       debugPrint('isAcademic: $isAcademic');
@@ -65,9 +67,13 @@ class FakeTutorRepository implements ITutorRepository {
   }
 
   @override
-  Future<List<RegistroPracticaModel>> getStudentLogs(String studentId) async {
+  Future<List<RegistroPracticaModel>> getStudentLogs(String studentId, {bool isAcademic = true}) async {
     try {
-      final response = await _apiClient.get('usuarios/tutor-academico/mis-tutoriados/');
+      final response = await _apiClient.get(
+        isAcademic
+            ? 'usuarios/tutor-academico/mis-tutoriados/'
+            : 'usuarios/tutor-empresarial/mis-pasantes/',
+      );
       final logs = response is Map<String, dynamic>
           ? (response['registros'] as List? ?? const [])
           : const <dynamic>[];

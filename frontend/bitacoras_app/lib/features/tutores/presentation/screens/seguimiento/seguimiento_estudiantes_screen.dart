@@ -47,7 +47,10 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
 
       final records = <RegistroPracticaModel>[];
       for (final item in data) {
-        final logs = await _repository.getStudentLogs(item.student.id);
+        final logs = await _repository.getStudentLogs(
+          item.student.id,
+          isAcademic: widget.isAcademic,
+        );
         records.addAll(logs);
       }
 

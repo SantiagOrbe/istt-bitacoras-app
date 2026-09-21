@@ -42,3 +42,40 @@ class CoordinadorInfoCard extends StatelessWidget {
     );
   }
 }
+
+class CoordinadorDetalleCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final List<MapEntry<String, String>> details;
+
+  const CoordinadorDetalleCard({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.details,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      elevation: 0,
+      color: AppColors.background,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: AppColors.outline),
+      ),
+      child: ExpansionTile(
+        leading: Icon(icon, color: AppColors.primary),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        children: details.map((detail) {
+          return ListTile(
+            dense: true,
+            title: Text(detail.key, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+            subtitle: Text(detail.value, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}

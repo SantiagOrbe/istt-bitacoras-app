@@ -6,12 +6,15 @@ class CoordinadorConsultaController extends ChangeNotifier {
 
   List<Map<String, dynamic>> items = [];
   bool isLoading = false;
+  Map<String, dynamic> datosCarrera = const {};
 
   CoordinadorConsultaController({required this.repository});
 
   Future<void> cargarEstudiantes() async {
     _setLoading(true);
-    items = await repository.getEstudiantes();
+    datosCarrera = await repository.getDatosCarrera();
+    items = (datosCarrera['estudiantes'] as List? ?? const [])
+        .whereType<Map<String, dynamic>>().toList();
     _setLoading(false);
   }
 
@@ -23,7 +26,9 @@ class CoordinadorConsultaController extends ChangeNotifier {
 
   Future<void> cargarTutores() async {
     _setLoading(true);
-    items = await repository.getTutores();
+    datosCarrera = await repository.getDatosCarrera();
+    items = (datosCarrera['tutores'] as List? ?? const [])
+        .whereType<Map<String, dynamic>>().toList();
     _setLoading(false);
   }
 

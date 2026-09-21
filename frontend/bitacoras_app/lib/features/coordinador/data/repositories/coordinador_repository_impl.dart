@@ -16,4 +16,7 @@ class CoordinadorRepositoryImpl implements ICoordinadorRepository {
 
   @override
   Future<List<Map<String, dynamic>>> getTutores() => remoteDataSource.getTutores();
+
+  @override
+  Future<Map<String, dynamic>> getDatosCarrera() => remoteDataSource.getDatosCarrera();
 }

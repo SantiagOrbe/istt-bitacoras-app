@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 from empresas.models import Empresa
 from .models import Estudiante
+from .models import Coordinador
 from .models import ResponsablePracticas
 from .models import TutorAcademico
 from gestion_academica.models import Carrera
@@ -299,6 +300,65 @@ class AutenticacionTests(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(response.data['total'], 1)
 		self.assertEqual(response.data['estudiantes'][0]['student']['name'], 'Luis Estudiante')
+
+	def test_coordinador_muestra_empresa_del_estudiante_en_tutor_academico(self):
+		carrera = Carrera.objects.create(
+			nombre='Redes y Telecomunicaciones',
+			descripcion='Carrera de prueba',
+			codigo_carrera='RT1',
+			sigla_carrera='RT',
+			modalidad='Presencial',
+		)
+		empresa = Empresa.objects.create(
+			nombre='Empresa del estudiante',
+			direccion='Av. Principal',
+			telefono='0999999999',
+			correo='empresa@prueba.com',
+			latitud=-0.1807,
+			longitud=-78.4834,
+		)
+		usuario_coordinador = Usuario.objects.create_user(
+			username='coordinador.rt',
+			email='coordinador.rt@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='coordinador',
+		)
+		Coordinador.objects.create(
+			usuario=usuario_coordinador,
+			cedula='1500000200',
+			carrera=carrera,
+		)
+		usuario_tutor = Usuario.objects.create_user(
+			username='tutor.rt',
+			email='tutor.rt@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='tutor_academico',
+		)
+		tutor = TutorAcademico.objects.create(
+			usuario=usuario_tutor,
+			cedula='1500000201',
+			carrera=carrera,
+		)
+		usuario_estudiante = Usuario.objects.create_user(
+			username='estudiante.rt',
+			email='estudiante.rt@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='estudiante',
+		)
+		Estudiante.objects.create(
+			usuario=usuario_estudiante,
+			cedula='1500000202',
+			carrera=carrera,
+			empresa=empresa,
+			tutor_academico=tutor,
+		)
+
+		self.client.force_authenticate(user=usuario_coordinador)
+		response = self.client.get(reverse('coordinador-datos'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['tutores'][0]['empresa_id'], empresa.id)
+		self.assertEqual(response.data['tutores'][0]['empresa_nombre'], empresa.nombre)
 
 	def test_admin_crea_perfil_de_responsable_de_practicas(self):
 		self.client.force_authenticate(user=self.admin)

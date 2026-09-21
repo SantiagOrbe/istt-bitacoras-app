@@ -1,7 +1,6 @@
 import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
 import 'package:bitacoras_app/features/inicio/presentation/widgets/inicio_app_bar.dart';
 import 'package:bitacoras_app/features/tutores/data/repositories/fake_tutor_repository.dart';
-import 'package:bitacoras_app/features/tutores/presentation/screens/seguimiento/detalle_seguimiento_estudiante_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../../../config/constants/app_colors.dart';
 
@@ -81,7 +80,7 @@ class _EstudiantesAsignadosScreenState extends State<EstudiantesAsignadosScreen>
                             final item = _assignedList[index];
                             return EstudianteTutorizadoCard(
                               item: item,
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetalleSeguimientoEstudianteScreen(assignedStudent: item))),
+                              onTap: () {},
                             );
                           },
                         ),

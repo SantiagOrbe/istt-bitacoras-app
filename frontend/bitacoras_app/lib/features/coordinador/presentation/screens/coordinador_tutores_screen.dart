@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../inicio/domain/models/usuario_model.dart';
 import '../../../../config/constants/app_colors.dart';
-import '../../../inicio/data/repositories/fake_usuario_repository.dart';
 import '../../../inicio/presentation/widgets/inicio_app_bar.dart';
 import '../controllers/coordinador_consulta_controller.dart';
 import '../../domain/repositories/i_coordinador_repository.dart';
 import '../widgets/coordinador_info_card.dart';
 
 class CoordinadorTutoresScreen extends StatefulWidget {
-  const CoordinadorTutoresScreen({super.key});
+  final UsuarioModel currentUser;
+
+  const CoordinadorTutoresScreen({super.key, required this.currentUser});
 
   @override
   State<CoordinadorTutoresScreen> createState() =>
@@ -34,7 +36,7 @@ class _CoordinadorTutoresScreenState
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: InicioAppBar(
-        user: FakeUsuarioRepository.coordinator,
+        user: widget.currentUser,
         showBackButton: true,
         showDrawerButton: false,
         onBackPressed: () => context.pop(),
@@ -48,13 +50,20 @@ class _CoordinadorTutoresScreenState
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: _controller.items.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = _controller.items[index];
-              return CoordinadorInfoCard(
-                title: item['nombre'] ?? '',
-                subtitle: 'Correo: ${item['correo']}',
+              return CoordinadorDetalleCard(
+                title: item['nombre']?.toString() ?? 'Tutor sin nombre',
                 icon: Icons.badge_rounded,
+                details: [
+                  MapEntry('Correo', item['email']?.toString() ?? 'Sin correo registrado'),
+                  MapEntry('Teléfono', item['telefono']?.toString().isNotEmpty == true ? item['telefono'].toString() : 'Sin teléfono registrado'),
+                  MapEntry('Cédula', item['cedula']?.toString() ?? 'Sin cédula registrada'),
+                  MapEntry('Carrera', item['carrera_nombre']?.toString() ?? widget.currentUser.careerName ?? 'Sin carrera registrada'),
+                  MapEntry('Empresa asignada', item['empresa_nombre']?.toString() ?? 'Sin empresa asignada'),
+                  MapEntry('Estado', item['estado'] == true ? 'Activo' : 'Inactivo'),
+                ],
               );
             },
           );

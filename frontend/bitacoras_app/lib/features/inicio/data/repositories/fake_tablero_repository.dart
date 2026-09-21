@@ -1,9 +1,4 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/app/routes/app_routes.dart';
-import '../../domain/models/accion_rapida_model.dart';
-import '../../domain/models/rol_usuario_model.dart';
-import '../../domain/repositories/i_tablero_repository.dart';
 
 class FakeTableroRepository implements ITableroRepository {
   @override
@@ -163,28 +158,12 @@ class FakeTableroRepository implements ITableroRepository {
         route: AppRoutes.companyTutorTracking,
         onTap: () {},
       ),
-      AccionRapidaModel(
-        title: 'Mi Perfil',
-        subtitle: 'Datos de la empresa y personales',
-        icon: Icons.person_rounded,
-        iconBackgroundColor: const Color(0xFF00897B),
-        route: AppRoutes.perfil,
-        onTap: () {},
-      ),
     ];
   }
 
   @override
   List<AccionRapidaModel> coordinatorActions() {
     return [
-      AccionRapidaModel(
-        title: 'Carreras',
-        subtitle: 'Consulta de carreras',
-        icon: Icons.account_tree_rounded,
-        iconBackgroundColor: const Color(0xFF7B1FA2),
-        route: AppRoutes.coordinatorCareers,
-        onTap: () {},
-      ),
       AccionRapidaModel(
         title: 'Estudiantes',
         subtitle: 'Consulta de estudiantes',
