@@ -155,6 +155,11 @@ class FakeTutorRepository implements ITutorRepository {
   }
 
   @override
+  Future<Uint8List> downloadTutorReportPdf() {
+    return _apiClient.downloadBinary('bitacoras/visitas-tutor/mi-reporte-pdf/');
+  }
+
+  @override
   Future<RegistroPracticaModel> updateLog({
     required String logId,
     String? activityDescription,

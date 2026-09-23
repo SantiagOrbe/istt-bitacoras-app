@@ -105,7 +105,7 @@ class ReportePracticaPdfService {
               header: ['#', 'Fecha', 'Hora Ingreso', 'Hora Salida', 'Actividad Realizada', 'Firma del Estudiante'],
               rows: rows,
             ),
-            pw.SizedBox(height: 26),
+            pw.SizedBox(height: 30),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
@@ -161,11 +161,11 @@ class ReportePracticaPdfService {
                   children: [
                     pw.Text(
                       'Punto de Atención al Usuario: km 1 1/2 vía Tena – Archidona',
-                      style: pw.TextStyle(fontSize: 10),
+                      style: pw.TextStyle(fontSize: 9),
                     ),
-                    pw.Text('Telefono: 062311709', style: pw.TextStyle(fontSize: 10)),
-                    pw.Text('secretaria.general@isttena.edu.ec', style: pw.TextStyle(fontSize: 10)),
-                    pw.Text('https://www.isttena.edu.ec', style: pw.TextStyle(fontSize: 10)),
+                    pw.Text('Telefono: 062311709', style: pw.TextStyle(fontSize: 9)),
+                    pw.Text('secretaria.general@isttena.edu.ec', style: pw.TextStyle(fontSize: 9)),
+                    pw.Text('https://www.isttena.edu.ec', style: pw.TextStyle(fontSize: 9)),
                   ],
                 ),
                 pw.Column(

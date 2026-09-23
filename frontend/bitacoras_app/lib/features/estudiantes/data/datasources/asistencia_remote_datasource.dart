@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bitacoras_app/core/network/api_client.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
@@ -51,6 +53,10 @@ class AsistenciaRemoteDataSource {
     return response is Map<String, dynamic>
         ? RegistroAsistenciaModel.fromJson(response)
         : null;
+  }
+
+  Future<Uint8List> descargarReportePdf() async {
+    return apiClient.downloadBinary('bitacoras/registros/mi-reporte-pdf/');
   }
 
   Future<UbicacionEmpresaModel> obtenerUbicacionEmpresa() async {

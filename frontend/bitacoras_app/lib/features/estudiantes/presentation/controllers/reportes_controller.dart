@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:bitacoras_app/features/estudiantes/data/services/reporte_practica_pdf_service.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../domain/repositories/i_asistencia_repository.dart';
 
 class ReportesController extends ChangeNotifier {
@@ -45,27 +48,40 @@ class ReportesController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final path = await ReportePracticaPdfService.saveToFile(
-        user: currentUser,
-        history: history,
-      );
+      final bytes = await repository.downloadPracticeReportPdf();
+      final directory = await getApplicationDocumentsDirectory();
+      final sanitizedName = currentUser.name
+          .replaceAll(RegExp(r'[^A-Za-z0-9\u00C0-\u024F\u1E00-\u1EFF]+'), '_')
+          .replaceAll(RegExp(r'_+'), '_')
+          .replaceAll(RegExp(r'^_|_$'), '');
+      final file = File('${directory.path}/bitacora_${sanitizedName}_${DateTime.now().millisecondsSinceEpoch}.pdf');
+      await file.writeAsBytes(bytes);
 
-      if (path.isNotEmpty) {
-        try {
-          await OpenFile.open(path);
-        } catch (_) {
-          // The file was already saved successfully; the open step is best-effort.
-        }
-
-        isGeneratingPdf = false;
-        notifyListeners();
-        return 'Generacion de pdf completa';
-      }
+      try {
+        await OpenFile.open(file.path);
+      } catch (_) {}
 
       isGeneratingPdf = false;
       notifyListeners();
-      return 'No se pudo generar el PDF.';
+      return 'Generacion de pdf completa';
     } catch (_) {
+      try {
+        final path = await ReportePracticaPdfService.saveToFile(
+          user: currentUser,
+          history: history,
+        );
+
+        if (path.isNotEmpty) {
+          try {
+            await OpenFile.open(path);
+          } catch (_) {}
+
+          isGeneratingPdf = false;
+          notifyListeners();
+          return 'Generacion de pdf completa';
+        }
+      } catch (_) {}
+
       isGeneratingPdf = false;
       notifyListeners();
       return 'No se pudo generar el PDF.';

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bitacoras_app/features/estudiantes/data/services/reporte_practica_pdf_service.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
@@ -41,6 +43,11 @@ class _MockAsistenciaRepository implements IAsistenciaRepository {
         'horas_acumuladas': 20,
         'horas_requeridas': 120,
       };
+
+  @override
+  Future<Uint8List> downloadPracticeReportPdf() async {
+    throw UnsupportedError('Descarga remota no disponible en este mock');
+  }
 
   @override
   Future<bool> registerAttendance({

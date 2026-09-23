@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
@@ -20,9 +21,9 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  // Android emulator: 10.0.2.2
-  // Physical device: replace with your machine LAN IP, e.g. http://192.168.1.39:8000/api/
-  static const defaultBaseUrl = 'http://192.168.1.39:8000/api/';
+  // Android emulator: 10.0.2.2:8000
+  // Physical device through the Windows-to-WSL port bridge: port 8001.
+  static const defaultBaseUrl = 'http://192.168.1.39:8001/api/';
 
   final String baseUrl;
   final TokenStorage tokenStorage;
@@ -98,6 +99,35 @@ class ApiClient {
       body: body,
       requiresAuth: requiresAuth,
     );
+  }
+
+  Future<Uint8List> downloadBinary(
+    String endpoint, {
+    bool requiresAuth = true,
+  }) async {
+    final uri = _buildUri(endpoint, null);
+    final headers = <String, String>{
+      'Accept': '*/*',
+    };
+
+    if (requiresAuth) {
+      final token = await tokenStorage.getToken();
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    final response = await _client.get(uri, headers: headers);
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw ApiException(
+        statusCode: response.statusCode,
+        message: 'No se pudo descargar el PDF del reporte.',
+        body: response.body,
+      );
+    }
+
+    return response.bodyBytes;
   }
 
   void close() => _client.close();

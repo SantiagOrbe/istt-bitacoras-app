@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bitácora de prácticas</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 11mm 14mm 12mm 14mm;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #111;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 10px;
+        margin: 0;
+      }
+
+      :root {
+        --institutional-gray-blue: #d9dde6;
+      }
+
+      .page {
+        width: 100%;
+        height: 274mm;
+        position: relative;
+        box-sizing: border-box;
+        padding-bottom: 40mm;
+        overflow: hidden;
+        page-break-after: always;
+      }
+
+      .page:last-child {
+        page-break-after: auto;
+      }
+
+      .header {
+        position: relative;
+        width: 100%;
+        border: 0;
+        padding: 0;
+        margin-bottom: 7px;
+        min-height: 0;
+      }
+
+      .header-col {
+        vertical-align: middle;
+      }
+
+      .header-left {
+        width: 31%;
+        text-align: left;
+      }
+
+      .header-institutional {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .logo-ist {
+        position: absolute;
+        width: 190px;
+        height: auto;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .logo-republica {
+        width: 100%;
+        max-height: 55px;
+        object-fit: contain;
+      }
+
+      .marca {
+        margin: 0;
+        font-size: 9px;
+        font-weight: bold;
+        letter-spacing: 0;
+      }
+
+      .marca.small {
+        font-size: 7px;
+      }
+
+      .title {
+        text-align: center;
+        font-weight: 900;
+        font-size: 15px;
+        margin: 2px 0 1px;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-weight: bold;
+        font-size: 9px;
+        margin-bottom: 7px;
+      }
+
+      .section-title {
+        background: var(--institutional-gray-blue);
+        color: #000;
+        font-weight: bold;
+        padding: 3px 5px;
+        border: 1px solid #000;
+        font-size: 9px;
+        margin-top: 4px;
+      }
+
+      .grid {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: 0;
+      }
+
+      .grid td {
+        border: 1px solid #222;
+        padding: 3px 5px;
+        vertical-align: top;
+        box-sizing: border-box;
+        line-height: 1.15;
+      }
+
+      .label {
+        font-weight: bold;
+        width: 20%;
+        background: var(--institutional-gray-blue);
+        white-space: normal;
+      }
+
+      .cell {
+        width: 80%;
+        overflow-wrap: anywhere;
+      }
+
+      .label-wide {
+        width: 20%;
+      }
+
+      .cell-wide {
+        width: 50%;
+      }
+
+      .label-compact {
+        width: 10%;
+      }
+
+      .cell-compact {
+        width: 20%;
+      }
+
+      .label-additional {
+        width: 20%;
+      }
+
+      .cell-additional {
+        width: 30%;
+      }
+
+      .table-activity {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+        page-break-inside: avoid;
+        table-layout: fixed;
+        margin-bottom: 2mm;
+      }
+
+      .table-activity th,
+      .table-activity td {
+        border: 1px solid #222;
+        padding: 3px 4px;
+        vertical-align: top;
+      }
+
+      .table-activity th {
+        background: var(--institutional-gray-blue);
+        font-size: 7px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .table-activity td {
+        font-size: 7px;
+        line-height: 1.2;
+        height: 13mm;
+        box-sizing: border-box;
+      }
+
+      .table-activity td.num {
+        text-align: center;
+        width: 5%;
+      }
+
+      .table-activity td.fecha,
+      .table-activity td.hora {
+        width: 13%;
+        text-align: center;
+      }
+
+      .table-activity td.actividad {
+        width: 37%;
+      }
+
+      .firmas {
+        width: 100%;
+        position: absolute;
+        left: 0;
+        bottom: 41mm;
+        z-index: 2;
+        margin: 0;
+      }
+
+      .firma-row {
+        display: table;
+        width: 100%;
+      }
+
+      .firma-box {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 1.25;
+      }
+
+      .linea {
+        width: 125px;
+        height: 1px;
+        background: #000;
+        margin: 20px auto 4px;
+      }
+
+      .footer {
+        display: table;
+        width: calc(100% - 40px);
+        position: absolute;
+        left: 20px;
+        bottom: 0;
+        margin-top: 0;
+        font-size: 10px;
+        min-height: 40mm;
+        height: 40mm;
+      }
+
+      .footer-left,
+      .footer-right {
+        display: table-cell;
+        vertical-align: bottom;
+      }
+
+      .footer-left {
+        width: 65%;
+        font-weight: normal;
+        line-height: 1.35;
+      }
+
+      .footer-right {
+        width: 35%;
+        text-align: right;
+        vertical-align: bottom;
+      }
+
+      .brand {
+        font-weight: bold;
+        font-size: 13px;
+        letter-spacing: 0.2px;
+      }
+
+      .brand { color: #29338c; }
+
+      .logo-ecuador {
+        width: 23500px;
+        max-width: 100%;
+        max-height: 55mm;
+        object-fit: contain;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      .continuation-title {
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        margin: 4px 0 8px;
+      }
+    </style>
+  </head>
+  <body>
+    {% for page_rows in pages %}
+      <div class="page">
+        <div class="header">
+          {% if encabezado_institucional_path %}<img class="header-institutional" src="{{ encabezado_institucional_path }}" />{% endif %}
+          {% if ist_encabezado_path %}<img class="logo-ist" src="{{ ist_encabezado_path }}" />{% endif %}
+        </div>
+
+        {% if forloop.first %}
+          <div class="title">Bitácora del estudiante</div>
+          <div class="subtitle">Formación práctica en el entorno laboral real</div>
+          <div class="section-title">DATOS DEL ESTUDIANTE</div>
+          <table class="grid student-grid">
+            <colgroup>
+              <col style="width: 20%;" /><col style="width: 50%;" />
+              <col style="width: 10%;" /><col style="width: 20%;" />
+            </colgroup>
+            <tr><td class="label">Apellidos y Nombres:</td><td class="cell" colspan="3">{{ full_name }}</td></tr>
+            <tr><td class="label label-wide">Carrera:</td><td class="cell cell-wide">{{ carrera.nombre|default:'Sin carrera' }}</td><td class="label label-compact">Periodo:</td><td class="cell cell-compact">{{ periodo|default:'Sin periodo' }}</td></tr>
+          </table>
+          <div class="section-title">DATOS DE LA EMPRESA</div>
+          <table class="grid">
+            <tr><td class="label">Institución/Empresa:</td><td class="cell">{{ empresa.nombre|default:'Sin empresa asignada' }}</td></tr>
+            <tr><td class="label">Dirección:</td><td class="cell">{{ empresa.direccion|default:'Sin dirección registrada' }}</td></tr>
+            <tr><td class="label label-wide">Cantón:</td><td class="cell cell-wide">Sin cantón registrado</td><td class="label label-compact">Teléfono:</td><td class="cell cell-compact">{{ empresa.telefono|default:'Sin teléfono registrado' }}</td></tr>
+          </table>
+          <div class="section-title">DATOS ADICIONALES</div>
+          <table class="grid">
+            <tr><td class="label label-additional">Nombre del tutor académico:</td><td class="cell cell-additional">{{ tutor_academico }}</td><td class="label label-additional">Nombre del tutor empresarial:</td><td class="cell cell-additional">{{ tutor_empresarial }}</td></tr>
+            <tr><td class="label label-additional">Fecha Inicio (d/m/a):</td><td class="cell cell-additional">{{ fecha_inicio }}</td><td class="label label-additional">Fecha Fin (d/m/a):</td><td class="cell cell-additional">{{ fecha_fin }}</td></tr>
+          </table>
+        {% else %}
+          <div class="continuation-title">BITÁCORA DEL ESTUDIANTE - CONTINUACIÓN</div>
+        {% endif %}
+
+        <table class="table-activity">
+          <colgroup>
+            <col style="width: 5%;" /><col style="width: 13%;" />
+            <col style="width: 13%;" /><col style="width: 13%;" />
+            <col style="width: 37%;" /><col style="width: 19%;" />
+          </colgroup>
+          <thead><tr><th>#</th><th>Fecha</th><th>Hora Ingreso</th><th>Hora Salida</th><th>Actividad Realizada</th><th>Firma del Estudiante</th></tr></thead>
+          <tbody>{% for item in page_rows %}<tr><td class="num">{{ item.numero }}</td><td class="fecha">{{ item.fecha }}</td><td class="hora">{{ item.hora_entrada }}</td><td class="hora">{{ item.hora_salida }}</td><td class="actividad">{{ item.actividad }}</td><td></td></tr>{% endfor %}</tbody>
+        </table>
+
+        {% if forloop.last %}
+          <div class="firmas">
+            <div class="firma-box">
+              <div style="font-weight:bold; margin-top:2px;">C.C: {{ tutor_empresarial_cedula }}</div>
+              <div style="font-weight:bold; margin-top:2px;">{{ tutor_empresarial }}</div>
+              <div style="font-weight:bold; margin-top:2px;">Tutor Empresarial</div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="footer">
+          <div class="footer-left">
+            <div><strong>Punto<br />de Atención al Usuario:</strong> km 1 ½ vía Tena – Archidona</div>
+            <div><strong>Teléfono:</strong> 062311709</div>
+            <div><strong>secretaria.general@itstena.edu.ec</strong></div>
+            <div><strong>https://www.itstena.edu.ec</strong></div>
+          </div>
+          <div class="footer-right">
+            {% if ecuador_path %}<img class="logo-ecuador" src="{{ ecuador_path }}" />{% else %}<div class="brand">EL NUEVO ECUADOR</div>{% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </body>
+</html>

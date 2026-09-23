@@ -64,11 +64,11 @@ class ReporteVisitasTutorPdfService {
           pw.SizedBox(height: 8),
           pw.Center(child: pw.Text('HOJA DE RUTA INSTITUCIONAL', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 13))),
           pw.SizedBox(height: 10),
-          _infoTable([
-            ['PROFESOR', user.name, 'VISTO BUENO DE TALENTO HUMANO', ''],
-            ['CARRERA/DEPENDENCIA', user.careerName ?? 'Sin carrera registrada', '', ''],
-            ['FECHA DE ELABORACIÓN', _today(), 'Correo', user.email],
-          ]),
+          _infoTable(
+            user: user,
+            firstArrival: visits.isEmpty ? '' : _formatTime(visits.first['hora_entrada']),
+            lastDeparture: visits.isEmpty ? '' : _formatTime(visits.last['hora_salida']),
+          ),
           pw.SizedBox(height: 14),
           _table(
             ['Fecha', 'Lugar/institución de visita', 'Hora de llegada', 'Actividad realizada', 'Nombres y apellidos de quien atiende', 'Hora de salida', 'Firma / Sello'],
@@ -104,19 +104,93 @@ class ReporteVisitasTutorPdfService {
         ],
       );
 
-  static pw.Widget _infoTable(List<List<String>> rows) => pw.Table(
-        border: pw.TableBorder.all(color: PdfColors.black),
-        children: rows.map((row) {
-          return pw.TableRow(
-            children: row.map((cell) {
-              return pw.Padding(
-                padding: const pw.EdgeInsets.all(5),
-                child: pw.Text(cell, style: const pw.TextStyle(fontSize: 8)),
-              );
-            }).toList(),
-          );
-        }).toList(),
-      );
+  static pw.Widget _infoTable({
+    required UsuarioModel user,
+    required String firstArrival,
+    required String lastDeparture,
+  }) {
+    final labelStyle = pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold);
+    final valueStyle = pw.TextStyle(fontSize: 8);
+    final leftTable = pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.black),
+      columnWidths: const {
+        0: pw.FixedColumnWidth(112),
+        1: pw.FixedColumnWidth(322),
+      },
+      children: [
+        pw.TableRow(children: [
+          _infoCell('PROFESOR', labelStyle, background: PdfColors.blue100),
+          _infoCell(user.name, valueStyle),
+        ]),
+        pw.TableRow(children: [
+          _infoCell('CARRERA/DEPENDENCIA', labelStyle, background: PdfColors.blue100),
+          _infoCell(user.careerName ?? 'Sin carrera registrada', valueStyle),
+        ]),
+        pw.TableRow(children: [
+          _infoCell('FECHA DE ELABORACIÓN', labelStyle, background: PdfColors.blue100),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.black),
+            columnWidths: const {
+              0: pw.FixedColumnWidth(85),
+              1: pw.FixedColumnWidth(78),
+              2: pw.FixedColumnWidth(50),
+              3: pw.FixedColumnWidth(65),
+              4: pw.FixedColumnWidth(44),
+            },
+            children: [
+              pw.TableRow(children: [
+                _infoCell(_today(), valueStyle),
+                _infoCell('HORA DE LLEGADA', labelStyle, background: PdfColors.blue100),
+                _infoCell(firstArrival, valueStyle),
+                _infoCell('HORA DE SALIDA', labelStyle, background: PdfColors.blue100),
+                _infoCell(lastDeparture, valueStyle),
+              ]),
+            ],
+          ),
+        ]),
+      ],
+    );
+
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.black),
+      columnWidths: const {
+        0: pw.FixedColumnWidth(434),
+        1: pw.FixedColumnWidth(105),
+      },
+      children: [
+        pw.TableRow(children: [
+          leftTable,
+          pw.Container(
+            height: 96,
+            padding: const pw.EdgeInsets.all(5),
+            child: pw.Column(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text(
+                  'VISTO BUENO DE TALENTO HUMANO',
+                  textAlign: pw.TextAlign.center,
+                  style: labelStyle,
+                ),
+                pw.Text(user.name, textAlign: pw.TextAlign.center, style: valueStyle),
+              ],
+            ),
+          ),
+        ]),
+      ],
+    );
+  }
+
+  static pw.Widget _infoCell(
+    String text,
+    pw.TextStyle style, {
+    PdfColor? background,
+  }) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(5),
+      color: background,
+      child: pw.Text(text, style: style),
+    );
+  }
 
   static pw.Widget _table(List<String> headers, List<List<String>> rows) => pw.Table(
         border: pw.TableBorder.all(color: PdfColors.black),
@@ -145,7 +219,26 @@ class ReporteVisitasTutorPdfService {
         ],
       );
 
-  static pw.Widget _signature(String label, String value) => pw.Column(children: [pw.Text(label, style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)), pw.SizedBox(height: 24), pw.Container(width: 130, height: 1, color: PdfColors.black), pw.SizedBox(height: 4), pw.Text(value, style: const pw.TextStyle(fontSize: 8))]);
+  static pw.Widget _signature(String label, String value) => pw.Container(
+        width: 165,
+        child: pw.Column(
+          children: [
+            pw.Container(
+              height: 58,
+              width: double.infinity,
+              decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
+            ),
+            pw.Container(
+              height: 30,
+              width: double.infinity,
+              decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
+              alignment: pw.Alignment.center,
+              padding: const pw.EdgeInsets.all(3),
+              child: pw.Text('$label: $value', textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 8)),
+            ),
+          ],
+        ),
+      );
 
   static String _text(dynamic value) => value?.toString() ?? '';
   static String _formatTime(dynamic value) => _text(value).isEmpty ? '' : _text(value).substring(0, _text(value).length > 5 ? 5 : _text(value).length);

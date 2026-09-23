@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:bitacoras_app/app/apps.dart';
 import 'package:open_file/open_file.dart';
-import '../../../data/services/reporte_visitas_tutor_pdf_service.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ReportesTutorScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -39,10 +41,10 @@ class _ReportesTutorScreenState extends State<ReportesTutorScreen> {
   Future<void> _generateReport() async {
     setState(() => _isGenerating = true);
     try {
-      final path = await ReporteVisitasTutorPdfService.saveToFile(
-        user: widget.currentUser,
-        visits: _visits,
-      );
+      final bytes = await _repository.downloadTutorReportPdf();
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/hoja_ruta_tutor_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      await File(path).writeAsBytes(bytes);
       await OpenFile.open(path);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

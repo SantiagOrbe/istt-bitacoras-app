@@ -174,6 +174,29 @@ class BitacorasGeofencingTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('horas de práctica', str(response.data))
 
+    def test_student_can_download_report_pdf(self):
+        from datetime import time
+
+        registro = RegistroPractica.objects.create(
+            estudiante=self.estudiante,
+            fecha='2026-09-20',
+            hora_entrada=time(8, 0),
+            hora_salida=time(12, 0),
+            estado=True,
+        )
+        Actividad.objects.create(
+            registro_practica=registro,
+            descripcion='Revisión del sistema de inventario y apoyo en soporte técnico.',
+            estado=True,
+        )
+
+        self.client.force_authenticate(user=self.user_estudiante)
+        response = self.client.get(reverse('registropractica-mi-reporte-pdf'))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        self.assertTrue(response.content.startswith(b'%PDF'))
+
     def test_tutor_academico_registra_entrada_y_salida_en_su_entidad(self):
         self.client.force_authenticate(user=self.user_tutor_acad)
 

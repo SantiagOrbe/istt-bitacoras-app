@@ -1,12 +1,19 @@
+import re
+from pathlib import Path
+
 from django.contrib.gis.geos import Point
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from weasyprint import HTML
 
-from usuarios.models import Estudiante, TutorAcademico, TutorEmpresarial
+from gestion_academica.models import CarreraPeriodo
+from usuarios.models import Coordinador, Estudiante, TutorAcademico, TutorEmpresarial
 from .models import Actividad, RegistroPractica, VisitaTutorAcademico
 from .serializers import ActividadSerializer, RegistroPracticaSerializer, VisitaTutorAcademicoSerializer
 from .services import GeofencingService
@@ -107,6 +114,121 @@ class RegistroPracticaViewSet(viewsets.ModelViewSet):
             status_code = status.HTTP_404_NOT_FOUND if 'No se encontró' in str(detail) else status.HTTP_400_BAD_REQUEST
             return Response(detail, status=status_code)
 
+    @action(detail=False, methods=['get'], url_path='mi-reporte-pdf')
+    def mi_reporte_pdf(self, request):
+        estudiante = Estudiante.objects.filter(usuario=request.user).select_related(
+            'usuario',
+            'carrera',
+            'semestre',
+            'empresa',
+            'tutor_academico__usuario',
+            'tutor_empresarial__usuario',
+        ).first()
+
+        if not estudiante:
+            return Response(
+                {'error': 'El usuario autenticado no tiene un perfil de estudiante asociado.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        registros = (
+            RegistroPractica.objects.filter(estudiante=estudiante)
+            .select_related('estudiante__usuario')
+            .order_by('fecha', 'hora_entrada', 'id')
+        )
+
+        tabla_registros = []
+        for index, registro in enumerate(registros, start=1):
+            actividades = registro.actividades.order_by('id').values_list('descripcion', flat=True)
+            descripcion = ' • '.join(str(item).strip() for item in actividades if str(item).strip())
+            if not descripcion:
+                descripcion = 'Sin actividades registradas'
+            tabla_registros.append({
+                'numero': index,
+                'fecha': registro.fecha.strftime('%d/%m/%Y'),
+                'hora_entrada': registro.hora_entrada.strftime('%H:%M') if registro.hora_entrada else '',
+                'hora_salida': registro.hora_salida.strftime('%H:%M') if registro.hora_salida else '',
+                'actividad': descripcion,
+            })
+
+        filas = tabla_registros[:108]
+        if not filas:
+            filas = [{
+                'numero': 1,
+                'fecha': '',
+                'hora_entrada': '',
+                'hora_salida': '',
+                'actividad': '',
+            }]
+
+        page_rows = [filas[:9]]
+        page_rows.extend(filas[start:start + 11] for start in range(9, len(filas), 11))
+
+        full_name = estudiante.usuario.get_full_name() or estudiante.usuario.email or 'Estudiante'
+        periodo_academico = (
+            CarreraPeriodo.objects.filter(
+                carrera_id=estudiante.carrera_id,
+                semestre_id=estudiante.semestre_id,
+                estado=True,
+            )
+            .filter(paralelo_id=estudiante.paralelo_id)
+            .select_related('periodo')
+            .first()
+        )
+        if periodo_academico is None:
+            periodo_academico = (
+                CarreraPeriodo.objects.filter(
+                    carrera_id=estudiante.carrera_id,
+                    semestre_id=estudiante.semestre_id,
+                    estado=True,
+                )
+                .select_related('periodo')
+                .first()
+            )
+        if estudiante.semestre:
+            periodo_nombre = estudiante.semestre.nombre
+            if estudiante.paralelo:
+                periodo_nombre = f'{periodo_nombre} “{estudiante.paralelo.nombre}”'
+        elif periodo_academico:
+            periodo_nombre = periodo_academico.periodo.nombre
+        else:
+            periodo_nombre = 'Sin periodo'
+        tutor_empresarial_name = (
+            estudiante.tutor_empresarial.usuario.get_full_name()
+            or estudiante.tutor_empresarial.usuario.email
+            if estudiante.tutor_empresarial
+            else 'Sin tutor empresarial'
+        )
+        normalized_name = re.sub(r'[^A-Za-z0-9\s_-]+', '', full_name).strip().replace(' ', '_')
+        filename = f'bitacora_{normalized_name or "estudiante"}.pdf'
+        assets_dir = Path(__file__).resolve().parents[2] / 'frontend' / 'bitacoras_app' / 'assets' / 'images'
+        def asset_uri(filename):
+            path = assets_dir / filename
+            return path.as_uri() if path.exists() else ''
+
+        html_string = render_to_string('bitacoras/reporte_practica.html', {
+            'estudiante': estudiante,
+            'full_name': full_name,
+            'empresa': estudiante.empresa,
+            'carrera': estudiante.carrera,
+            'semestre': estudiante.semestre,
+            'periodo': periodo_nombre,
+            'tutor_academico': estudiante.tutor_academico.usuario.get_full_name() if estudiante.tutor_academico else 'Sin tutor académico',
+            'tutor_empresarial': tutor_empresarial_name,
+            'tutor_empresarial_cedula': estudiante.tutor_empresarial.cedula if estudiante.tutor_empresarial else 'Sin cédula',
+            'fecha_inicio': registros.order_by('fecha').first().fecha.strftime('%d/%m/%Y') if registros.exists() else 'Sin fecha de inicio',
+            'fecha_fin': registros.order_by('-fecha').first().fecha.strftime('%d/%m/%Y') if registros.exists() else 'Sin fecha de fin',
+            'pages': page_rows[:10],
+            'encabezado_institucional_path': asset_uri('Encabezado_Republica_Ecuador.png'),
+            'ist_encabezado_path': asset_uri('ist_encabezado.png'),
+            'ecuador_path': asset_uri('El_Nuevo_Ecuador.png'),
+        })
+
+        pdf_bytes = HTML(string=html_string, base_url=str(assets_dir)).write_pdf()
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
 
 class VisitaTutorAcademicoViewSet(viewsets.ModelViewSet):
     serializer_class = VisitaTutorAcademicoSerializer
@@ -151,6 +273,44 @@ class VisitaTutorAcademicoViewSet(viewsets.ModelViewSet):
                 'puede_registrar_actividades': False,
             }
         )
+
+    @action(detail=False, methods=['get'], url_path='mi-reporte-pdf')
+    def mi_reporte_pdf(self, request):
+        tutor = TutorAcademico.objects.filter(usuario=request.user).select_related(
+            'usuario', 'carrera'
+        ).first()
+        if tutor is None:
+            return Response({'detail': 'El usuario no es tutor académico.'}, status=status.HTTP_403_FORBIDDEN)
+
+        visitas = self.get_queryset().order_by('fecha', 'hora_entrada', 'id')
+        coordinador = Coordinador.objects.filter(
+            carrera_id=tutor.carrera_id,
+            usuario__estado=True,
+            usuario__is_active=True,
+        ).select_related('usuario').order_by('id').first()
+        assets_dir = Path(__file__).resolve().parents[2] / 'frontend' / 'bitacoras_app' / 'assets' / 'images'
+
+        def asset_uri(filename):
+            path = assets_dir / filename
+            return path.as_uri() if path.exists() else ''
+
+        html_string = render_to_string('bitacoras/reporte_visitas_tutor.html', {
+            'profesor': tutor.usuario.get_full_name() or tutor.usuario.email,
+            'carrera': tutor.carrera.nombre if tutor.carrera else 'Sin carrera registrada',
+            'elaborado_por': tutor.usuario.get_full_name() or tutor.usuario.email,
+            'validado_por': coordinador.usuario.get_full_name() if coordinador else 'Sin coordinador asignado',
+            'visitas': visitas,
+            'fecha_elaboracion': timezone.localdate(),
+            'hora_inicio': visitas.first().hora_entrada if visitas.exists() else None,
+            'hora_finalizacion': visitas.last().hora_salida if visitas.exists() else None,
+            'encabezado_path': asset_uri('Encabezado_Republica_Ecuador.png'),
+            'ist_path': asset_uri('ist_encabezado.png'),
+            'ecuador_path': asset_uri('El_Nuevo_Ecuador.png'),
+        })
+        pdf_bytes = HTML(string=html_string, base_url=str(assets_dir)).write_pdf()
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="hoja_ruta_tutor.pdf"'
+        return response
 
     @action(detail=False, methods=['post'], url_path='entrada')
     def entrada(self, request):
