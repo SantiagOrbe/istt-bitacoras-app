@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../domain/models/asignacion_estudiante_model.dart';
-import '../../controllers/asignacion_estudiante_controller.dart';
-import 'asignacion_estudiante_dropdowns.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
+
 
 class FormularioAsignacionEstudianteBody extends StatefulWidget {
   final AsignacionEstudianteModel assignment;

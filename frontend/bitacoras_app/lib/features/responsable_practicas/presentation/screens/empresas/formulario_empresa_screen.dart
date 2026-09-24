@@ -1,11 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../../inicio/data/repositories/fake_usuario_repository.dart';
-import '../../../../inicio/presentation/widgets/inicio_app_bar.dart';
-import '../../../domain/models/empresa_model.dart';
-import '../../controllers/gestion_empresa_controller.dart';
-import '../../widgets/empresas/formulario_empresa_body.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
+
 
 class FormularioEmpresaScreen extends StatelessWidget {
   final EmpresaModel? company;
@@ -18,7 +12,7 @@ class FormularioEmpresaScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: InicioAppBar(
-        user: FakeUsuarioRepository.practiceManager,
+        user: context.read<AuthSession>().currentUser!,
         showBackButton: true,
         showDrawerButton: false,
         onBackPressed: () => context.pop(),

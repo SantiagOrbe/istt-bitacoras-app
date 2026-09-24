@@ -1,4 +1,5 @@
-import 'package:bitacoras_app/app/apps.dart';
+
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class CarreraDetailScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -100,6 +101,13 @@ class _CarreraDetailScreenState extends State<CarreraDetailScreen> {
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(AppSizes.radiusLg),
               border: Border.all(color: AppColors.outline),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 18,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,10 +116,29 @@ class _CarreraDetailScreenState extends State<CarreraDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.account_tree_rounded,
-                      color: AppColors.primary,
-                      size: 36,
+                    Container(
+                      width: 62,
+                      height: 62,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [AppColors.secondary, AppColors.warning],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.secondary.withValues(alpha: 0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.account_tree_rounded,
+                        color: AppColors.surface,
+                        size: 32,
+                      ),
                     ),
                     IconButton(
                       tooltip: 'Editar carrera',
@@ -157,6 +184,13 @@ class _CarreraDetailScreenState extends State<CarreraDetailScreen> {
                 ),
                 AppSizes.gapV8,
                 Text(
+                  '${_career.shortName} • ${_career.modality}',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.secondary,
+                  ),
+                ),
+                AppSizes.gapV8,
+                Text(
                   'ID: ${_career.id}',
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.textSecondary,
@@ -176,6 +210,14 @@ class _CarreraDetailScreenState extends State<CarreraDetailScreen> {
                     ),
                     icon: const Icon(Icons.layers_outlined),
                     label: const Text('Semestres'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.surface,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      ),
+                    ),
                   ),
                 ),
                 AppSizes.gapV8,

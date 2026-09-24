@@ -161,7 +161,8 @@ class CoordinadorDatosView(APIView):
             carrera_id=coordinador.carrera_id,
         ).select_related(
             'usuario', 'semestre', 'paralelo', 'empresa',
-            'tutor_academico__usuario',
+            'tutor_academico__usuario', 'tutor_empresarial__usuario',
+            'tutor_empresarial__empresa', 'carrera',
         ).order_by('semestre__nivel', 'paralelo__nombre', 'usuario__last_name')
         tutores = TutorAcademico.objects.filter(
             carrera_id=coordinador.carrera_id,
@@ -173,7 +174,13 @@ class CoordinadorDatosView(APIView):
                 'nombre': coordinador.carrera.nombre,
             },
             'semestres': [
-                {'id': semestre.id, 'nombre': semestre.nombre, 'nivel': semestre.nivel}
+                {
+                    'id': semestre.id,
+                    'nombre': semestre.nombre,
+                    'nivel': semestre.nivel,
+                    'horas_practicas': semestre.horas_practicas,
+                    'estado': semestre.estado,
+                }
                 for semestre in Semestre.objects.filter(
                     carrera_id=coordinador.carrera_id,
                 ).order_by('nivel', 'id')
@@ -184,6 +191,7 @@ class CoordinadorDatosView(APIView):
                     'nombre': paralelo.nombre,
                     'jornada': paralelo.jornada,
                     'semestre_id': paralelo.semestre_id,
+                    'estado': paralelo.estado,
                 }
                 for paralelo in Paralelo.objects.filter(
                     semestre__carrera_id=coordinador.carrera_id,
@@ -193,15 +201,42 @@ class CoordinadorDatosView(APIView):
                 {
                     'id': estudiante.id,
                     'nombre': estudiante.usuario.get_full_name() or estudiante.usuario.email,
+                    'username': estudiante.usuario.username,
                     'email': estudiante.usuario.email,
+                    'telefono': estudiante.usuario.telefono,
+                    'estado': estudiante.usuario.estado and estudiante.usuario.is_active,
+                    'cedula': estudiante.cedula,
+                    'matricula': estudiante.matricula,
+                    'carrera_nombre': estudiante.carrera.nombre if estudiante.carrera else None,
                     'semestre_id': estudiante.semestre_id,
                     'semestre_nombre': estudiante.semestre.nombre if estudiante.semestre else None,
                     'paralelo_id': estudiante.paralelo_id,
                     'paralelo_nombre': estudiante.paralelo.nombre if estudiante.paralelo else None,
                     'empresa_nombre': estudiante.empresa.nombre if estudiante.empresa else None,
+                    'tutor_empresarial': (
+                        estudiante.tutor_empresarial.usuario.get_full_name()
+                        if estudiante.tutor_empresarial else None
+                    ),
+                    'tutor_empresarial_cedula': (
+                        estudiante.tutor_empresarial.cedula
+                        if estudiante.tutor_empresarial else None
+                    ),
+                    'tutor_empresarial_cargo': (
+                        estudiante.tutor_empresarial.cargo
+                        if estudiante.tutor_empresarial else None
+                    ),
                     'tutor_academico': (
                         estudiante.tutor_academico.usuario.get_full_name()
                         if estudiante.tutor_academico else None
+                    ),
+                    'tutor_academico_cedula': (
+                        estudiante.tutor_academico.cedula
+                        if estudiante.tutor_academico else None
+                    ),
+                    'horas_acumuladas': estudiante.horas_acumuladas,
+                    'horas_requeridas': (
+                        estudiante.semestre.horas_practicas
+                        if estudiante.semestre else 0
                     ),
                 }
                 for estudiante in estudiantes

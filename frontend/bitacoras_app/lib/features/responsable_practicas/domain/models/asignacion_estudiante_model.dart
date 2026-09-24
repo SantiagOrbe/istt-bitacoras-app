@@ -58,8 +58,8 @@ class AsignacionEstudianteModel {
       companyId: companyId ?? this.companyId,
       companyName: companyName ?? this.companyName,
       isAssigned: isAssigned ?? this.isAssigned,
-      semesterId: semesterId ?? this.semesterId,
-      parallelId: parallelId ?? this.parallelId,
+      semesterId: semesterId ?? semesterId,
+      parallelId: parallelId ?? parallelId,
     );
   }
 }

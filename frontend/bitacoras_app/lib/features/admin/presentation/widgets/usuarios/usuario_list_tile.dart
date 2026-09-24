@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class UsuarioListTile extends StatelessWidget {
   final UsuarioModel user;
@@ -12,17 +12,24 @@ class UsuarioListTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
+      hoverColor: AppColors.secondary.withValues(alpha: 0.06),
+      splashColor: AppColors.secondary.withValues(alpha: 0.12),
       borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: AppSizes.sm,
-          horizontal: AppSizes.xs,
+          horizontal: AppSizes.md,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          border: Border.all(color: AppColors.outline),
         ),
         child: Row(
           children: [
             // Avatar con iniciales del usuario
             CircleAvatar(
-              radius: 20,
+              radius: 22,
               backgroundColor: roleColor.withValues(alpha: 0.12),
               child: Text(
                 user.initials,
@@ -32,7 +39,7 @@ class UsuarioListTile extends StatelessWidget {
                 ),
               ),
             ),
-            AppSizes.gapH8,
+            AppSizes.gapH12,
 
             // Nombre, CI y Rol
             Expanded(
@@ -48,7 +55,7 @@ class UsuarioListTile extends StatelessWidget {
                   Text(
                     'CI: ${user.cedula ?? 'No registrada'} • ${user.role.label}',
                     style: AppTextStyles.caption.copyWith(
-                      color: Theme.of(context).hintColor,
+                      color: AppColors.textSecondary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -82,7 +89,7 @@ class UsuarioListTile extends StatelessWidget {
 
             const Icon(
               Icons.chevron_right_rounded,
-              color: AppColors.outline,
+              color: AppColors.textSecondary,
               size: 20,
             ),
           ],

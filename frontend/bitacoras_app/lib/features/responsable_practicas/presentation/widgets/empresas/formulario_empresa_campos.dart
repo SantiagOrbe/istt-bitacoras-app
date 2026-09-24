@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import '../../../../../config/constants/app_colors.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
+
 
 class FormularioEmpresaCampos extends StatelessWidget {
   final Map<String, TextEditingController> controllers;

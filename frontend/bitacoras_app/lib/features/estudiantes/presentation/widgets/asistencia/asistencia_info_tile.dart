@@ -1,5 +1,4 @@
-// lib/features/estudiantes/presentation/widgets/asistencia/asistencia_info_tile.dart
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class AsistenciaInfoTile extends StatelessWidget {
   final String time;
@@ -15,19 +14,8 @@ class AsistenciaInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(color: AppColors.outline.withOpacity(0.5)),
-      ),
+    return InstitutionalGlowCard(
+      accentColor: AppColors.primary,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
         child: Row(
@@ -40,7 +28,7 @@ class AsistenciaInfoTile extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -88,7 +76,7 @@ class AsistenciaInfoTile extends StatelessWidget {
               height: 32,
               width: 1,
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              color: AppColors.outline.withOpacity(0.6),
+              color: AppColors.outline.withValues(alpha: 0.6),
             ),
 
             // Sección de Fecha
@@ -99,7 +87,7 @@ class AsistenciaInfoTile extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(

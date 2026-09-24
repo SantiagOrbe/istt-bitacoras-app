@@ -1,6 +1,4 @@
-﻿import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
-import 'package:geolocator/geolocator.dart';
+﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class RegistroSalidaController extends ChangeNotifier {
   final IAsistenciaRepository repository;

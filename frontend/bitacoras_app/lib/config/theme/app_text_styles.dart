@@ -1,24 +1,25 @@
-import 'package:flutter/material.dart';
+import 'package:bitacoras_app/shared/exports.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:bitacoras_app/config/constants/app_colors.dart';
 
 class AppTextStyles {
   AppTextStyles._();
 
   static TextStyle get heading => GoogleFonts.poppins(
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
+        fontSize: 26,
+        fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
+        letterSpacing: -0.5,
       );
 
   static TextStyle get title => GoogleFonts.poppins(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
+        letterSpacing: -0.35,
       );
 
   static TextStyle get subtitle => GoogleFonts.poppins(
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w500,
         color: AppColors.textSecondary,
       );
@@ -29,7 +30,7 @@ class AppTextStyles {
       );
 
   static TextStyle get bodyMedium => GoogleFonts.poppins(
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
         color: AppColors.textPrimary,
       );
@@ -55,6 +56,4 @@ class AppTextStyles {
         fontWeight: FontWeight.w600,
         color: AppColors.surface,
       );
-
-  
 }

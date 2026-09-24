@@ -1,4 +1,3 @@
-// lib/config/constants/app_colors.dart
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -6,7 +5,7 @@ class AppColors {
 
   // Colores Institucionales IST Tena
   static const primary = Color(0xFF0F4C81);   // Azul Petróleo Principal
-  static const secondary = Color(0xFF0F4C81); // Cian / Verde Agua
+  static const secondary = Color(0xFF8CBF3F); // Cian / Verde Agua
 
   // Backgrounds y Superficies
   static const background = Color(0xFFF8FAFC);

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+
 
 enum LocationState { loading, gpsDisabled, invalidError, valid }
 

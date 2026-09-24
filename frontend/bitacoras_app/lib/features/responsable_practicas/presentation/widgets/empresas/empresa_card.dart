@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../domain/models/empresa_model.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
+
 
 class EmpresaCard extends StatelessWidget {
   final EmpresaModel company;
@@ -20,27 +19,26 @@ class EmpresaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = company.isActive;
 
-    return Card(
-      elevation: 0,
-      color: AppColors.surface,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.outline),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm, horizontal: AppSizes.md),
+      child: InstitutionalGlowCard(
+        accentColor: isActive ? AppColors.secondary : AppColors.textSecondary,
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSizes.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
                     child: const Icon(
                       Icons.business_rounded,
                       color: AppColors.primary,

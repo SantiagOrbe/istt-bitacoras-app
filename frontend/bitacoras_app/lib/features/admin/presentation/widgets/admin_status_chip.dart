@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class AdminStatusChip extends StatelessWidget {
   final bool isActive;

@@ -1,5 +1,4 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:go_router/go_router.dart';
 
 class RegistroActividadScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -88,6 +87,14 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
                 children: [
                   const RegistroActividadHeader(),
                   AppSizes.gapV24,
+                  if (!_controller.isLoading && !_controller.canRegister)
+                    UbicacionEstadoCard(
+                      isValid: false,
+                      message: _controller.validationMessage ??
+                          'No se puede registrar la actividad en este momento.',
+                    ),
+                  if (!_controller.isLoading && !_controller.canRegister)
+                    AppSizes.gapV16,
                   RegistroActividadList(
                     controllers: _controller.controllers,
                     onRemove: _controller.removeActivityField,

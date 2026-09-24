@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class EstudianteParaleloCard extends StatelessWidget {
   final Map<String, dynamic> student;
@@ -11,7 +10,7 @@ class EstudianteParaleloCard extends StatelessWidget {
     super.key,
     required this.student,
     required this.selected,
-      this.blocked = false,
+    this.blocked = false,
     required this.onChanged,
   });
 
@@ -21,21 +20,32 @@ class EstudianteParaleloCard extends StatelessWidget {
     final email = student['email'] as String? ?? '';
     final cedula = student['cedula'] as String? ?? '';
 
-    return Card(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
       margin: const EdgeInsets.only(bottom: AppSizes.sm),
-      elevation: selected ? 2 : 0,
-      color: selected
-          ? AppColors.primary.withValues(alpha: 0.08)
-          : AppColors.surface,
-      shape: RoundedRectangleBorder(
+      decoration: BoxDecoration(
+        color: selected
+            ? AppColors.primary.withValues(alpha: 0.08)
+            : AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        side: BorderSide(
+        border: Border.all(
           color: selected ? AppColors.primary : AppColors.outline,
         ),
+        boxShadow: selected
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.12),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ]
+            : null,
       ),
       child: CheckboxListTile(
         value: selected,
         onChanged: blocked ? null : onChanged,
+        activeColor: AppColors.primary,
+        checkColor: AppColors.surface,
         controlAffinity: ListTileControlAffinity.trailing,
         secondary: CircleAvatar(
           backgroundColor: selected

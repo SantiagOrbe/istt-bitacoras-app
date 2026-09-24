@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class GestionPeriodoScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -135,39 +135,103 @@ class _GestionPeriodoScreenState extends State<GestionPeriodoScreen> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSizes.md,
+                AppSizes.sm,
+                AppSizes.md,
+                0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSizes.gapV12,
-                  Text(
-                    'Gestión de Períodos Lectivos',
-                    style: AppTextStyles.heading.copyWith(
-                      color: AppColors.textPrimary,
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSizes.md,
+                      AppSizes.md,
+                      AppSizes.md,
+                      AppSizes.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      border: Border.all(color: AppColors.outline),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.shadow,
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.secondary,
+                                    AppColors.warning,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppSizes.radiusSm,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.calendar_month_rounded,
+                                color: AppColors.surface,
+                              ),
+                            ),
+                            AppSizes.gapH12,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Períodos lectivos',
+                                    style: AppTextStyles.title,
+                                  ),
+                                  Text(
+                                    'Vigencia académica y prácticas institucionales',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              '${_controller.filteredPeriods.length}',
+                              style: AppTextStyles.heading.copyWith(
+                                color: AppColors.primary,
+                                fontSize: 22,
+                              ),
+                            ),
+                          ],
+                        ),
+                        AppSizes.gapV16,
+                        CarreraSearchBar(
+                          onChanged: _controller.setSearchQuery,
+                          hintText: 'Buscar período lectivo...',
+                        ),
+                      ],
                     ),
                   ),
-                  AppSizes.gapV4,
-                  Text(
-                    'Administra los ciclos académicos y define qué periodos están activos para prácticas.',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  AppSizes.gapV12,
-                  CarreraSearchBar(
-                    onChanged: _controller.setSearchQuery,
-                    hintText: 'Buscar período...',
-                  ),
-                  AppSizes.gapV12,
-                  Text(
-                    '${_controller.filteredPeriods.length} períodos registrados',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  AppSizes.gapV12,
+                  AppSizes.gapV16,
                   Expanded(
-                    child: _controller.filteredPeriods.isEmpty
+                    child: _controller.isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          )
+                        : _controller.filteredPeriods.isEmpty
                         ? PeriodoEmptyState(
                             hasSearchQuery: _controller.searchQuery.isNotEmpty,
                           )

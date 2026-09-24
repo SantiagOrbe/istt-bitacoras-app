@@ -1,9 +1,9 @@
 // lib/features/inicio/presentation/widgets/dashboard/estado_card.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:bitacoras_app/config/constants/app_colors.dart';
-import 'package:bitacoras_app/features/estudiantes/presentation/controllers/asistencia_provider.dart';
+import 'package:bitacoras_app/config/constants/app_sizes.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
+import 'package:bitacoras_app/shared/widgets/institutional_glow_card.dart';
 
 class EstadoCard extends StatelessWidget {
   final RegistroAsistenciaModel? todayRecord;
@@ -13,11 +13,10 @@ class EstadoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AsistenciaProvider>();
     final hasCheckedIn = todayRecord != null && todayRecord!.exitTime == null;
     final hasActivities = todayRecord?.hasActivities ?? false;
     final isCompleted = todayRecord?.exitTime != null;
-    final checkInTime = todayRecord?.entryTime ?? provider.checkInTime?.toString();
+    final checkInTime = todayRecord?.entryTime ?? 'hora no disponible';
 
     final statusColor = isCompleted
       ? AppColors.success
@@ -55,21 +54,11 @@ class EstadoCard extends StatelessWidget {
         ? Icons.warning_amber_rounded
         : Icons.pending_actions_rounded;
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-        border: Border(left: BorderSide(color: statusColor, width: 5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
+    return InstitutionalGlowCard(
+      accentColor: statusColor,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -87,7 +76,7 @@ class EstadoCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          AppSizes.gapV8,
           Text(
             mainDescription,
             style: const TextStyle(
@@ -96,7 +85,7 @@ class EstadoCard extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 6),
+          AppSizes.gapV8,
           Text(
             detailText,
             style: const TextStyle(
@@ -106,6 +95,7 @@ class EstadoCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

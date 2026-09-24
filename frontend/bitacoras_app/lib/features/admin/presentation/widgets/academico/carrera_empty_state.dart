@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class CarreraEmptyState extends StatelessWidget {
   final bool hasSearchQuery;

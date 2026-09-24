@@ -6,12 +6,14 @@ export 'package:bitacoras_app/config/theme/app_text_styles.dart';
 export 'package:bitacoras_app/config/theme/app_theme.dart';
 export 'package:bitacoras_app/app/routes/app_routes.dart';
 
-
 // --- CORE WIDGETS ---
 export 'package:bitacoras_app/core/widgets/app_logo.dart';
 export 'package:bitacoras_app/core/widgets/buttons/custom_button.dart';
 export 'package:bitacoras_app/core/widgets/inputs/custom_text_field.dart';
 export 'package:bitacoras_app/core/widgets/inputs/password_text_field.dart';
+export 'package:bitacoras_app/shared/widgets/widgets_prisma.dart';
+export 'package:bitacoras_app/shared/widgets/institutional_glow_card.dart';
+export 'package:bitacoras_app/shared/widgets/waving_hand.dart';
 
 // --- MODELS GLOBALES / COMUNES ---
 export 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';

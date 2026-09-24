@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/shared/exports.dart';
-import '../../domain/models/perfil_model.dart';
-import '../widgets/perfil_header_card.dart';
-import '../widgets/perfil_info_tile.dart';
+import 'package:bitacoras_app/features/perfiles/perfiles.dart';
+
 
 class PerfilScreen extends StatelessWidget {
   final UsuarioModel currentUser;

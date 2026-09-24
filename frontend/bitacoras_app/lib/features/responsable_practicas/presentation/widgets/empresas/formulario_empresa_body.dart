@@ -1,11 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../domain/models/empresa_model.dart';
-import '../../controllers/gestion_empresa_controller.dart';
-import 'formulario_empresa_campos.dart';
-import 'formulario_empresa_header.dart';
-import 'mapa_empresa_selector.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
+
 
 class FormularioEmpresaBody extends StatefulWidget {
   final EmpresaModel? company;

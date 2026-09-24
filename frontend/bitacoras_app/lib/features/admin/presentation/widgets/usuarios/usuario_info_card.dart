@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/features/admin/presentation/controllers/usuarios/usuario_detail_controller.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/admin_form_components.dart';
-import 'package:bitacoras_app/features/inicio/domain/models/rol_usuario_model.dart';
-import 'package:flutter/material.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class UsuarioInfoCard extends StatelessWidget {
   final UsuarioDetailController controller;

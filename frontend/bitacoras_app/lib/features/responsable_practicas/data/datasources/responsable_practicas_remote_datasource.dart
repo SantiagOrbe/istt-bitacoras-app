@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/core/network/api_client.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
 class ResponsablePracticasRemoteDataSource {
   final ApiClient apiClient;
@@ -29,6 +29,32 @@ class ResponsablePracticasRemoteDataSource {
         'tutor_empresarial_id': int.tryParse(companyTutorId) ?? companyTutorId,
         'empresa_id': int.tryParse(companyId) ?? companyId,
       },
+    );
+  }
+
+  Future<Map<String, dynamic>> createCompany(Map<String, dynamic> data) async {
+    final response = await apiClient.post('empresas/empresas/', body: data);
+    if (response is! Map<String, dynamic>) {
+      throw const FormatException('La respuesta de la empresa no es válida.');
+    }
+    return response;
+  }
+
+  Future<Map<String, dynamic>> updateCompany(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
+    final response = await apiClient.put('empresas/empresas/$id/', body: data);
+    if (response is! Map<String, dynamic>) {
+      throw const FormatException('La respuesta de la empresa no es válida.');
+    }
+    return response;
+  }
+
+  Future<void> updateCompanyStatus(String id, bool isActive) async {
+    await apiClient.patch(
+      'empresas/empresas/$id/',
+      body: {'estado': isActive},
     );
   }
 }

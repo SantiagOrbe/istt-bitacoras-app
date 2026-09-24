@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class ActividadInputCard extends StatelessWidget {
   final int index;
@@ -16,25 +16,37 @@ class ActividadInputCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSizes.md),
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.outline),
-      ),
-      child: Column(
+    return InstitutionalGlowCard(
+      accentColor: AppColors.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'Detalle su actividad ${canRemove ? "#${index + 1}" : ""}',
-                style: AppTextStyles.bodyBold.copyWith(
-                  fontSize: 13,
-                  color: AppColors.textPrimary,
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                ),
+                child: const Icon(
+                  Icons.notes_rounded,
+                  color: AppColors.primary,
+                  size: 18,
+                ),
+              ),
+              AppSizes.gapH8,
+              Expanded(
+                child: Text(
+                  'Detalle su actividad ${canRemove ? "#${index + 1}" : ""}',
+                  style: AppTextStyles.bodyBold.copyWith(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ),
               if (canRemove)
@@ -61,6 +73,10 @@ class ActividadInputCard extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
             decoration: InputDecoration(
+              labelText: 'Descripción de la actividad',
+              labelStyle: AppTextStyles.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
               hintText:
                   'Describa detalladamente las tareas realizadas, herramientas utilizadas y resultados obtenidos...',
               hintStyle: AppTextStyles.caption.copyWith(
@@ -84,6 +100,7 @@ class ActividadInputCard extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

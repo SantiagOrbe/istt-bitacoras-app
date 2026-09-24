@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class GeneradorPdfCard extends StatelessWidget {
   final VoidCallback onGeneratePressed;
@@ -7,82 +7,74 @@ class GeneradorPdfCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF003366).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+    return InstitutionalGlowCard(
+      accentColor: AppColors.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                  ),
+                  child: const Icon(
+                    Icons.article_outlined,
+                    color: AppColors.primary,
+                    size: 28,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.article_outlined,
-                  color: Color(0xFF003366),
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bitácora Oficial de Prácticas',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                AppSizes.gapH12,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Bitácora oficial de prácticas',
+                        style: AppTextStyles.bodyBold.copyWith(fontSize: 15),
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Genera el documento consolidado de todas tus actividades registradas para validación institucional.',
-                      style: TextStyle(fontSize: 11, color: Colors.black54),
-                    ),
-                  ],
+                      AppSizes.gapV4,
+                      Text(
+                        'Genera el documento consolidado de tus actividades registradas.',
+                        style: AppTextStyles.caption,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF003366),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              ],
+            ),
+            AppSizes.gapV16,
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  ),
                 ),
-              ),
-              onPressed: onGeneratePressed,
-              icon: const Icon(
-                Icons.picture_as_pdf_rounded,
-                color: Colors.white,
-              ),
-              label: const Text(
-                'Generar y Descargar PDF',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                onPressed: onGeneratePressed,
+                icon: const Icon(Icons.picture_as_pdf_rounded),
+                label: Text(
+                  'Generar y descargar PDF',
+                  style: AppTextStyles.bodyBold.copyWith(
+                    color: AppColors.surface,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Última actualización: Hoy, 10:45 AM',
-            style: TextStyle(fontSize: 11, color: Colors.grey),
-          ),
-        ],
+            AppSizes.gapV8,
+            Text(
+              'El documento se genera con tus registros reales de prácticas.',
+              style: AppTextStyles.caption.copyWith(fontSize: 11),
+            ),
+          ],
+        ),
       ),
     );
   }

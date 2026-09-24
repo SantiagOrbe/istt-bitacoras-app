@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import '../../domain/models/empresa_model.dart';
-import '../../domain/repositories/i_responsable_practicas_repository.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
+
 
 class GestionEmpresaController extends ChangeNotifier {
   final IResponsablePracticasRepository repository;

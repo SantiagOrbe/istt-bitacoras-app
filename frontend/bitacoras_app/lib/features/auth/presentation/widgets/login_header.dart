@@ -1,31 +1,19 @@
-import 'package:bitacoras_app/core/widgets/app_logo.dart';
-import 'package:flutter/material.dart';
-
+import '../../auth.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-
-        AppLogo(size: 120),
-
-        SizedBox(height: 20),
-    
-        Text(
-          'Bitácoras IST Tena',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        SizedBox(height: 8),
-
+        const AppLogo(size: 120),
+        const SizedBox(height: 20),
+        Text('Bitácoras IST Tena', style: AppTextStyles.heading),
+        const SizedBox(height: 8),
         Text(
           'Inicia sesión para continuar',
+          style: AppTextStyles.subtitle,
           textAlign: TextAlign.center,
         ),
       ],

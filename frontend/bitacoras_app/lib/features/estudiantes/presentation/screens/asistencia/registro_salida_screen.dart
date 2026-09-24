@@ -1,7 +1,5 @@
 // lib/features/estudiantes/presentation/screens/asistencia/registro_salida_screen.dart
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:bitacoras_app/features/estudiantes/presentation/widgets/asistencia/registro_asistencia_body.dart';
 import 'package:intl/intl.dart';
 
 class RegistroSalidaScreen extends StatefulWidget {
@@ -48,7 +46,8 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
       builder: (context, _) {
         final companyName =
             _controller.company?.name ?? widget.currentUser.company;
-        final date = _controller.currentRecord?.date ?? '24/10/2026';
+        final date = _controller.currentRecord?.date ??
+          DateFormat('dd/MM/yyyy').format(DateTime.now());
         final time = DateFormat('hh:mm a').format(DateTime.now());
 
         return Scaffold(
@@ -71,6 +70,10 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
                           companyName: companyName ?? "Sin Empresa Asignada",
                           isGpsValid: _controller.isGpsValid,
                           locationAvailable: _controller.company != null,
+                            latitude: _controller.company?.latitude,
+                            longitude: _controller.company?.longitude,
+                            allowedRadiusMeters:
+                              _controller.company?.allowedRadiusMeters,
                           validationMessage: _controller.validationMessage,
                         ),
                         AppSizes.gapV24,

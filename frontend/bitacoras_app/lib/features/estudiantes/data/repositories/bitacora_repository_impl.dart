@@ -1,6 +1,4 @@
-import 'package:bitacoras_app/features/admin/domain/models/registro_practica_model.dart';
-
-import '../datasources/bitacora_remote_datasource.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class BitacoraRepositoryImpl {
   final BitacoraRemoteDataSource remoteDataSource;

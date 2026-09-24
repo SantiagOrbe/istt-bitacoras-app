@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/config/constants/app_colors.dart';
-import 'package:bitacoras_app/config/constants/app_sizes.dart';
+import 'package:bitacoras_app/app/apps.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;

@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/core/widgets/buttons/custom_button.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class SaveBottomBar extends StatelessWidget {
   final VoidCallback onSave;
@@ -15,11 +14,11 @@ class SaveBottomBar extends StatelessWidget {
           color: AppColors.surface,
           border: Border(top: BorderSide(color: AppColors.divider)),
         ),
-        child: CustomButton(
-          text: 'Guardar Configuración',
-          icon: Icons.save_rounded,
-          onPressed: onSave,
-          isFullWidth: false,
+        child: BotonPrisma(
+          texto: 'Guardar configuración',
+          icono: Icons.save_rounded,
+          alPresionar: onSave,
+          anchoCompleto: true,
         ),
       ),
     );

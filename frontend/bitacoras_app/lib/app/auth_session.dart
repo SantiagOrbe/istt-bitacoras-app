@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:bitacoras_app/app/apps.dart';
 
-import '../features/inicio/domain/models/usuario_model.dart';
 
 class AuthSession extends ChangeNotifier {
   UsuarioModel? _currentUser;

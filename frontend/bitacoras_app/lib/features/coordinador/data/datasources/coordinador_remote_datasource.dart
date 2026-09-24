@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/core/network/api_client.dart';
+import 'package:bitacoras_app/features/coordinador/coordinador.dart';
 
 class CoordinadorRemoteDataSource {
   final ApiClient apiClient;

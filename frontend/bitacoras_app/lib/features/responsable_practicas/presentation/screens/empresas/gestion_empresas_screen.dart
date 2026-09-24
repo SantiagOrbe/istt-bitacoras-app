@@ -1,5 +1,4 @@
 import '../../../../../app/apps.dart' hide EmpresaCard;
-import 'package:provider/provider.dart';
 import '../../widgets/empresas/empresa_card.dart';
 
 class GestionEmpresasScreen extends StatefulWidget {
@@ -37,7 +36,51 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
           body: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSizes.md,
+                  AppSizes.md,
+                  AppSizes.md,
+                  AppSizes.sm,
+                ),
+                child: InstitutionalGlowCard(
+                  accentColor: AppColors.primary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSizes.md),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                          ),
+                          child: const Icon(
+                            Icons.business_rounded,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        AppSizes.gapH12,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Empresas e instituciones', style: AppTextStyles.title),
+                              AppSizes.gapV4,
+                              Text(
+                                '${_controller.companies.length} registros disponibles',
+                                style: AppTextStyles.caption,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.sm, AppSizes.md, AppSizes.md),
                 child: TextField(
                   onChanged: _controller.searchCompanies,
                   style: const TextStyle(color: AppColors.textPrimary),
@@ -47,16 +90,14 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
                     prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textSecondary),
                     filled: true,
                     fillColor: AppColors.surface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.outline),
-                    ),
+                    prefixIconColor: AppColors.primary,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd), borderSide: const BorderSide(color: AppColors.outline)),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                       borderSide: const BorderSide(color: AppColors.outline),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                       borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),

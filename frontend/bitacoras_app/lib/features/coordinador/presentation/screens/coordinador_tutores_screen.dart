@@ -1,12 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import '../../../inicio/domain/models/usuario_model.dart';
-import '../../../../config/constants/app_colors.dart';
-import '../../../inicio/presentation/widgets/inicio_app_bar.dart';
-import '../controllers/coordinador_consulta_controller.dart';
-import '../../domain/repositories/i_coordinador_repository.dart';
-import '../widgets/coordinador_info_card.dart';
+import 'package:bitacoras_app/features/coordinador/coordinador.dart';
+
 
 class CoordinadorTutoresScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -18,8 +11,7 @@ class CoordinadorTutoresScreen extends StatefulWidget {
       _CoordinadorTutoresScreenState();
 }
 
-class _CoordinadorTutoresScreenState
-    extends State<CoordinadorTutoresScreen> {
+class _CoordinadorTutoresScreenState extends State<CoordinadorTutoresScreen> {
   late final CoordinadorConsultaController _controller;
 
   @override
@@ -44,28 +36,97 @@ class _CoordinadorTutoresScreenState
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
-          if (_controller.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+          if (_controller.estaCargando) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
           }
-          return ListView.separated(
+          return ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: _controller.items.length,
-            separatorBuilder: (_, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final item = _controller.items[index];
-              return CoordinadorDetalleCard(
-                title: item['nombre']?.toString() ?? 'Tutor sin nombre',
-                icon: Icons.badge_rounded,
-                details: [
-                  MapEntry('Correo', item['email']?.toString() ?? 'Sin correo registrado'),
-                  MapEntry('Teléfono', item['telefono']?.toString().isNotEmpty == true ? item['telefono'].toString() : 'Sin teléfono registrado'),
-                  MapEntry('Cédula', item['cedula']?.toString() ?? 'Sin cédula registrada'),
-                  MapEntry('Carrera', item['carrera_nombre']?.toString() ?? widget.currentUser.careerName ?? 'Sin carrera registrada'),
-                  MapEntry('Empresa asignada', item['empresa_nombre']?.toString() ?? 'Sin empresa asignada'),
-                  MapEntry('Estado', item['estado'] == true ? 'Activo' : 'Inactivo'),
-                ],
-              );
-            },
+            children: [
+              InstitutionalGlowCard(
+                accentColor: AppColors.primary,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSizes.lg),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.10),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.badge_rounded,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Tutores académicos', style: AppTextStyles.title),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${_controller.tutores.length} registros activos',
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ..._controller.tutores.asMap().entries.map((entry) {
+                final tutor = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: CoordinadorDetalleCard(
+                    title: tutor.nombre.isEmpty ? 'Tutor sin nombre' : tutor.nombre,
+                    icon: Icons.badge_rounded,
+                    details: [
+                      MapEntry(
+                        'Correo',
+                        tutor.correo.isEmpty
+                            ? 'Sin correo registrado'
+                            : tutor.correo,
+                      ),
+                      MapEntry(
+                        'Teléfono',
+                        tutor.telefono.isEmpty
+                            ? 'Sin teléfono registrado'
+                            : tutor.telefono,
+                      ),
+                      MapEntry(
+                        'Cédula',
+                        tutor.cedula.isEmpty
+                            ? 'Sin cédula registrada'
+                            : tutor.cedula,
+                      ),
+                      MapEntry(
+                        'Carrera',
+                        tutor.carrera.isEmpty
+                            ? widget.currentUser.careerName ?? 'Sin carrera registrada'
+                            : tutor.carrera,
+                      ),
+                      MapEntry(
+                        'Empresa asignada',
+                        tutor.empresa.isEmpty
+                            ? 'Sin empresa asignada'
+                            : tutor.empresa,
+                      ),
+                      MapEntry('Estado', tutor.estaActivo ? 'Activo' : 'Inactivo'),
+                    ],
+                  ),
+                );
+              }),
+            ],
           );
         },
       ),

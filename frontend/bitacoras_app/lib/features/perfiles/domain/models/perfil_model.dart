@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/perfiles/perfiles.dart';
 
 class PerfilModel {
   final UsuarioModel user;
@@ -14,6 +14,11 @@ class PerfilModel {
     this.tutorEmpresarial = 'Sin asignar',
     this.empresaAsignada = 'Sin asignar',
   });
+
+  bool get puedeMostrarEmpresa =>
+      user.role == RolUsuarioModel.student ||
+      user.role == RolUsuarioModel.academicTutor ||
+      user.role == RolUsuarioModel.companyTutor;
 
   factory PerfilModel.fromUser(
     UsuarioModel user, {

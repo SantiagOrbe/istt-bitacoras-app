@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class UsuarioDetailScreen extends StatefulWidget {
   final UsuarioModel user;

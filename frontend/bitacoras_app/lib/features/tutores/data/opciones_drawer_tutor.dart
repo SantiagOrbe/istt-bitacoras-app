@@ -1,4 +1,4 @@
-import '../../../../app/apps.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
 
 List<SeccionMenuModel> getOpcionesDrawerTutorAcademico() {
   return [

@@ -1,6 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/paralelo_model.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/admin_status_chip.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class ParaleloCard extends StatelessWidget {
   final ParaleloModel parallel;
@@ -33,6 +32,13 @@ class ParaleloCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
             border: Border.all(color: AppColors.outline),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow,
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,6 +49,9 @@ class ParaleloCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.secondary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  border: Border.all(
+                    color: AppColors.secondary.withValues(alpha: 0.22),
+                  ),
                 ),
                 child: const Icon(
                   Icons.groups_rounded,
@@ -66,6 +75,18 @@ class ParaleloCard extends StatelessWidget {
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
+                    AppSizes.gapV4,
+                    Text(
+                      parallel.isActive
+                          ? 'Gestión habilitada'
+                          : 'Gestión suspendida',
+                      style: AppTextStyles.caption.copyWith(
+                        color: parallel.isActive
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     AppSizes.gapV8,
                     AdminStatusChip(isActive: parallel.isActive),
                   ],
@@ -78,7 +99,8 @@ class ParaleloCard extends StatelessWidget {
                   Switch.adaptive(
                     value: parallel.isActive,
                     onChanged: (_) => onToggleStatus(),
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
+                    activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
                   ),
                   IconButton(
                     tooltip: 'Agregar estudiantes',
@@ -93,7 +115,7 @@ class ParaleloCard extends StatelessWidget {
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.outline,
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),

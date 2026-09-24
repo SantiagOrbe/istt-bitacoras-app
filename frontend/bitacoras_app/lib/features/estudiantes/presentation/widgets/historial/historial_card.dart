@@ -1,6 +1,5 @@
-﻿import 'package:flutter/material.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+
 
 class HistorialCard extends StatelessWidget {
   final RegistroAsistenciaModel record;
@@ -70,7 +69,7 @@ class HistorialCard extends StatelessWidget {
                   vertical: AppSizes.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.12),
+                  color: statusColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                 ),
                 child: Row(

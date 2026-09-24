@@ -1,5 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class CarreraConfigCard extends StatelessWidget {
   final CarreraModel career;
@@ -22,20 +22,43 @@ class CarreraConfigCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
         color: isDisabled ? AppColors.disabledSurface : AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         border: Border.all(
-          color: isDisabled ? AppColors.outline : AppColors.outline,
+          color: isDisabled
+              ? AppColors.outline
+              : AppColors.secondary.withValues(alpha: 0.35),
         ),
+        boxShadow: isDisabled
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.school_outlined,
-                color: isDisabled ? AppColors.textSecondary : AppColors.primary,
-                size: 22,
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: isDisabled
+                      ? AppColors.outline
+                      : AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                ),
+                child: Icon(
+                  Icons.school_outlined,
+                  color: isDisabled
+                      ? AppColors.textSecondary
+                      : AppColors.primary,
+                  size: 21,
+                ),
               ),
               AppSizes.gapH8,
               Expanded(
@@ -43,20 +66,31 @@ class CarreraConfigCard extends StatelessWidget {
                   career.name,
                   style: AppTextStyles.bodyBold.copyWith(
                     fontSize: 16,
-                    color: isDisabled ? AppColors.textSecondary : AppColors.textPrimary,
+                    color: isDisabled
+                        ? AppColors.textSecondary
+                        : AppColors.textPrimary,
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDisabled ? AppColors.outline : AppColors.infoSoft,
+                  color: isDisabled
+                      ? AppColors.disabledSurface
+                      : AppColors.successSoft,
                   borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: isDisabled
+                        ? AppColors.outline
+                        : AppColors.success.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Text(
                   isDisabled ? 'Inactiva' : 'Activa',
                   style: AppTextStyles.caption.copyWith(
-                    color: isDisabled ? AppColors.textSecondary : AppColors.primary,
+                    color: isDisabled
+                        ? AppColors.textSecondary
+                        : AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -72,10 +106,21 @@ class CarreraConfigCard extends StatelessWidget {
                 ? 'Esta carrera está inactiva y no puede seleccionar semestres para prácticas.'
                 : 'Semestres habilitados para prácticas:',
             style: AppTextStyles.small.copyWith(
-              color: isDisabled ? AppColors.textSecondary : AppColors.textPrimary,
+              color: isDisabled
+                  ? AppColors.textSecondary
+                  : AppColors.textPrimary,
             ),
           ),
           AppSizes.gapV16,
+          if (!isDisabled)
+            Text(
+              '${activeSemesters.length} de ${career.totalSemesters} semestres habilitados',
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          if (!isDisabled) AppSizes.gapV8,
           Wrap(
             spacing: AppSizes.sm,
             runSpacing: AppSizes.sm,
@@ -95,12 +140,16 @@ class CarreraConfigCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isDisabled
                         ? AppColors.disabledSurface
-                        : (isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface),
+                        : (isSelected
+                              ? AppColors.secondary.withValues(alpha: 0.1)
+                              : AppColors.background),
                     borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     border: Border.all(
                       color: isDisabled
                           ? AppColors.outline
-                          : (isSelected ? AppColors.primary : AppColors.outline),
+                          : (isSelected
+                                ? AppColors.primary
+                                : AppColors.outline),
                       width: isSelected && !isDisabled ? 1.5 : 1.0,
                     ),
                   ),
@@ -124,7 +173,9 @@ class CarreraConfigCard extends StatelessWidget {
                               )
                             : AppTextStyles.body.copyWith(
                                 fontSize: 13,
-                                color: isDisabled ? AppColors.textSecondary : null,
+                                color: isDisabled
+                                    ? AppColors.textSecondary
+                                    : null,
                               ),
                       ),
                     ],

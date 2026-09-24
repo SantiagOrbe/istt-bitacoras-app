@@ -1,7 +1,4 @@
-import 'package:bitacoras_app/features/admin/domain/models/item_menu_model.dart';
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:bitacoras_app/features/inicio/presentation/widgets/drawer/opciones_drawer_factory.dart';
-import 'package:bitacoras_app/features/screens.dart';
 
 //Pantalla de inicio que filtra por Roles y muestra la pantalla de inicio según Rol
 
@@ -28,14 +25,14 @@ class InicioScreen extends StatelessWidget {
     final sectionsToDisplay = drawerSections ?? OpcionesDrawerFactory.getSectionsForRole(user.role);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       appBar: InicioAppBar(
         user: user,
         showDrawerButton: true,
       ),
       drawer: InicioDrawer(user: user, sections: sectionsToDisplay),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        padding: const EdgeInsets.all(AppSizes.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,25 +40,26 @@ class InicioScreen extends StatelessWidget {
             SaludoCard(
               name: user.name,
               role: user.role,
+              lightCard: user.role == RolUsuarioModel.practiceManager,
             ),
 
             // Si es estudiante, mostramos la tarjeta de estado actual
             if (isStudent) ...[
-              const SizedBox(height: 16),
+              AppSizes.gapV16,
               EstadoCard(
                 todayRecord: todayRecord,
                 isLoading: isAttendanceLoading,
               ),
             ],
 
-            const SizedBox(height: 24),
+            AppSizes.gapV24,
 
             // Título de la sección de accesos directos
             const TituloSeccionTableroWidget(
               title: "Acciones Rápidas",
             ),
 
-            const SizedBox(height: 16),
+            AppSizes.gapV16,
 
             // El grid con las acciones específicas que provee cada Home
             AccionesTableroWidget(actions: actions),

@@ -1,5 +1,5 @@
-// lib/features/estudiantes/presentation/widgets/asistencia/registro_asistencia_body.dart
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+
 
 class RegistroAsistenciaBody extends StatelessWidget {
   final String title;
@@ -29,14 +29,55 @@ class RegistroAsistenciaBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEntry = title.toLowerCase().contains('entrada');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: AppTextStyles.title.copyWith(
-            fontSize: 24,
-            color: AppColors.primary,
+        InstitutionalGlowCard(
+          accentColor: isEntry ? AppColors.primary : AppColors.secondary,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSizes.lg),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: (isEntry ? AppColors.primary : AppColors.secondary)
+                        .withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  ),
+                  child: Icon(
+                    isEntry ? Icons.login_rounded : Icons.logout_rounded,
+                    color: isEntry ? AppColors.primary : AppColors.secondary,
+                    size: 26,
+                  ),
+                ),
+                AppSizes.gapH12,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: AppTextStyles.heading.copyWith(
+                          fontSize: 23,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      AppSizes.gapV4,
+                      Text(
+                        isEntry
+                            ? 'Valida tu ubicación para iniciar la jornada.'
+                            : 'Valida tu ubicación para cerrar la jornada.',
+                        style: AppTextStyles.caption,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         AppSizes.gapV16,

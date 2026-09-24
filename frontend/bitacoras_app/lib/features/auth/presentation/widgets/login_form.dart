@@ -1,66 +1,62 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import '../../auth.dart';
 
 class LoginForm extends StatelessWidget {
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final bool isPasswordVisible;
-  final bool isLoading;
-  final String? emailError;
-  final String? passwordError;
-  final VoidCallback onTogglePasswordVisibility;
-  final VoidCallback onSubmit;
+  final TextEditingController controladorCorreo;
+  final TextEditingController controladorContrasena;
+  final bool mostrarContrasena;
+  final bool estaCargando;
+  final String? errorCorreo;
+  final String? errorContrasena;
+  final VoidCallback alAlternarContrasena;
+  final VoidCallback alEnviar;
 
   const LoginForm({
     super.key,
-    required this.emailController,
-    required this.passwordController,
-    required this.isPasswordVisible,
-    required this.isLoading,
-    this.emailError,
-    this.passwordError,
-    required this.onTogglePasswordVisibility,
-    required this.onSubmit,
+    required this.controladorCorreo,
+    required this.controladorContrasena,
+    required this.mostrarContrasena,
+    required this.estaCargando,
+    this.errorCorreo,
+    this.errorContrasena,
+    required this.alAlternarContrasena,
+    required this.alEnviar,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextFormField(
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            labelText: 'Correo Institucional',
-            hintText: 'ejemplo@est.itstena.edu.ec',
-            prefixIcon: const Icon(Icons.email_outlined),
-            errorText: emailError,
-          ),
+        CampoFormularioPrisma(
+          controlador: controladorCorreo,
+          etiqueta: 'Correo institucional',
+          textoSugerido: 'ejemplo@est.itstena.edu.ec',
+          icono: Icons.email_outlined,
+          tipoTeclado: TextInputType.emailAddress,
+          mensajeError: errorCorreo,
         ),
         AppSizes.gapV16,
-        TextFormField(
-          controller: passwordController,
-          obscureText: !isPasswordVisible,
-          decoration: InputDecoration(
-            labelText: 'Contraseña',
-            prefixIcon: const Icon(Icons.lock_outline_rounded),
-            errorText: passwordError,
-            suffixIcon: IconButton(
-              icon: Icon(
-                isPasswordVisible
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-              ),
-              onPressed: onTogglePasswordVisibility,
+        CampoFormularioPrisma(
+          controlador: controladorContrasena,
+          etiqueta: 'Contraseña',
+          icono: Icons.lock_outline_rounded,
+          ocultarTexto: !mostrarContrasena,
+          mensajeError: errorContrasena,
+          accion: IconButton(
+            icon: Icon(
+              mostrarContrasena
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
             ),
+            onPressed: alAlternarContrasena,
           ),
         ),
         AppSizes.gapV24,
-        CustomButton(
-          isFullWidth: true,
-          text: 'Iniciar Sesión',
-          icon: Icons.login_rounded,
-          isLoading: isLoading,
-          onPressed: onSubmit,
+        BotonPrisma(
+          texto: 'Iniciar sesión',
+          icono: Icons.login_rounded,
+          cargando: estaCargando,
+          anchoCompleto: true,
+          alPresionar: alEnviar,
         ),
       ],
     );

@@ -31,25 +31,73 @@ class GestionUsuarioBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+      padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.sm, AppSizes.md, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppSizes.gapV12,
+          Container(
+            padding: const EdgeInsets.fromLTRB(
+              AppSizes.md,
+              AppSizes.md,
+              AppSizes.md,
+              AppSizes.sm,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+              border: Border.all(color: AppColors.outline),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      ),
+                      child: const Icon(
+                        Icons.manage_accounts_outlined,
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                    AppSizes.gapH12,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Gestión de usuarios', style: AppTextStyles.title),
+                          Text(
+                            'Directorio y permisos institucionales',
+                            style: AppTextStyles.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '$totalUsers registros',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                AppSizes.gapV16,
+                UsuarioSearchBar(onChanged: onSearchChanged),
+                AppSizes.gapV12,
 
-          Text(
-            'Gestión de Usuarios',
-            style: AppTextStyles.heading.copyWith(color: AppColors.textPrimary),
-          ),
-
-          AppSizes.gapV12,
-
-          // Buscador interno de usuarios
-          UsuarioSearchBar(onChanged: onSearchChanged),
-
-          AppSizes.gapV12,
-
-          SingleChildScrollView(
+                SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
@@ -70,12 +118,13 @@ class GestionUsuarioBody extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+                ),
 
-          AppSizes.gapV8,
+                AppSizes.gapV8,
 
-          DropdownButtonFormField<String?>(
+                DropdownButtonFormField<String?>(
             initialValue: roleFilter,
+                  isExpanded: true,
             decoration: const InputDecoration(
               labelText: 'Filtrar por rol',
               prefixIcon: Icon(Icons.badge_outlined),
@@ -106,6 +155,9 @@ class GestionUsuarioBody extends StatelessWidget {
               DropdownMenuItem(value: 'admin', child: Text('Administradores')),
             ],
             onChanged: onRoleChanged,
+                ),
+              ],
+            ),
           ),
 
           AppSizes.gapV16,
@@ -122,18 +174,36 @@ class GestionUsuarioBody extends StatelessWidget {
           Expanded(
             child: users.isEmpty
                 ? Center(
-                    child: Text(
-                      'No se encontraron usuarios',
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.textSecondary,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSizes.lg),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                        border: Border.all(color: AppColors.outline),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.people_outline_rounded,
+                            size: 36,
+                            color: AppColors.textDisabled,
+                          ),
+                          AppSizes.gapV8,
+                          Text(
+                            'No se encontraron usuarios',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   )
                 : ListView.separated(
                     physics: const BouncingScrollPhysics(),
                     itemCount: users.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1, color: AppColors.divider),
+                    separatorBuilder: (context, index) => AppSizes.gapV8,
                     itemBuilder: (context, index) {
                       final user = users[index];
                       return UsuarioListTile(
@@ -168,7 +238,11 @@ class _FilterChip extends StatelessWidget {
         label: Text(label),
         selected: selected,
         onSelected: onSelected,
-        selectedColor: AppColors.infoSoft,
+        selectedColor: AppColors.secondary.withValues(alpha: 0.16),
+        backgroundColor: AppColors.background,
+        side: BorderSide(
+          color: selected ? AppColors.secondary : AppColors.outline,
+        ),
         checkmarkColor: AppColors.primary,
         labelStyle: AppTextStyles.caption.copyWith(
           color: selected ? AppColors.primary : AppColors.textSecondary,

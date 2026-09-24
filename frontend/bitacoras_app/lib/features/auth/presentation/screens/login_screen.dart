@@ -1,17 +1,10 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:provider/provider.dart';
-import '../../domain/repositories/i_auth_repository.dart';
-import '../controllers/login_controller.dart';
-import '../widgets/login_form.dart';
-import '../widgets/login_header.dart';
+import '../../auth.dart';
+
 
 class LoginScreen extends StatefulWidget {
   final IAuthRepository authRepository;
 
-  const LoginScreen({
-    super.key,
-    required this.authRepository,
-  });
+  const LoginScreen({super.key, required this.authRepository});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -23,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = LoginController(repository: widget.authRepository);
+    _controller = LoginController(repositorio: widget.authRepository);
   }
 
   @override
@@ -32,9 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
- 
   Future<void> _handleLogin() async {
-    final user = await _controller.submitLogin();
+    final user = await _controller.iniciarSesion();
 
     if (!mounted) return;
 
@@ -62,11 +54,11 @@ class _LoginScreenState extends State<LoginScreen> {
         default:
           context.go(AppRoutes.studentHome);
       }
-    } else if (_controller.errorMessage != null) {
+    } else if (_controller.mensajeError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _controller.errorMessage!,
+            _controller.mensajeError!,
             style: AppTextStyles.body.copyWith(color: AppColors.surface),
           ),
           backgroundColor: AppColors.error,
@@ -94,20 +86,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     const LoginHeader(),
                     AppSizes.gapV32,
                     LoginForm(
-                      emailController: _controller.emailController,
-                      passwordController: _controller.passwordController,
-                      isPasswordVisible: _controller.isPasswordVisible,
-                      isLoading: _controller.isLoading,
-                      emailError: _controller.emailError,
-                      passwordError: _controller.passwordError,
-                      onTogglePasswordVisibility: _controller.togglePasswordVisibility,
-                      onSubmit: _handleLogin,
+                      controladorCorreo: _controller.controladorCorreo,
+                      controladorContrasena: _controller.controladorContrasena,
+                      mostrarContrasena: _controller.mostrarContrasena,
+                      estaCargando: _controller.estaCargando,
+                      errorCorreo: _controller.errorCorreo,
+                      errorContrasena: _controller.errorContrasena,
+                      alAlternarContrasena:
+                          _controller.alternarVisibilidadContrasena,
+                      alEnviar: _handleLogin,
                     ),
                     AppSizes.gapV16,
                     TextButton(
                       onPressed: () => context.push(AppRoutes.register),
                       child: const Text('¿No tienes cuenta? Regístrate aquí'),
                     ),
+                    const SizedBox(height: 24),
+                    const LoginFooter(),
                   ],
                 ),
               ),

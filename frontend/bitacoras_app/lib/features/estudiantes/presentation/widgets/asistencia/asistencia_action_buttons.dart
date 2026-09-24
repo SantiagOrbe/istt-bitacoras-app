@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class AsistenciaActionButtons extends StatelessWidget {
   final bool isEntry;
@@ -31,8 +31,10 @@ class AsistenciaActionButtons extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: effectiveEnabled ? AppColors.primary : AppColors.disabled,
               foregroundColor: AppColors.surface,
+              elevation: effectiveEnabled ? 4 : 0,
+              shadowColor: AppColors.primary.withValues(alpha: 0.28),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                borderRadius: BorderRadius.circular(AppSizes.radiusLg),
               ),
             ),
             onPressed: effectiveEnabled ? onConfirm : null,
@@ -60,7 +62,7 @@ class AsistenciaActionButtons extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: AppColors.outline),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                borderRadius: BorderRadius.circular(AppSizes.radiusLg),
               ),
             ),
             onPressed: onCancel,

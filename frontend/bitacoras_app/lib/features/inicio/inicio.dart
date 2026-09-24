@@ -24,12 +24,7 @@ export 'package:bitacoras_app/features/inicio/presentation/controllers/inicio_na
 // --- Screens ---
 export 'package:bitacoras_app/features/inicio/presentation/screens/inicio_screen.dart';
 export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_admin_screen.dart';
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_coordinador_screen.dart';
 export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_docente_screen.dart';
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_estudiante_screen.dart';
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_responsable_practicas_screen.dart';
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_tutor_academico_screen.dart';
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_tutor_empresarial_screen.dart';
 
 // --- Widgets ---
 export 'package:bitacoras_app/features/inicio/presentation/widgets/dashboard/acceso_rapido_card.dart';

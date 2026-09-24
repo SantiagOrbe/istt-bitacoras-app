@@ -1,49 +1,43 @@
-import 'package:bitacoras_app/core/network/api_client.dart';
-import 'package:bitacoras_app/features/auth/domain/repositories/i_auth_repository.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import 'package:go_router/go_router.dart';
+import '../../auth.dart';
 
 class RegisterScreen extends StatefulWidget {
   final IAuthRepository authRepository;
 
-  const RegisterScreen({
-    super.key,
-    required this.authRepository,
-  });
+  const RegisterScreen({super.key, required this.authRepository});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  bool _isLoading = false;
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
-  String? _serverError;
+  final _claveFormulario = GlobalKey<FormState>();
+  final _controladorCorreo = TextEditingController();
+  final _controladorContrasena = TextEditingController();
+  final _controladorConfirmacion = TextEditingController();
+  bool _estaCargando = false;
+  bool _mostrarContrasena = false;
+  bool _mostrarConfirmacion = false;
+  String? _mensajeServidor;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _controladorCorreo.dispose();
+    _controladorContrasena.dispose();
+    _controladorConfirmacion.dispose();
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  Future<void> _registrar() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    setState(() => _serverError = null);
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    setState(() => _mensajeServidor = null);
+    if (!(_claveFormulario.currentState?.validate() ?? false)) return;
 
-    setState(() => _isLoading = true);
+    setState(() => _estaCargando = true);
     try {
       await widget.authRepository.register(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        confirmPassword: _confirmPasswordController.text,
+        email: _controladorCorreo.text.trim(),
+        password: _controladorContrasena.text,
+        confirmPassword: _controladorConfirmacion.text,
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,13 +50,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _serverError = _messageFromError(error);
-        _isLoading = false;
+        _mensajeServidor = _obtenerMensajeError(error);
+        _estaCargando = false;
       });
     }
   }
 
-  String _messageFromError(Object error) {
+  String _obtenerMensajeError(Object error) {
     if (error is ApiException && error.body is Map<String, dynamic>) {
       final body = error.body as Map<String, dynamic>;
       for (final field in ['email', 'password', 'confirm_password', 'detail']) {
@@ -75,7 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return error.toString().replaceAll('Exception: ', '');
   }
 
-  String? _validateEmail(String? value) {
+  String? _validarCorreo(String? value) {
     final email = value?.trim() ?? '';
     if (email.isEmpty) return 'Ingrese su correo institucional.';
     if (!email.toLowerCase().endsWith('@est.itstena.edu.ec')) {
@@ -84,15 +78,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  String? _validatePassword(String? value) {
+  String? _validarContrasena(String? value) {
     if ((value ?? '').isEmpty) return 'Ingrese una contraseña.';
     if ((value ?? '').length < 8) return 'Use al menos 8 caracteres.';
     return null;
   }
 
-  String? _validateConfirmation(String? value) {
+  String? _validarConfirmacion(String? value) {
     if ((value ?? '').isEmpty) return 'Confirme su contraseña.';
-    if (value != _passwordController.text) return 'Las contraseñas no coinciden.';
+    if (value != _controladorContrasena.text) {
+      return 'Las contraseñas no coinciden.';
+    }
     return null;
   }
 
@@ -107,83 +103,89 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: SafeArea(
         child: Form(
-          key: _formKey,
+          key: _claveFormulario,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSizes.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Registro institucional',
-                  style: AppTextStyles.title,
-                ),
+                Text('Registro institucional', style: AppTextStyles.title),
                 AppSizes.gapV8,
                 Text(
                   'Crea tu cuenta con tu correo institucional.',
                   style: AppTextStyles.body,
                 ),
                 AppSizes.gapV24,
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: _validateEmail,
-                  decoration: const InputDecoration(
-                    labelText: 'Correo Institucional',
-                    hintText: 'usuario@est.itstena.edu.ec',
-                    prefixIcon: Icon(Icons.email_outlined),
-                  ),
+                CampoFormularioPrisma(
+                  controlador: _controladorCorreo,
+                  etiqueta: 'Correo institucional',
+                  textoSugerido: 'usuario@est.itstena.edu.ec',
+                  icono: Icons.email_outlined,
+                  tipoTeclado: TextInputType.emailAddress,
+                  validador: _validarCorreo,
                 ),
                 AppSizes.gapV16,
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: !_isPasswordVisible,
-                  validator: _validatePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Contraseña',
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-                    suffixIcon: IconButton(
-                      icon: Icon(_isPasswordVisible
+                CampoFormularioPrisma(
+                  controlador: _controladorContrasena,
+                  etiqueta: 'Contraseña',
+                  icono: Icons.lock_outline_rounded,
+                  ocultarTexto: !_mostrarContrasena,
+                  validador: _validarContrasena,
+                  accion: IconButton(
+                    icon: Icon(
+                      _mostrarContrasena
                           ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined),
-                      onPressed: () => setState(
-                        () => _isPasswordVisible = !_isPasswordVisible,
-                      ),
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () => setState(
+                      () => _mostrarContrasena = !_mostrarContrasena,
                     ),
                   ),
                 ),
                 AppSizes.gapV16,
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: !_isConfirmPasswordVisible,
-                  validator: _validateConfirmation,
-                  decoration: InputDecoration(
-                    labelText: 'Confirmar Contraseña',
-                    prefixIcon: const Icon(Icons.lock_reset_outlined),
-                    suffixIcon: IconButton(
-                      icon: Icon(_isConfirmPasswordVisible
+                CampoFormularioPrisma(
+                  controlador: _controladorConfirmacion,
+                  etiqueta: 'Confirmar contraseña',
+                  icono: Icons.lock_reset_outlined,
+                  ocultarTexto: !_mostrarConfirmacion,
+                  validador: _validarConfirmacion,
+                  accion: IconButton(
+                    icon: Icon(
+                      _mostrarConfirmacion
                           ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined),
-                      onPressed: () => setState(
-                        () => _isConfirmPasswordVisible =
-                            !_isConfirmPasswordVisible,
-                      ),
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () => setState(
+                      () => _mostrarConfirmacion = !_mostrarConfirmacion,
                     ),
                   ),
                 ),
-                if (_serverError != null) ...[
+                if (_mensajeServidor != null) ...[
                   AppSizes.gapV16,
-                  Text(
-                    _serverError!,
-                    style: TextStyle(color: AppColors.error),
+                  Container(
+                    padding: const EdgeInsets.all(AppSizes.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.errorSoft,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      border: Border.all(
+                        color: AppColors.error.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: Text(
+                      _mensajeServidor!,
+                      style: AppTextStyles.body.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
                   ),
                 ],
                 AppSizes.gapV24,
-                CustomButton(
-                  isFullWidth: true,
-                  text: 'Registrarme',
-                  icon: Icons.person_add_alt_1,
-                  isLoading: _isLoading,
-                  onPressed: _submit,
+                BotonPrisma(
+                  texto: 'Registrarme',
+                  icono: Icons.person_add_alt_1,
+                  cargando: _estaCargando,
+                  anchoCompleto: true,
+                  alPresionar: _registrar,
                 ),
                 AppSizes.gapV8,
                 TextButton(

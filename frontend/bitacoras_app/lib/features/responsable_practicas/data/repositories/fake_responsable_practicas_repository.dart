@@ -1,4 +1,4 @@
-import '../../../../app/apps.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 import '../../domain/models/empresa_model.dart' as rp_models;
 
 class FakeResponsablePracticasRepository implements IResponsablePracticasRepository {

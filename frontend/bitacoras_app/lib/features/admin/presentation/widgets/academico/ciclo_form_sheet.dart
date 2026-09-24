@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import '../admin_form_components.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class CicloFormResult {
   final String name;
@@ -132,6 +130,7 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                     initialValue: _selectedCareerId.isEmpty
                         ? null
                         : _selectedCareerId,
+                    isExpanded: true,
                     decoration: const InputDecoration(labelText: 'Carrera'),
                     items: widget.careers
                         .map(
@@ -157,13 +156,11 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                     ),
                   ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _nameController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre del semestre',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _nameController,
+                  etiqueta: 'Nombre del semestre',
+                  icono: Icons.layers_outlined,
+                  validador: (value) {
                     return AdminValidators.letters(
                       value,
                       label: 'El nombre del semestre',
@@ -171,17 +168,15 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                   },
                 ),
                 const AdminFormSectionLabel('Estado'),
-                TextFormField(
-                  controller: _levelController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Nivel',
-                    helperText: _selectedCareer == null
-                        ? null
-                        : 'Máximo permitido: ${_selectedCareer!.totalSemesters}',
-                    errorMaxLines: 2,
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _levelController,
+                  etiqueta: 'Nivel',
+                  icono: Icons.format_list_numbered_rounded,
+                  tipoTeclado: TextInputType.number,
+                  textoAyuda: _selectedCareer == null
+                      ? null
+                      : 'Máximo permitido: ${_selectedCareer!.totalSemesters}',
+                  validador: (value) {
                     final parsed = int.tryParse(value ?? '');
                     if (parsed == null || parsed <= 0) {
                       return 'Ingresa un nivel válido';
@@ -194,14 +189,13 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                   },
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _hoursPracticasController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Horas requeridas de prácticas',
-                    helperText: 'Número total de horas de práctica del semestre',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _hoursPracticasController,
+                  etiqueta: 'Horas requeridas de prácticas',
+                  textoAyuda: 'Número total de horas de práctica del semestre',
+                  icono: Icons.schedule_outlined,
+                  tipoTeclado: TextInputType.number,
+                  validador: (value) {
                     final parsed = int.tryParse(value ?? '');
                     if (parsed == null || parsed < 0) {
                       return 'Ingresa un valor válido de horas';
@@ -210,22 +204,58 @@ class _CicloFormSheetState extends State<CicloFormSheet> {
                   },
                 ),
                 AppSizes.gapV16,
-                SwitchListTile.adaptive(
-                  value: _isActive,
-                  onChanged: (value) {
-                    setState(() {
-                      _isActive = value;
-                    });
-                  },
-                  title: const Text('Semestre activo'),
-                  contentPadding: EdgeInsets.zero,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.md,
+                    vertical: AppSizes.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _isActive
+                        ? AppColors.successSoft
+                        : AppColors.disabledSurface,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    border: Border.all(
+                      color: _isActive
+                          ? AppColors.success.withValues(alpha: 0.35)
+                          : AppColors.outline,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _isActive
+                            ? Icons.check_circle_outline
+                            : Icons.pause_circle_outline,
+                        color: _isActive
+                            ? AppColors.success
+                            : AppColors.textSecondary,
+                      ),
+                      AppSizes.gapH8,
+                      Expanded(
+                        child: Text(
+                          _isActive ? 'Semestre activo' : 'Semestre inactivo',
+                          style: AppTextStyles.bodyMedium,
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: _isActive,
+                        onChanged: (value) => setState(() => _isActive = value),
+                        activeThumbColor: AppColors.primary,
+                        activeTrackColor: AppColors.primary.withValues(
+                          alpha: 0.35,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 AppSizes.gapV20,
-                AdminFormActionButton(
-                  label: widget.cycle == null
+                BotonPrisma(
+                  texto: widget.cycle == null
                       ? 'Guardar semestre'
                       : 'Actualizar semestre',
-                  onPressed: _submit,
+                  icono: Icons.save_outlined,
+                  anchoCompleto: true,
+                  alPresionar: _submit,
                 ),
               ],
             ),

@@ -1,6 +1,4 @@
-import 'package:bitacoras_app/features/admin/domain/models/periodo_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import '../admin_form_components.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class PeriodoFormResult {
   final String name;
@@ -132,13 +130,12 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                   icon: Icons.calendar_month_outlined,
                 ),
                 const AdminFormSectionLabel('Datos del período'),
-                TextFormField(
-                  controller: _nameController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre del período',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _nameController,
+                  etiqueta: 'Nombre del período',
+                  icono: Icons.calendar_month_outlined,
+                  capitalizacion: TextCapitalization.words,
+                  validador: (value) {
                     return AdminValidators.requiredText(
                       value,
                       label: 'El nombre del período',
@@ -146,54 +143,88 @@ class _PeriodoFormSheetState extends State<PeriodoFormSheet> {
                   },
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  readOnly: true,
-                  controller: _startDateController,
-                  validator: (value) => value == null || value.isEmpty
+                CampoFormularioPrisma(
+                  controlador: _startDateController,
+                  etiqueta: 'Fecha de inicio',
+                  icono: Icons.event_available_outlined,
+                  soloLectura: true,
+                  alPresionar: () => _pickDate(isStartDate: true),
+                  accion: IconButton(
+                    icon: const Icon(Icons.calendar_today_rounded),
+                    onPressed: () => _pickDate(isStartDate: true),
+                  ),
+                  validador: (value) => value == null || value.isEmpty
                       ? 'Selecciona la fecha de inicio'
                       : null,
-                  decoration: InputDecoration(
-                    labelText: 'Fecha de inicio',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.calendar_today_rounded),
-                      onPressed: () => _pickDate(isStartDate: true),
-                    ),
-                  ),
-                  onTap: () => _pickDate(isStartDate: true),
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  readOnly: true,
-                  controller: _endDateController,
-                  validator: (value) => value == null || value.isEmpty
+                CampoFormularioPrisma(
+                  controlador: _endDateController,
+                  etiqueta: 'Fecha de fin',
+                  icono: Icons.event_busy_outlined,
+                  soloLectura: true,
+                  alPresionar: () => _pickDate(isStartDate: false),
+                  accion: IconButton(
+                    icon: const Icon(Icons.calendar_today_rounded),
+                    onPressed: () => _pickDate(isStartDate: false),
+                  ),
+                  validador: (value) => value == null || value.isEmpty
                       ? 'Selecciona la fecha de fin'
                       : null,
-                  decoration: InputDecoration(
-                    labelText: 'Fecha de fin',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.calendar_today_rounded),
-                      onPressed: () => _pickDate(isStartDate: false),
-                    ),
-                  ),
-                  onTap: () => _pickDate(isStartDate: false),
                 ),
                 const AdminFormSectionLabel('Estado'),
-                SwitchListTile.adaptive(
-                  value: _isActive,
-                  onChanged: (value) {
-                    setState(() {
-                      _isActive = value;
-                    });
-                  },
-                  title: const Text('Período activo'),
-                  contentPadding: EdgeInsets.zero,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.md,
+                    vertical: AppSizes.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _isActive
+                        ? AppColors.successSoft
+                        : AppColors.disabledSurface,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    border: Border.all(
+                      color: _isActive
+                          ? AppColors.success.withValues(alpha: 0.35)
+                          : AppColors.outline,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _isActive
+                            ? Icons.check_circle_outline
+                            : Icons.pause_circle_outline,
+                        color: _isActive
+                            ? AppColors.success
+                            : AppColors.textSecondary,
+                      ),
+                      AppSizes.gapH8,
+                      Expanded(
+                        child: Text(
+                          _isActive ? 'Período activo' : 'Período inactivo',
+                          style: AppTextStyles.bodyMedium,
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: _isActive,
+                        onChanged: (value) => setState(() => _isActive = value),
+                        activeThumbColor: AppColors.primary,
+                        activeTrackColor: AppColors.primary.withValues(
+                          alpha: 0.35,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 AppSizes.gapV20,
-                AdminFormActionButton(
-                  label: widget.period == null
+                BotonPrisma(
+                  texto: widget.period == null
                       ? 'Guardar período'
                       : 'Actualizar período',
-                  onPressed: _submit,
+                  icono: Icons.save_outlined,
+                  anchoCompleto: true,
+                  alPresionar: _submit,
                 ),
               ],
             ),

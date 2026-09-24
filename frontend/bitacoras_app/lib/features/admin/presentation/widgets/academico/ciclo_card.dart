@@ -1,6 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/admin_status_chip.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class CicloCard extends StatelessWidget {
   final CicloModel cycle;
@@ -29,6 +28,13 @@ class CicloCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
             border: Border.all(color: AppColors.outline),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow,
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,8 +43,11 @@ class CicloCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.16),
+                  ),
                 ),
                 child: const Icon(
                   Icons.school_rounded,
@@ -59,6 +68,16 @@ class CicloCard extends StatelessWidget {
                       'Nivel ${cycle.level}',
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.textSecondary,
+                      ),
+                    ),
+                    AppSizes.gapV4,
+                    Text(
+                      cycle.isActive ? 'Periodo habilitado' : 'Periodo suspendido',
+                      style: AppTextStyles.caption.copyWith(
+                        color: cycle.isActive
+                            ? AppColors.success
+                            : AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     AppSizes.gapV4,
@@ -97,7 +116,7 @@ class CicloCard extends StatelessWidget {
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.outline,
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),

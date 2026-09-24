@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
-import '../../../../core/network/api_client.dart';
-import '../../domain/models/ubicacion_empresa_model.dart';
-import '../../domain/repositories/i_asistencia_repository.dart';
 
 class RegistroAsistenciaController extends ChangeNotifier {
   final IAsistenciaRepository repository;

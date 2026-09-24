@@ -1,0 +1,26 @@
+// Barrel público del módulo de autenticación.
+export 'auth_routes.dart';
+export 'data/datasources/auth_remote_datasource.dart';
+export 'data/repositories/auth_repository_impl.dart';
+export 'domain/repositories/i_auth_repository.dart';
+export 'presentation/controllers/login_controller.dart';
+export 'presentation/screens/login_screen.dart';
+export 'presentation/screens/register_screen.dart';
+export 'presentation/widgets/login_footer.dart';
+export 'presentation/widgets/login_form.dart';
+export 'presentation/widgets/login_header.dart';
+export 'package:go_router/go_router.dart';
+export 'package:bitacoras_app/app/routes/app_routes.dart';
+export 'package:provider/provider.dart';
+export 'package:bitacoras_app/core/widgets/app_logo.dart';
+export 'package:flutter/material.dart';
+export 'package:bitacoras_app/config/theme/app_text_styles.dart';
+export 'package:bitacoras_app/config/constants/app_sizes.dart';
+export 'package:bitacoras_app/shared/widgets/boton_prisma.dart';
+export 'package:bitacoras_app/shared/widgets/campo_formulario_prisma.dart';
+export 'package:bitacoras_app/core/network/api_client.dart';
+export 'package:bitacoras_app/shared/exports.dart';
+export 'package:bitacoras_app/app/auth_session.dart';
+export 'package:bitacoras_app/config/constants/app_colors.dart';
+export 'package:bitacoras_app/features/inicio/domain/models/rol_usuario_model.dart';
+export 'package:bitacoras_app/core/network/token_storage.dart';

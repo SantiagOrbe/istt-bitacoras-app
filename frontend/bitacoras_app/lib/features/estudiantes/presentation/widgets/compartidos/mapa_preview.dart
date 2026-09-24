@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapaPreview extends StatelessWidget {
@@ -46,6 +45,46 @@ class MapaPreview extends StatelessWidget {
         ),
         child: Stack(
           children: [
+            Positioned(
+              top: AppSizes.sm + 4,
+              left: AppSizes.sm + 4,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm,
+                  vertical: AppSizes.xs + 2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surface.withValues(alpha: 0.94),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: AppColors.shadow,
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.business_rounded,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
+                    AppSizes.gapH4,
+                    Text(
+                      'Ubicación de la empresa',
+                      style: AppTextStyles.caption.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Positioned.fill(
               child: hasLocation
                   ? FlutterMap(

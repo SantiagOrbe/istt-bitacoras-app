@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class HistorialHeader extends StatelessWidget {
   final String semesterName;
@@ -16,15 +16,11 @@ class HistorialHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.outline),
-      ),
-      child: Column(
+    return InstitutionalGlowCard(
+      accentColor: percentage >= 100 ? AppColors.success : AppColors.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -84,6 +80,7 @@ class HistorialHeader extends StatelessWidget {
             ],
           ),
         ],
+        ),
       ),
     );
   }

@@ -1,39 +1,59 @@
-import 'package:flutter/material.dart';
-import '../../domain/repositories/i_coordinador_repository.dart';
+import 'package:bitacoras_app/features/coordinador/coordinador.dart';
+
 
 class CoordinadorConsultaController extends ChangeNotifier {
   final ICoordinadorRepository repository;
 
-  List<Map<String, dynamic>> items = [];
-  bool isLoading = false;
-  Map<String, dynamic> datosCarrera = const {};
+  List<CoordinadorEstudianteModel> estudiantes = const [];
+  List<CoordinadorCarreraModel> carreras = const [];
+  List<CoordinadorTutorModel> tutores = const [];
+  bool estaCargando = false;
+  CoordinadorDatosModel? datosCarrera;
 
   CoordinadorConsultaController({required this.repository});
 
   Future<void> cargarEstudiantes() async {
-    _setLoading(true);
-    datosCarrera = await repository.getDatosCarrera();
-    items = (datosCarrera['estudiantes'] as List? ?? const [])
-        .whereType<Map<String, dynamic>>().toList();
-    _setLoading(false);
+    await _ejecutarConsulta(() async {
+      datosCarrera = await repository.getDatosCarrera();
+      estudiantes = datosCarrera?.estudiantes ?? const [];
+    });
   }
 
   Future<void> cargarCarreras() async {
-    _setLoading(true);
-    items = await repository.getCarreras();
-    _setLoading(false);
+    await _ejecutarConsulta(() async {
+      datosCarrera = await repository.getDatosCarrera();
+      final nombreCarrera = datosCarrera?.carrera.trim() ?? '';
+
+      carreras = nombreCarrera.isEmpty
+          ? const []
+          : [
+              CoordinadorCarreraModel(
+                id: '',
+                nombre: nombreCarrera,
+                codigo: '',
+                sigla: '',
+                modalidad: '',
+                estaActiva: true,
+              ),
+            ];
+    });
   }
 
   Future<void> cargarTutores() async {
-    _setLoading(true);
-    datosCarrera = await repository.getDatosCarrera();
-    items = (datosCarrera['tutores'] as List? ?? const [])
-        .whereType<Map<String, dynamic>>().toList();
-    _setLoading(false);
+    await _ejecutarConsulta(() async {
+      datosCarrera = await repository.getDatosCarrera();
+      tutores = datosCarrera?.tutores ?? const [];
+    });
   }
 
-  void _setLoading(bool value) {
-    isLoading = value;
+  Future<void> _ejecutarConsulta(Future<void> Function() consulta) async {
+    estaCargando = true;
     notifyListeners();
+    try {
+      await consulta();
+    } finally {
+      estaCargando = false;
+      notifyListeners();
+    }
   }
 }

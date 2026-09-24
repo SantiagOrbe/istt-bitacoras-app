@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../../app/apps.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../domain/models/asignacion_estudiante_model.dart';
-import '../../controllers/asignacion_estudiante_controller.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
 class AsignacionEstudianteCard extends StatelessWidget {
   final AsignacionEstudianteModel assignment;
@@ -19,25 +14,25 @@ class AsignacionEstudianteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAssigned = assignment.isAssigned;
 
-    return Card(
-      elevation: 0,
-      color: AppColors.surface,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.outline),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+      child: InstitutionalGlowCard(
+        accentColor: isAssigned ? AppColors.success : AppColors.warning,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSizes.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  assignment.studentName,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Expanded(
+                  child: Text(
+                    assignment.studentName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.bodyBold,
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -57,11 +52,14 @@ class AsignacionEstudianteCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text('Cédula: ${assignment.studentIdentification}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+            Text(
+              'Cédula: ${assignment.studentIdentification.isEmpty ? 'No registrada' : assignment.studentIdentification}',
+              style: AppTextStyles.caption,
+            ),
             if (isAssigned) ...[
               const Divider(color: AppColors.divider),
-              Text('Empresa: ${assignment.companyName}', style: const TextStyle(fontSize: 13)),
-              Text('Tutor Académico: ${assignment.academicTutorName}', style: const TextStyle(fontSize: 13)),
+              Text('Empresa: ${assignment.companyName}', style: AppTextStyles.body),
+              Text('Tutor Académico: ${assignment.academicTutorName}', style: AppTextStyles.body),
             ],
             const SizedBox(height: 12),
             SizedBox(
@@ -73,7 +71,14 @@ class AsignacionEstudianteCard extends StatelessWidget {
                     extra: {'assignment': assignment, 'controller': controller},
                   );
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.surface,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  ),
+                ),
                 icon: Icon(isAssigned ? Icons.edit_rounded : Icons.add_link_rounded, color: AppColors.surface, size: 18),
                 label: Text(
                   isAssigned ? 'Reasignar Tutores' : 'Asignar Tutores',
@@ -82,6 +87,7 @@ class AsignacionEstudianteCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/core/network/api_client.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class GestionUsuarioScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -217,46 +216,37 @@ class _UsuarioFormSheetState extends State<_UsuarioFormSheet> {
                 ),
                 const AdminFormSectionLabel('Datos de la cuenta'),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _firstName,
-                  validator: (value) =>
+                CampoFormularioPrisma(
+                  controlador: _firstName,
+                  etiqueta: 'Nombres',
+                  icono: Icons.badge_outlined,
+                  validador: (value) =>
                       AdminValidators.letters(value, label: 'Los nombres'),
-                  decoration: const InputDecoration(
-                    labelText: 'Nombres',
-                    errorMaxLines: 2,
-                  ),
                 ),
                 AppSizes.gapV8,
-                TextFormField(
-                  controller: _lastName,
-                  validator: (value) =>
+                CampoFormularioPrisma(
+                  controlador: _lastName,
+                  etiqueta: 'Apellidos',
+                  icono: Icons.badge_outlined,
+                  validador: (value) =>
                       AdminValidators.letters(value, label: 'Los apellidos'),
-                  decoration: const InputDecoration(
-                    labelText: 'Apellidos',
-                    errorMaxLines: 2,
-                  ),
                 ),
                 const AdminFormSectionLabel('Acceso y permisos'),
-                TextFormField(
-                  controller: _email,
-                  validator: (value) {
-                    return AdminValidators.email(value);
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Correo institucional',
-                    errorMaxLines: 2,
-                  ),
+                CampoFormularioPrisma(
+                  controlador: _email,
+                  etiqueta: 'Correo institucional',
+                  icono: Icons.email_outlined,
+                  tipoTeclado: TextInputType.emailAddress,
+                  validador: AdminValidators.email,
                 ),
                 AppSizes.gapV8,
-                TextFormField(
-                  controller: _phone,
-                  keyboardType: TextInputType.phone,
-                  validator: AdminValidators.ecuadorianPhone,
-                  decoration: const InputDecoration(
-                    labelText: 'Teléfono',
-                    hintText: 'Ej: 0991234567 o +593991234567',
-                    errorMaxLines: 2,
-                  ),
+                CampoFormularioPrisma(
+                  controlador: _phone,
+                  etiqueta: 'Teléfono',
+                  textoSugerido: '0991234567 o +593991234567',
+                  icono: Icons.phone_outlined,
+                  tipoTeclado: TextInputType.phone,
+                  validador: AdminValidators.ecuadorianPhone,
                 ),
                 AppSizes.gapV8,
                 DropdownButtonFormField<RolUsuarioModel>(
@@ -274,16 +264,12 @@ class _UsuarioFormSheetState extends State<_UsuarioFormSheet> {
                 ),
                 if (_role != RolUsuarioModel.admin) ...[
                   AppSizes.gapV8,
-                  TextFormField(
-                    controller: _cedula,
-                    validator: (value) {
-                      return AdminValidators.ecuadorianId(value);
-                    },
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Cédula',
-                      errorMaxLines: 2,
-                    ),
+                  CampoFormularioPrisma(
+                    controlador: _cedula,
+                    etiqueta: 'Cédula',
+                    icono: Icons.credit_card_outlined,
+                    tipoTeclado: TextInputType.number,
+                    validador: AdminValidators.ecuadorianId,
                   ),
                 ],
                 if (_role == RolUsuarioModel.student ||
@@ -328,28 +314,30 @@ class _UsuarioFormSheetState extends State<_UsuarioFormSheet> {
                 ],
                 if (_role == RolUsuarioModel.companyTutor) ...[
                   AppSizes.gapV8,
-                  TextFormField(
-                    controller: _cargo,
-                    validator: (value) =>
+                  CampoFormularioPrisma(
+                    controlador: _cargo,
+                    etiqueta: 'Cargo',
+                    icono: Icons.work_outline,
+                    validador: (value) =>
                         AdminValidators.letters(value, label: 'El cargo'),
-                    decoration: const InputDecoration(labelText: 'Cargo'),
                   ),
                 ],
                 AppSizes.gapV8,
-                TextFormField(
-                  controller: _password,
-                  obscureText: true,
-                  validator: (value) => (value?.trim().length ?? 0) < 8
+                CampoFormularioPrisma(
+                  controlador: _password,
+                  etiqueta: 'Contraseña temporal',
+                  icono: Icons.lock_outline_rounded,
+                  ocultarTexto: true,
+                  validador: (value) => (value?.trim().length ?? 0) < 8
                       ? 'Use al menos 8 caracteres.'
                       : null,
-                  decoration: const InputDecoration(
-                    labelText: 'Contraseña temporal',
-                  ),
                 ),
                 AppSizes.gapV16,
-                AdminFormActionButton(
-                  label: 'Crear usuario',
-                  onPressed: _submit,
+                BotonPrisma(
+                  texto: 'Crear usuario',
+                  icono: Icons.person_add_alt_1,
+                  anchoCompleto: true,
+                  alPresionar: _submit,
                 ),
               ],
             ),

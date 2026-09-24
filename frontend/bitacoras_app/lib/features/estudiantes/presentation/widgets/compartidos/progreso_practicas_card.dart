@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class ProgresoPracticasCard extends StatelessWidget {
   final String period;
@@ -22,14 +22,11 @@ class ProgresoPracticasCard extends StatelessWidget {
     final double progress = (completedValue / safeTotal).clamp(0.0, 1.0);
     final int percentage = (progress * 100).toInt();
 
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.outline),
-      ),
-      child: Column(
+    return InstitutionalGlowCard(
+      accentColor: progress >= 1 ? AppColors.success : AppColors.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Selector / Header de Período Académico
@@ -141,15 +138,19 @@ class ProgresoPracticasCard extends StatelessWidget {
           // Resumen textual con estado de avance
           Row(
             children: [
-              const Icon(
-                Icons.check_circle_rounded,
+              Icon(
+                progress >= 1
+                    ? Icons.check_circle_rounded
+                    : Icons.timelapse_rounded,
                 size: 16,
-                color: AppColors.success,
+                color: progress >= 1 ? AppColors.success : AppColors.primary,
               ),
               AppSizes.gapH8,
               Expanded(
                 child: Text(
-                  'Has completado el $percentage% de tus prácticas.',
+                    progress >= 1
+                      ? 'Has completado el 100% de tus prácticas.'
+                      : 'Has completado el $percentage% de tus prácticas.',
                   style: AppTextStyles.caption.copyWith(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -160,6 +161,7 @@ class ProgresoPracticasCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }

@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../../../../config/constants/app_colors.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
 class FormularioEmpresaHeader extends StatelessWidget {
   final bool isEditing;
@@ -8,19 +7,19 @@ class FormularioEmpresaHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: AppColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.outline),
-      ),
+    return InstitutionalGlowCard(
+      accentColor: AppColors.primary,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.md),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
               child: Icon(
                 isEditing ? Icons.edit_note_rounded : Icons.domain_add_rounded,
                 color: AppColors.primary,
@@ -31,9 +30,9 @@ class FormularioEmpresaHeader extends StatelessWidget {
               child: Text(
                 isEditing ? 'Editar Empresa' : 'Registrar Nueva Empresa',
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
                 ),
               ),
             ),

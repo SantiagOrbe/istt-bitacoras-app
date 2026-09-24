@@ -1,6 +1,4 @@
-﻿import 'package:bitacoras_app/features/admin/admin.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
+﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class SesionActivaCard extends StatelessWidget {
   final RegistroAsistenciaModel record;

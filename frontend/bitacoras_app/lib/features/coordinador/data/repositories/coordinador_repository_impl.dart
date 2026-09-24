@@ -1,5 +1,4 @@
-import '../../domain/repositories/i_coordinador_repository.dart';
-import '../datasources/coordinador_remote_datasource.dart';
+import 'package:bitacoras_app/features/coordinador/coordinador.dart';
 
 class CoordinadorRepositoryImpl implements ICoordinadorRepository {
   final CoordinadorRemoteDataSource remoteDataSource;
@@ -7,16 +6,24 @@ class CoordinadorRepositoryImpl implements ICoordinadorRepository {
   CoordinadorRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<Map<String, dynamic>>> getEstudiantes() =>
-      remoteDataSource.getEstudiantes();
+  Future<List<CoordinadorEstudianteModel>> getEstudiantes() async =>
+      (await remoteDataSource.getEstudiantes())
+          .map(CoordinadorEstudianteModel.fromJson)
+          .toList();
 
   @override
-  Future<List<Map<String, dynamic>>> getCarreras() =>
-      remoteDataSource.getCarreras();
+  Future<List<CoordinadorCarreraModel>> getCarreras() async =>
+      (await remoteDataSource.getCarreras())
+          .map(CoordinadorCarreraModel.fromJson)
+          .toList();
 
   @override
-  Future<List<Map<String, dynamic>>> getTutores() => remoteDataSource.getTutores();
+  Future<List<CoordinadorTutorModel>> getTutores() async =>
+      (await remoteDataSource.getTutores())
+          .map(CoordinadorTutorModel.fromJson)
+          .toList();
 
   @override
-  Future<Map<String, dynamic>> getDatosCarrera() => remoteDataSource.getDatosCarrera();
+  Future<CoordinadorDatosModel> getDatosCarrera() async =>
+      CoordinadorDatosModel.fromJson(await remoteDataSource.getDatosCarrera());
 }

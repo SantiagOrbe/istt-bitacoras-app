@@ -1,77 +1,77 @@
-import 'package:bitacoras_app/core/network/api_client.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import '../../domain/repositories/i_auth_repository.dart';
+import '../../auth.dart';
+
 
 class LoginController extends ChangeNotifier {
-  final IAuthRepository repository;
+  final IAuthRepository repositorio;
 
-  LoginController({required this.repository});
+  LoginController({required this.repositorio});
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController controladorCorreo = TextEditingController();
+  final TextEditingController controladorContrasena = TextEditingController();
 
-  bool isLoading = false;
-  bool isPasswordVisible = false;
-  String? errorMessage;
-  String? emailError;
-  String? passwordError;
+  bool estaCargando = false;
+  bool mostrarContrasena = false;
+  String? mensajeError;
+  String? errorCorreo;
+  String? errorContrasena;
 
-  void togglePasswordVisibility() {
-    isPasswordVisible = !isPasswordVisible;
+  void alternarVisibilidadContrasena() {
+    mostrarContrasena = !mostrarContrasena;
     notifyListeners();
   }
 
-  Future<UsuarioModel?> submitLogin() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text;
+  Future<UsuarioModel?> iniciarSesion() async {
+    final correo = controladorCorreo.text.trim();
+    final contrasena = controladorContrasena.text;
 
-    emailError = null;
-    passwordError = null;
-    errorMessage = null;
+    errorCorreo = null;
+    errorContrasena = null;
+    mensajeError = null;
 
-    if (email.isEmpty) {
-      emailError = 'Ingrese su correo institucional.';
-    } else if (!email.toLowerCase().endsWith('@est.itstena.edu.ec')) {
-      emailError = 'Use un correo @est.itstena.edu.ec.';
+    if (correo.isEmpty) {
+      errorCorreo = 'Ingrese su correo institucional.';
+    } else if (!correo.toLowerCase().endsWith('@est.itstena.edu.ec')) {
+      errorCorreo = 'Use un correo @est.itstena.edu.ec.';
     }
-    if (password.trim().isEmpty) {
-      passwordError = 'Ingrese su contraseña.';
+    if (contrasena.trim().isEmpty) {
+      errorContrasena = 'Ingrese su contraseña.';
     }
-    if (emailError != null || passwordError != null) {
+    if (errorCorreo != null || errorContrasena != null) {
       notifyListeners();
       return null;
     }
 
-    isLoading = true;
-    errorMessage = null;
+    estaCargando = true;
+    mensajeError = null;
     notifyListeners();
 
     try {
-      final user = await repository.login(
-        email: email,
-        password: password,
+      final usuario = await repositorio.login(
+        email: correo,
+        password: contrasena,
       );
-      
-      isLoading = false;
+
+      estaCargando = false;
       notifyListeners();
-      return user;
+      return usuario;
     } catch (e) {
-      isLoading = false;
+      estaCargando = false;
       if (e is ApiException && e.body is Map<String, dynamic>) {
         final body = e.body as Map<String, dynamic>;
-        emailError = _fieldError(body['email']);
-        passwordError = _fieldError(body['password']);
-        errorMessage = _fieldError(body['detail']) ??
-            _fieldError(body['non_field_errors']);
+        errorCorreo = _obtenerErrorCampo(body['email']);
+        errorContrasena = _obtenerErrorCampo(body['password']);
+        mensajeError =
+            _obtenerErrorCampo(body['detail']) ??
+            _obtenerErrorCampo(body['non_field_errors']);
       } else {
-        errorMessage = e.toString().replaceAll('Exception: ', '');
+        mensajeError = e.toString().replaceAll('Exception: ', '');
       }
       notifyListeners();
       return null;
     }
   }
 
-  String? _fieldError(dynamic value) {
+  String? _obtenerErrorCampo(dynamic value) {
     if (value is List && value.isNotEmpty) return value.first.toString();
     if (value is String && value.isNotEmpty) return value;
     return null;
@@ -79,8 +79,8 @@ class LoginController extends ChangeNotifier {
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    controladorCorreo.dispose();
+    controladorContrasena.dispose();
     super.dispose();
   }
 }

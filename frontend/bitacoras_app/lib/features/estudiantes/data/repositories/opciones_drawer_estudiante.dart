@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/domain/models/item_menu_model.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 List<SeccionMenuModel> getOpcionesDrawerEstudiante({
   bool canEnter = true,

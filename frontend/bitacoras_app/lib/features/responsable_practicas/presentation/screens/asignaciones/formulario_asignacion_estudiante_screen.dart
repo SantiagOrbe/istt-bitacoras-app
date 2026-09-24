@@ -1,12 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../../../app/apps.dart';
-import '../../../../../app/auth_session.dart';
-import 'package:provider/provider.dart';
-import '../../../domain/models/asignacion_estudiante_model.dart';
-import '../../controllers/asignacion_estudiante_controller.dart';
-import '../../widgets/asignaciones/formulario_asignacion_estudiante_body.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
 class FormularioAsignacionEstudianteScreen extends StatelessWidget {
   final AsignacionEstudianteModel assignment;

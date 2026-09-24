@@ -1,4 +1,5 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
+
 
 class UbicacionNoAsignadaCard extends StatelessWidget {
   final String title;
@@ -12,42 +13,35 @@ class UbicacionNoAsignadaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
+    return InstitutionalGlowCard(
+      accentColor: AppColors.error,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSizes.md),
         color: AppColors.errorSoft,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.45)),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(Icons.location_off_outlined, color: AppColors.error),
-          const SizedBox(width: 10),
+          AppSizes.gapH12,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.bodyBold,
                 ),
-                const SizedBox(height: 4),
+                AppSizes.gapV4,
                 Text(
                   message,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
-                  ),
+                  style: AppTextStyles.caption,
                 ),
               ],
             ),
           ),
         ],
+      ),
       ),
     );
   }

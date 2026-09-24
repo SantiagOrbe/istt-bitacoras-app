@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/estudiante_paralelo_card.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class GestionParaleloScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -116,15 +115,16 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
       );
       final selected = students
           .where((student) => student['seleccionado'] == true)
-          .map((student) => student['id'] as int)
+          .map((student) => int.tryParse(student['id']?.toString() ?? ''))
+          .whereType<int>()
           .toSet();
       if (!mounted) return;
       final result = await showDialog<Set<int>>(
         context: context,
-        builder: (context) => _StudentAssignmentDialog(
-          students: students,
-          selected: selected,
-          parallelName: parallel.name,
+        builder: (context) => AsignacionEstudiantesDialog(
+          estudiantes: students,
+          seleccionados: selected,
+          nombreParalelo: parallel.name,
         ),
       );
       if (result == null || !mounted) return;
@@ -217,82 +217,157 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSizes.md,
+                AppSizes.sm,
+                AppSizes.md,
+                0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSizes.gapV12,
-                  Text(
-                    'Gestión de Paralelos',
-                    style: AppTextStyles.heading.copyWith(
-                      color: AppColors.textPrimary,
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSizes.md,
+                      AppSizes.md,
+                      AppSizes.md,
+                      AppSizes.sm,
                     ),
-                  ),
-                  if (widget.semesterId != null)
-                    Text(
-                      'Semestre: ${_controller.getCycleName(widget.semesterId!)}',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  AppSizes.gapV12,
-                  CarreraSearchBar(
-                    onChanged: _controller.setSearchQuery,
-                    hintText: 'Buscar paralelo...',
-                  ),
-                  AppSizes.gapV12,
-                  DropdownButtonFormField<String?>(
-                    initialValue: _controller.selectedCycleId,
-                    decoration: const InputDecoration(
-                      labelText: 'Filtrar por semestre',
-                    ),
-                    items: [
-                      const DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text('Todos los semestres'),
-                      ),
-                      ..._controller.cycles.map(
-                        (cycle) => DropdownMenuItem<String?>(
-                          value: cycle.id,
-                          child: Text('${cycle.name} (Nivel ${cycle.level})'),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      border: Border.all(color: AppColors.outline),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.shadow,
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                    ],
-                    onChanged: _controller.setSelectedCycle,
-                  ),
-                  AppSizes.gapV12,
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _FilterChip(
-                          label: 'Todos',
-                          selected: _controller.statusFilter == 'all',
-                          onSelected: (_) => _controller.setStatusFilter('all'),
+                        Row(
+                          children: [
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.secondary,
+                                    AppColors.warning,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppSizes.radiusSm,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.groups_rounded,
+                                color: AppColors.surface,
+                              ),
+                            ),
+                            AppSizes.gapH12,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Gestión de paralelos',
+                                    style: AppTextStyles.title,
+                                  ),
+                                  Text(
+                                    widget.semesterId == null
+                                        ? 'Organización de jornadas y estudiantes'
+                                        : 'Semestre: ${_controller.getCycleName(widget.semesterId!)}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              '${_controller.filteredParallels.length}',
+                              style: AppTextStyles.heading.copyWith(
+                                color: AppColors.primary,
+                                fontSize: 22,
+                              ),
+                            ),
+                          ],
                         ),
-                        _FilterChip(
-                          label: 'Activos',
-                          selected: _controller.statusFilter == 'active',
-                          onSelected: (_) => _controller.setStatusFilter('active'),
+                        AppSizes.gapV16,
+                        CarreraSearchBar(
+                          onChanged: _controller.setSearchQuery,
+                          hintText: 'Buscar paralelo o jornada...',
                         ),
-                        _FilterChip(
-                          label: 'Inactivos',
-                          selected: _controller.statusFilter == 'inactive',
-                          onSelected: (_) => _controller.setStatusFilter('inactive'),
+                        AppSizes.gapV12,
+                        DropdownButtonFormField<String?>(
+                          initialValue: _controller.selectedCycleId,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Filtrar por semestre',
+                            prefixIcon: Icon(Icons.layers_outlined),
+                          ),
+                          items: [
+                            const DropdownMenuItem<String?>(
+                              value: null,
+                              child: Text('Todos los semestres'),
+                            ),
+                            ..._controller.cycles.map(
+                              (cycle) => DropdownMenuItem<String?>(
+                                value: cycle.id,
+                                child: Text(
+                                  '${cycle.name} (Nivel ${cycle.level})',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: _controller.setSelectedCycle,
+                        ),
+                        AppSizes.gapV12,
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              _FilterChip(
+                                label: 'Todos',
+                                selected: _controller.statusFilter == 'all',
+                                onSelected: (_) =>
+                                    _controller.setStatusFilter('all'),
+                              ),
+                              _FilterChip(
+                                label: 'Activos',
+                                selected: _controller.statusFilter == 'active',
+                                onSelected: (_) =>
+                                    _controller.setStatusFilter('active'),
+                              ),
+                              _FilterChip(
+                                label: 'Inactivos',
+                                selected:
+                                    _controller.statusFilter == 'inactive',
+                                onSelected: (_) =>
+                                    _controller.setStatusFilter('inactive'),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  AppSizes.gapV12,
-                  Text(
-                    '${_controller.filteredParallels.length} paralelos registrados',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  AppSizes.gapV12,
+                  AppSizes.gapV16,
                   Expanded(
-                    child: _controller.filteredParallels.isEmpty
+                    child: _controller.isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          )
+                        : _controller.filteredParallels.isEmpty
                         ? AdminEmptyState(
                             title: _controller.searchQuery.isNotEmpty
                                 ? 'No se encontraron paralelos'
@@ -301,7 +376,7 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                                 ? 'Prueba con otro criterio de búsqueda.'
                                 : 'Crea el primer paralelo para comenzar.',
                             icon: Icons.groups_rounded,
-                            accentColor: AppColors.secondary,
+                            accentColor: AppColors.primary,
                           )
                         : ListView.separated(
                             physics: const BouncingScrollPhysics(),
@@ -319,7 +394,8 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                                 onTap: () =>
                                     _openParallelForm(parallel: parallel),
                                 onToggleStatus: () => _toggleStatus(parallel),
-                                onAssignStudents: () => _assignStudents(parallel),
+                                onAssignStudents: () =>
+                                    _assignStudents(parallel),
                                 onRemoveStudents: () =>
                                     _removeAllStudents(parallel),
                               );
@@ -364,200 +440,6 @@ class _FilterChip extends StatelessWidget {
         side: BorderSide(
           color: selected ? AppColors.primary : AppColors.outline,
         ),
-      ),
-    );
-  }
-}
-
-class _StudentAssignmentDialog extends StatefulWidget {
-  final List<Map<String, dynamic>> students;
-  final Set<int> selected;
-  final String parallelName;
-
-  const _StudentAssignmentDialog({
-    required this.students,
-    required this.selected,
-    required this.parallelName,
-  });
-
-  @override
-  State<_StudentAssignmentDialog> createState() =>
-      _StudentAssignmentDialogState();
-}
-
-class _StudentAssignmentDialogState extends State<_StudentAssignmentDialog> {
-  final _searchController = TextEditingController();
-  late final Set<int> _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _selected = {...widget.selected};
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final query = _searchController.text.trim().toLowerCase();
-    final visibleStudents = widget.students.where((student) {
-      final text = '${student['nombre'] ?? ''} ${student['email'] ?? ''} '
-          '${student['cedula'] ?? ''}'.toLowerCase();
-      return query.isEmpty || text.contains(query);
-    }).toList();
-      final assignedStudents = visibleStudents
-        .where((student) => student['seleccionado'] == true)
-        .toList();
-      final availableStudents = visibleStudents
-        .where(
-          (student) =>
-            student['seleccionado'] != true && student['bloqueado'] != true,
-        )
-        .toList();
-      final blockedStudents = visibleStudents
-        .where((student) => student['bloqueado'] == true)
-        .toList();
-
-    return AlertDialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      title: Text('Asignar estudiantes al paralelo ${widget.parallelName}'),
-      content: SizedBox(
-        width: double.maxFinite,
-        height: MediaQuery.sizeOf(context).height * 0.52,
-        child: Column(
-          children: [
-            TextField(
-              controller: _searchController,
-              onChanged: (_) => setState(() {}),
-              decoration: const InputDecoration(
-                labelText: 'Buscar estudiante',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-            AppSizes.gapV12,
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '${_selected.length} seleccionados de ${widget.students.length}',
-                style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ),
-            AppSizes.gapV8,
-            Expanded(
-              child: visibleStudents.isEmpty
-                  ? const Center(child: Text('No hay estudiantes disponibles.'))
-                  : ListView(
-                      children: [
-                        _sectionHeader(
-                          'Ya pertenecen a este paralelo',
-                          assignedStudents.length,
-                          Icons.check_circle_outline,
-                        ),
-                        if (assignedStudents.isEmpty)
-                          const _AssignmentMessage(
-                            text: 'Todavía no hay estudiantes asignados.',
-                          )
-                        else
-                          ...assignedStudents.map(
-                            (student) => _studentCard(student, blocked: false),
-                          ),
-                        _sectionHeader(
-                          'Estudiantes disponibles',
-                          availableStudents.length,
-                          Icons.person_add_alt_1_outlined,
-                        ),
-                        if (availableStudents.isEmpty)
-                          const _AssignmentMessage(
-                            text: 'No hay estudiantes disponibles para asignar.',
-                          )
-                        else
-                          ...availableStudents.map(
-                            (student) => _studentCard(student, blocked: false),
-                          ),
-                        if (blockedStudents.isNotEmpty) ...[
-                          _sectionHeader(
-                            'Ya pertenecen a otro paralelo',
-                            blockedStudents.length,
-                            Icons.lock_outline,
-                          ),
-                          ...blockedStudents.map(
-                            (student) => _studentCard(student, blocked: true),
-                          ),
-                        ],
-                      ],
-                    ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancelar'),
-        ),
-        FilledButton.icon(
-          onPressed: () => Navigator.pop(context, _selected),
-          icon: const Icon(Icons.check),
-          label: const Text('Guardar asignación'),
-        ),
-      ],
-    );
-  }
-
-  Widget _studentCard(
-    Map<String, dynamic> student, {
-    required bool blocked,
-  }) {
-    final id = student['id'] as int;
-    return EstudianteParaleloCard(
-      student: student,
-      selected: _selected.contains(id),
-      blocked: blocked,
-      onChanged: (value) => setState(() {
-        value == true ? _selected.add(id) : _selected.remove(id);
-      }),
-    );
-  }
-
-  Widget _sectionHeader(String title, int count, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSizes.sm, bottom: AppSizes.xs),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: AppColors.primary),
-          AppSizes.gapH8,
-          Expanded(
-            child: Text(
-              '$title ($count)',
-              style: AppTextStyles.bodyBold.copyWith(
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AssignmentMessage extends StatelessWidget {
-  final String text;
-
-  const _AssignmentMessage({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
-      child: Text(
-        text,
-        style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
       ),
     );
   }

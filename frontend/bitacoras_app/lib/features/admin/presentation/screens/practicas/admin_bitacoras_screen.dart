@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:provider/provider.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class AdminBitacorasScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -148,7 +147,7 @@ class _AdminBitacorasScreenState extends State<AdminBitacorasScreen> {
                     vertical: 3,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.12),
+                    color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: statusColor, width: 1),
                   ),

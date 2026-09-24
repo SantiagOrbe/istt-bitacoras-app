@@ -1,4 +1,4 @@
-import '../../../../app/apps.dart';
+import 'package:bitacoras_app/features/coordinador/coordinador.dart';
 
 List<SeccionMenuModel> getCoordinatorDrawerSections() {
   return [

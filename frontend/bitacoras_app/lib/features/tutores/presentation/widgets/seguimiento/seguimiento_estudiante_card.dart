@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/features/tutores/domain/models/estudiante_asignado_model.dart';
-import 'package:flutter/material.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
 
-import '../../../../../config/constants/app_colors.dart';
 
 class SeguimientoEstudianteCard extends StatelessWidget {
   final EstudianteAsignadoModel item;
@@ -17,38 +15,38 @@ class SeguimientoEstudianteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final student = item.student;
 
-    return Card(
-      elevation: 1.5,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSizes.sm),
+      child: InstitutionalGlowCard(
+        accentColor: AppColors.secondary,
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding: const EdgeInsets.all(AppSizes.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(student.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text('${(item.progressPercentage * 100).toInt()}%', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 16)),
+                  Expanded(child: Text(student.name, style: AppTextStyles.bodyBold, overflow: TextOverflow.ellipsis)),
+                  Text('${(item.progressPercentage * 100).toInt()}%', style: AppTextStyles.bodyBold.copyWith(color: AppColors.primary)),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text('Completadas: ${item.totalHoursCompleted} hrs | Restantes: ${item.remainingHours} hrs', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-              const SizedBox(height: 8),
+              AppSizes.gapV4,
+              Text('Completadas: ${item.totalHoursCompletedLabel} hrs | Restantes: ${item.remainingHoursLabel} hrs', style: AppTextStyles.caption),
+              AppSizes.gapV8,
               LinearProgressIndicator(value: item.progressPercentage, backgroundColor: AppColors.divider, color: AppColors.primary, minHeight: 6),
-              const Divider(height: 20),
+              AppSizes.gapV12,
+              const Divider(height: 1),
+              AppSizes.gapV12,
               Row(
                 children: [
                   const Icon(Icons.access_time, size: 14, color: AppColors.textSecondary),
                   const SizedBox(width: 4),
-                  Text('Última asistencia: ${item.lastAttendanceTime ?? "Sin registro"}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                  Text('Última asistencia: ${item.lastAttendanceTime ?? "Sin registro"}', style: AppTextStyles.caption),
                 ],
               ),
-              const SizedBox(height: 4),
+              AppSizes.gapV4,
               Row(
                 children: [
                   const Icon(Icons.event_note, size: 14, color: AppColors.textSecondary),
@@ -56,7 +54,7 @@ class SeguimientoEstudianteCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Última actividad: ${item.lastActivityDescription ?? "Sin actividad"}',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                      style: AppTextStyles.caption,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

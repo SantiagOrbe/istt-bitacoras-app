@@ -1,5 +1,5 @@
-// lib/features/estudiantes/presentation/widgets/asistencia/ubicacion_estado_card.dart
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+
 
 class UbicacionEstadoCard extends StatelessWidget {
   final bool isValid;
@@ -14,18 +14,24 @@ class UbicacionEstadoCard extends StatelessWidget {
         message ??
         (isValid ? 'Dentro del rango permitido' : 'Fuera del rango permitido');
 
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        border: Border.all(color: statusColor),
-      ),
-      child: Row(
+    return InstitutionalGlowCard(
+      accentColor: statusColor,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Row(
         children: [
-          Icon(
-            isValid ? Icons.location_on : Icons.location_off,
-            color: statusColor,
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: statusColor.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isValid ? Icons.location_on : Icons.location_off,
+              color: statusColor,
+              size: 20,
+            ),
           ),
           AppSizes.gapH12,
           Expanded(
@@ -35,6 +41,7 @@ class UbicacionEstadoCard extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

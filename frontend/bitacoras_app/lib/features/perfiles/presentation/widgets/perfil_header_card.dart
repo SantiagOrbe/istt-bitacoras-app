@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/perfiles/perfiles.dart';
 
 class PerfilHeaderCard extends StatelessWidget {
   final UsuarioModel user;
@@ -18,13 +17,27 @@ class PerfilHeaderCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.surface,
+            AppColors.infoSoft.withValues(alpha: 0.72),
+          ],
+        ),
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.outline),
-        boxShadow: const [
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.14),
+        ),
+        boxShadow: [
           BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+          const BoxShadow(
             color: AppColors.shadow,
-            blurRadius: 8,
+            blurRadius: 10,
             offset: Offset(0, 3),
           ),
         ],
@@ -80,7 +93,6 @@ class PerfilHeaderCard extends StatelessWidget {
             ),
           ),
 
-          // Empresa Asignada con control de desborde (Evita el RenderFlex Overflow)
           if (user.company?.isNotEmpty ?? false) ...[
             AppSizes.gapV12,
             Row(
@@ -106,7 +118,7 @@ class PerfilHeaderCard extends StatelessWidget {
                 ),
               ],
             ),
-          ] else ...[
+          ] else if (_puedeMostrarEmpresa) ...[
             AppSizes.gapV12,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -136,4 +148,9 @@ class PerfilHeaderCard extends StatelessWidget {
       ),
     );
   }
+
+  bool get _puedeMostrarEmpresa =>
+      user.role == RolUsuarioModel.student ||
+      user.role == RolUsuarioModel.academicTutor ||
+      user.role == RolUsuarioModel.companyTutor;
 }

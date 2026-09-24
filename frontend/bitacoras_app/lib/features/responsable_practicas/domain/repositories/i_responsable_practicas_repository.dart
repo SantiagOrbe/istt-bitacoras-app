@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/features/inicio/domain/models/accion_rapida_model.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
-import '../models/empresa_model.dart';
-import '../models/asignacion_estudiante_model.dart';
 
 abstract class IResponsablePracticasRepository {
   void invalidateCache();

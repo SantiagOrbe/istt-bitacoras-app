@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/config/constants/app_sizes.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class AdminHeader extends StatelessWidget {
   final String title;

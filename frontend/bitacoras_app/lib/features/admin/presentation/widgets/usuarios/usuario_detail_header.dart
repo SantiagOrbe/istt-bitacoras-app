@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class UsuarioDetailHeader extends StatelessWidget {
   final UsuarioModel user;
@@ -14,17 +14,16 @@ class UsuarioDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        border: Border.all(color: AppColors.outline),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.shadow,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -34,20 +33,20 @@ class UsuarioDetailHeader extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             child: Text(
               user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
+                color: AppColors.primary,
               ),
             ),
           ),
           const SizedBox(height: 12),
           Text(
             user.name,
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: AppTextStyles.title.copyWith(
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
@@ -55,9 +54,7 @@ class UsuarioDetailHeader extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             user.email,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[600],
-            ),
+            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 12),
           Row(
@@ -65,9 +62,9 @@ class UsuarioDetailHeader extends StatelessWidget {
             children: [
               Chip(
                 label: Text(user.role.label),
-                backgroundColor: theme.colorScheme.primaryContainer,
+                backgroundColor: AppColors.infoSoft,
                 labelStyle: TextStyle(
-                  color: theme.colorScheme.onPrimaryContainer,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
@@ -83,11 +80,11 @@ class UsuarioDetailHeader extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: user.isActive
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.red.withOpacity(0.1),
+                      ? AppColors.successSoft
+                      : AppColors.errorSoft,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: user.isActive ? Colors.green : Colors.red,
+                      color: user.isActive ? AppColors.success : AppColors.error,
                     ),
                   ),
                   child: Row(
@@ -98,13 +95,13 @@ class UsuarioDetailHeader extends StatelessWidget {
                             ? Icons.check_circle_outline
                             : Icons.block_outlined,
                         size: 16,
-                        color: user.isActive ? Colors.green : Colors.red,
+                        color: user.isActive ? AppColors.success : AppColors.error,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         user.isActive ? 'Activo' : 'Inactivo',
                         style: TextStyle(
-                          color: user.isActive ? Colors.green : Colors.red,
+                          color: user.isActive ? AppColors.success : AppColors.error,
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),

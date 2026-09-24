@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class CarreraSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -12,31 +12,11 @@ class CarreraSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      onChanged: onChanged,
-      style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: AppTextStyles.caption.copyWith(
-          color: AppColors.textSecondary,
-        ),
-        prefixIcon: const Icon(
-          Icons.search_rounded,
-          color: AppColors.secondary,
-          size: 20,
-        ),
-        filled: true,
-        fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-          borderSide: const BorderSide(color: AppColors.outline),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-          borderSide: const BorderSide(color: AppColors.primary),
-        ),
-      ),
+    return BarraBusquedaPrisma(
+      etiqueta: 'Buscar carreras',
+      textoSugerido: hintText,
+      textoAyuda: 'Catálogo académico',
+      alCambiar: onChanged,
     );
   }
 }

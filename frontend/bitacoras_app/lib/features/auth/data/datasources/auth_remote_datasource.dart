@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/core/network/api_client.dart';
+import '../../auth.dart';
 
 class AuthRemoteDataSource {
   final ApiClient apiClient;

@@ -1,5 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/periodo_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class PeriodoCard extends StatelessWidget {
   final PeriodoModel period;
@@ -26,6 +26,13 @@ class PeriodoCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
             border: Border.all(color: AppColors.outline),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow,
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,6 +43,9 @@ class PeriodoCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.secondary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  border: Border.all(
+                    color: AppColors.secondary.withValues(alpha: 0.22),
+                  ),
                 ),
                 child: const Icon(
                   Icons.calendar_month_rounded,
@@ -66,9 +76,14 @@ class PeriodoCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: period.isActive
-                            ? AppColors.success.withValues(alpha: 0.12)
-                            : AppColors.error.withValues(alpha: 0.12),
+                          ? AppColors.successSoft
+                          : AppColors.errorSoft,
                         borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                        border: Border.all(
+                          color: period.isActive
+                            ? AppColors.success.withValues(alpha: 0.35)
+                            : AppColors.error.withValues(alpha: 0.35),
+                        ),
                       ),
                       child: Text(
                         period.isActive ? 'Activo' : 'Inactivo',
@@ -90,11 +105,12 @@ class PeriodoCard extends StatelessWidget {
                   Switch.adaptive(
                     value: period.isActive,
                     onChanged: (_) => onToggleStatus(),
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
+                    activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.outline,
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),

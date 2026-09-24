@@ -6,6 +6,7 @@ library;
 
 // --- Shared / globales (material, config, temas, modelos comunes) ---
 export 'package:bitacoras_app/shared/exports.dart';
+export 'package:bitacoras_app/core/network/api_client.dart';
 
 // --- Models ---
 export 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
@@ -50,6 +51,7 @@ export 'package:bitacoras_app/features/admin/presentation/screens/usuarios/usuar
 export 'package:bitacoras_app/features/admin/presentation/widgets/admin_empty_state.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/admin_header.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/admin_form_components.dart';
+export 'package:bitacoras_app/features/admin/presentation/widgets/admin_glow_card.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/admin_status_chip.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/save_bottom_bar.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_card.dart';
@@ -66,6 +68,7 @@ export 'package:bitacoras_app/features/admin/presentation/widgets/academico/peri
 export 'package:bitacoras_app/features/admin/presentation/widgets/academico/periodo_empty_state.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/academico/periodo_form_sheet.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/academico/periodo_selector_card.dart';
+export 'package:bitacoras_app/features/admin/presentation/widgets/academico/asignacion_estudiantes_dialog.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/gestion_usuario_body.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/usuario_detail_action_buttons.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/usuario_detail_header.dart';
@@ -73,3 +76,25 @@ export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/usuar
 export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/usuario_list_tile.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/usuario_metricas_header.dart';
 export 'package:bitacoras_app/features/admin/presentation/widgets/usuarios/usuario_search_bar.dart';
+export 'package:bitacoras_app/features/admin/presentation/widgets/empresas/empresa_detail_screen.dart';
+export 'package:bitacoras_app/features/admin/presentation/widgets/empresas/empresa_form_sheet.dart';
+export 'package:bitacoras_app/features/admin/presentation/widgets/empresas/empresa_tile.dart';
+export 'package:go_router/go_router.dart';
+
+// Barrel global de la app: re-exporta configuración, temas, módulos y auth.
+
+// Exportaciones de módulos (barrel files por feature)
+// Nota: 'EmpresaCard' de responsable_practicas se exporta por su barrel;
+// se oculta aquí para no chocar con el EmpresaCard del módulo estudiantes.
+export 'package:bitacoras_app/features/admin/admin.dart';
+export 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+export 'package:bitacoras_app/features/inicio/inicio.dart';
+export 'package:bitacoras_app/features/perfiles/perfiles.dart';
+export 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart'
+    hide EmpresaCard, EmpresaModel;
+export 'package:bitacoras_app/features/tutores/tutores.dart';
+export 'package:bitacoras_app/features/admin/presentation/widgets/academico/estudiante_paralelo_card.dart';
+
+// Autenticación
+export 'package:bitacoras_app/features/auth/auth.dart';
+export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/empresas/mapa_empresa_selector.dart';

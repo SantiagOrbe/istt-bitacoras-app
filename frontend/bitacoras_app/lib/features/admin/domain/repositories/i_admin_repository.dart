@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 abstract class IAdminRepository {
   // --- Gestión de Usuarios ---

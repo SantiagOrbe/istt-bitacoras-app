@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import '../../auth.dart';
 
 abstract class IAuthRepository {
   Future<UsuarioModel?> login({

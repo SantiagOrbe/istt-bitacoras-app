@@ -1,5 +1,5 @@
-// lib/features/estudiantes/presentation/widgets/asistencia/dialogo_error_gps.dart
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+
 
 Future<void> mostrarDialogoErrorGps(
   BuildContext context, {
@@ -23,7 +23,7 @@ Future<void> mostrarDialogoErrorGps(
             // Ícono de Ubicación Deshabilitada / Fuera de Rango
             CircleAvatar(
               radius: 36,
-              backgroundColor: AppColors.error.withOpacity(0.12),
+              backgroundColor: AppColors.error.withValues(alpha: 0.12),
               child: const Icon(
                 Icons.location_off_rounded,
                 color: AppColors.error,
@@ -62,7 +62,7 @@ Future<void> mostrarDialogoErrorGps(
                 vertical: AppSizes.xs + 2,
               ),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.12),
+                color: AppColors.error.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppSizes.radiusPill),
               ),
               child: Row(

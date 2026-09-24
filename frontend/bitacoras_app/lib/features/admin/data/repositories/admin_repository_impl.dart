@@ -1,14 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/empresa_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/configuracion_periodo_carrera_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/paralelo_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/periodo_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/registro_practica_model.dart';
-import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
-import '../datasources/admin_remote_datasource.dart';
-import '../../domain/repositories/i_admin_repository.dart';
 
 class AdminRepositoryImpl implements IAdminRepository {
   final AdminRemoteDataSource remoteDataSource;

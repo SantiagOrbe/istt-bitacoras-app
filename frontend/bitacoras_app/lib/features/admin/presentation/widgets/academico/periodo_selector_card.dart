@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/features/admin/domain/models/periodo_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class PeriodoSelectorCard extends StatelessWidget {
   final List<PeriodoModel> periods;
@@ -34,18 +33,33 @@ class PeriodoSelectorCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
           border: Border.all(color: AppColors.outline),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow,
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.calendar_month_outlined,
-              color: AppColors.primary,
-              size: 22,
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
+              child: const Icon(
+                Icons.calendar_month_outlined,
+                color: AppColors.secondary,
+                size: 20,
+              ),
             ),
             AppSizes.gapH8,
-            Text('Periodo:', style: AppTextStyles.bodyBold),
+            Text('Período lectivo', style: AppTextStyles.bodyBold),
             AppSizes.gapH8,
             Expanded(
               child: Container(
@@ -79,7 +93,9 @@ class PeriodoSelectorCard extends StatelessWidget {
                               child: Text(
                                 p.name,
                                 overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.bodyBold.copyWith(fontSize: 14),
+                                style: AppTextStyles.bodyBold.copyWith(
+                                  fontSize: 14,
+                                ),
                               ),
                             );
                           }).toList(),

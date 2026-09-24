@@ -1,5 +1,4 @@
 import 'package:google_fonts/google_fonts.dart';
-// Exports compartidos desde el archivo shared/exports.dart
 import 'package:bitacoras_app/shared/exports.dart';
 
 

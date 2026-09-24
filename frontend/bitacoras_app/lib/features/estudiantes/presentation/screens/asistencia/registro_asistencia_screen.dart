@@ -1,5 +1,4 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class RegistroAsistenciaScreen extends StatefulWidget {
@@ -73,23 +72,11 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
   }
 
   Widget _buildWarningCard(String title, String message) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSizes.md),
-      margin: const EdgeInsets.only(bottom: AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.error),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 8,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
+    return InstitutionalGlowCard(
+      accentColor: AppColors.error,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -117,6 +104,7 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
             style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
+        ),
       ),
     );
   }

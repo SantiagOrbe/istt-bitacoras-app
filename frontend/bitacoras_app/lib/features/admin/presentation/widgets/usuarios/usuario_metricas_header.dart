@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class UsuarioMetricasHeader extends StatelessWidget {
   final int totalUsers;
@@ -26,10 +25,10 @@ class UsuarioMetricasHeader extends StatelessWidget {
           _buildMetricChip(
             'Estudiantes',
             '$totalStudents',
-            AppColors.textSecondary,
+            AppColors.primary,
           ),
-          _buildMetricChip('Tutores', '$totalTutors', AppColors.secondary),
-          _buildMetricChip('Activos', '$totalActive', AppColors.success),
+          _buildMetricChip('Tutores', '$totalTutors', AppColors.primary),
+          _buildMetricChip('Activos', '$totalActive', AppColors.primary),
         ],
       ),
     );
@@ -46,6 +45,13 @@ class UsuarioMetricasHeader extends StatelessWidget {
         color: accentColor.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppSizes.radiusPill),
         border: Border.all(color: accentColor.withValues(alpha: 0.2)),
+            boxShadow: [
+              BoxShadow(
+                color: accentColor.withValues(alpha: 0.08),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

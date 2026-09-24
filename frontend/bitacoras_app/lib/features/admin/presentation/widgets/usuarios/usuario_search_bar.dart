@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class UsuarioSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -8,31 +7,11 @@ class UsuarioSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      onChanged: onChanged,
-      style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        hintText: 'Buscar por nombre o cédula...',
-        hintStyle: AppTextStyles.caption.copyWith(
-          color: AppColors.textSecondary,
-        ),
-        prefixIcon: const Icon(
-          Icons.search_rounded,
-          color: AppColors.secondary,
-          size: 20,
-        ),
-        filled: true,
-        fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-          borderSide: const BorderSide(color: AppColors.outline),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-          borderSide: const BorderSide(color: AppColors.primary),
-        ),
-      ),
+    return BarraBusquedaPrisma(
+      etiqueta: 'Buscar usuarios',
+      textoSugerido: 'Buscar por nombre, correo o cédula',
+      textoAyuda: 'Directorio institucional',
+      alCambiar: onChanged,
     );
   }
 }

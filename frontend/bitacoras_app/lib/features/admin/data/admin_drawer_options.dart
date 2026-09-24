@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 List<SeccionMenuModel> getAdminDrawerSections() {
   return const [
@@ -27,7 +27,7 @@ List<SeccionMenuModel> getAdminDrawerSections() {
         ),
         ItemMenuModel(
           icon: Icons.business_outlined,
-          title: 'Empresas e instituciones',
+          title: 'Gestión de instituciones',
           route: AppRoutes.companyManagement,
         ),
         ItemMenuModel(

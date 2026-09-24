@@ -1,6 +1,5 @@
-﻿import 'package:flutter/material.dart';
-import '../../domain/models/registro_asistencia_model.dart';
-import '../../domain/repositories/i_asistencia_repository.dart';
+﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+
 
 class HistorialController extends ChangeNotifier {
   final IAsistenciaRepository repository;

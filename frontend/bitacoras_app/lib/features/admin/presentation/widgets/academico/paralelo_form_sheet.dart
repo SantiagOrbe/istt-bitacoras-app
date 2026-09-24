@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/ciclo_model.dart';
-import 'package:bitacoras_app/features/admin/domain/models/paralelo_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import '../admin_form_components.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
+
 
 class ParaleloFormResult {
   final String cycleId;
@@ -55,7 +53,7 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
         widget.parallel?.cycleId ??
         (widget.cycles.isNotEmpty ? widget.cycles.first.id : '');
     _selectedJornada =
-      widget.parallel?.jornada.toLowerCase() ?? _jornadas.keys.first;
+        widget.parallel?.jornada.toLowerCase() ?? _jornadas.keys.first;
     _isActive = widget.parallel?.isActive ?? true;
   }
 
@@ -128,6 +126,7 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                     initialValue: _selectedCycleId.isEmpty
                         ? null
                         : _selectedCycleId,
+                    isExpanded: true,
                     decoration: const InputDecoration(labelText: 'Semestre'),
                     items: widget.cycles
                         .map(
@@ -155,14 +154,13 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                     ),
                   ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _nameController,
-                  textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre del paralelo',
-                    hintText: 'A, B, C...',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _nameController,
+                  etiqueta: 'Nombre del paralelo',
+                  textoSugerido: 'A, B, C...',
+                  icono: Icons.groups_outlined,
+                  capitalizacion: TextCapitalization.characters,
+                  validador: (value) {
                     return AdminValidators.letters(
                       value,
                       label: 'El nombre del paralelo',
@@ -172,12 +170,13 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                 AppSizes.gapV12,
                 DropdownButtonFormField<String>(
                   initialValue: _selectedJornada,
+                  isExpanded: true,
                   decoration: const InputDecoration(labelText: 'Jornada'),
-                    items: _jornadas.entries
-                        .map(
-                          (entry) => DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
+                  items: _jornadas.entries
+                      .map(
+                        (entry) => DropdownMenuItem<String>(
+                          value: entry.key,
+                          child: Text(entry.value),
                         ),
                       )
                       .toList(),
@@ -189,22 +188,58 @@ class _ParaleloFormSheetState extends State<ParaleloFormSheet> {
                   },
                 ),
                 const AdminFormSectionLabel('Estado'),
-                SwitchListTile.adaptive(
-                  value: _isActive,
-                  onChanged: (value) {
-                    setState(() {
-                      _isActive = value;
-                    });
-                  },
-                  title: const Text('Paralelo activo'),
-                  contentPadding: EdgeInsets.zero,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.md,
+                    vertical: AppSizes.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _isActive
+                        ? AppColors.successSoft
+                        : AppColors.disabledSurface,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    border: Border.all(
+                      color: _isActive
+                          ? AppColors.success.withValues(alpha: 0.35)
+                          : AppColors.outline,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _isActive
+                            ? Icons.check_circle_outline
+                            : Icons.pause_circle_outline,
+                        color: _isActive
+                            ? AppColors.success
+                            : AppColors.textSecondary,
+                      ),
+                      AppSizes.gapH8,
+                      Expanded(
+                        child: Text(
+                          _isActive ? 'Paralelo activo' : 'Paralelo inactivo',
+                          style: AppTextStyles.bodyMedium,
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: _isActive,
+                        onChanged: (value) => setState(() => _isActive = value),
+                        activeThumbColor: AppColors.primary,
+                        activeTrackColor: AppColors.primary.withValues(
+                          alpha: 0.35,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 AppSizes.gapV20,
-                AdminFormActionButton(
-                  label: widget.parallel == null
+                BotonPrisma(
+                  texto: widget.parallel == null
                       ? 'Guardar paralelo'
                       : 'Actualizar paralelo',
-                  onPressed: _submit,
+                  icono: Icons.save_outlined,
+                  anchoCompleto: true,
+                  alPresionar: _submit,
                 ),
               ],
             ),

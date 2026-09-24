@@ -1,11 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/academico/carrera_periodo_body.dart';
-import 'package:bitacoras_app/features/admin/presentation/widgets/save_bottom_bar.dart';
-import 'package:bitacoras_app/features/screens.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-
-import '../../../domain/repositories/i_admin_repository.dart';
-import '../../controllers/academico/carrera_periodo_controller.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class CarreraPeriodoScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -39,14 +32,16 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
 
   Future<void> _handleSave() async {
     final success = await _controller.saveConfiguration();
-    if (success && mounted) {
+    if (mounted && (success || _controller.errorMessage != null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Configuración guardada exitosamente.',
+            success
+                ? 'Configuración guardada exitosamente.'
+                : _controller.errorMessage!,
             style: AppTextStyles.body.copyWith(color: AppColors.surface),
           ),
-          backgroundColor: AppColors.primary,
+          backgroundColor: success ? AppColors.success : AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -66,7 +61,9 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
             onBackPressed: () => context.pop(),
           ),
           body: _controller.isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                )
               : _controller.errorMessage != null
               ? Center(child: Text(_controller.errorMessage!))
               : CarreraPeriodoBody(

@@ -4,7 +4,6 @@
 export 'package:bitacoras_app/features/auth/presentation/screens/login_screen.dart';
 
 // Home
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_estudiante_screen.dart';
 export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_admin_screen.dart';
 
 // Estudiante - Asistencia, Bitácoras, Historial y Reportes

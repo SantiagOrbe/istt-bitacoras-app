@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../../../../config/constants/app_colors.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
 class AsignacionEstudianteDropdowns extends StatelessWidget {
   final String? academicTutorId;
@@ -67,7 +66,7 @@ class AsignacionEstudianteDropdowns extends StatelessWidget {
   Widget _dropdown(String label, String? value, List<Map<String, String>> items, ValueChanged<String?> onChanged, IconData icon) {
     return DropdownButtonFormField<String>(
       isExpanded: true, // 👈 SOLUCIÓN 1: Obliga al Dropdown a adaptarse al ancho horizontal disponible
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primary),

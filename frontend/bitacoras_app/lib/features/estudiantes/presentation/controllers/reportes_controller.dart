@@ -1,12 +1,6 @@
-import 'dart:io';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
-import 'package:bitacoras_app/features/estudiantes/data/services/reporte_practica_pdf_service.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
-import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
-import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import '../../domain/repositories/i_asistencia_repository.dart';
+
 
 class ReportesController extends ChangeNotifier {
   final IAsistenciaRepository repository;

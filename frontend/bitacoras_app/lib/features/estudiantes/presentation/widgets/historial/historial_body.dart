@@ -1,8 +1,4 @@
 ﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import '../../../domain/models/registro_asistencia_model.dart';
-import 'historial_empty_state.dart';
-import 'historial_header.dart';
 
 class HistorialBody extends StatelessWidget {
   final RegistroAsistenciaModel? activeRecord;

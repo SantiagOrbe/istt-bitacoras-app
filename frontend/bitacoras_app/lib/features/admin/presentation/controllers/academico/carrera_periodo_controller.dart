@@ -101,20 +101,34 @@ class CarreraPeriodoController extends ChangeNotifier {
   }
 
   Future<bool> saveConfiguration() async {
-    for (final career in careers) {
-      if (!career.isActive) continue;
-
-      final key = getConfigKey(career.id);
-      final activeSemesters = configs[key]?.toList() ?? [];
-
-      await repository.saveConfiguracionPeriodoCarreraModel(
-        ConfiguracionPeriodoCarreraModel(
-          careerId: career.id,
-          periodId: selectedPeriodId,
-          activeSemestersForPractices: activeSemesters,
-        ),
-      );
+    if (selectedPeriodId.isEmpty) {
+      errorMessage = 'Selecciona un período lectivo antes de guardar.';
+      notifyListeners();
+      return false;
     }
-    return true;
+
+    try {
+      for (final career in careers) {
+        if (!career.isActive) continue;
+
+        final key = getConfigKey(career.id);
+        final activeSemesters = configs[key]?.toList() ?? [];
+
+        await repository.saveConfiguracionPeriodoCarreraModel(
+          ConfiguracionPeriodoCarreraModel(
+            careerId: career.id,
+            periodId: selectedPeriodId,
+            activeSemestersForPractices: activeSemesters,
+          ),
+        );
+      }
+      return true;
+    } catch (error) {
+      errorMessage = error is ApiException
+          ? error.message
+          : 'No se pudo guardar la configuración académica.';
+      notifyListeners();
+      return false;
+    }
   }
 }

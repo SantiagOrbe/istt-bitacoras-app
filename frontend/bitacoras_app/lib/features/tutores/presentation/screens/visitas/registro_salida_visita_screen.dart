@@ -1,7 +1,5 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
 
 class RegistroSalidaVisitaScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -13,7 +11,6 @@ class RegistroSalidaVisitaScreen extends StatefulWidget {
 }
 
 class _RegistroSalidaVisitaScreenState extends State<RegistroSalidaVisitaScreen> {
-  final FakeTutorRepository _repository = FakeTutorRepository();
   EstadoVisitaTutorModel? _visit;
   UbicacionEmpresaModel? _company;
   Position? _position;
@@ -31,7 +28,7 @@ class _RegistroSalidaVisitaScreenState extends State<RegistroSalidaVisitaScreen>
   Future<void> _loadData() async {
     final attendanceRepository = context.read<IAsistenciaRepository>();
     try {
-      final visit = await _repository.getTodayVisitStatus();
+      final visit = await context.read<ITutorRepository>().getTodayVisitStatus();
       _visit = visit;
       if (!visit.puedeRegistrarSalida) {
         _validationMessage = 'Registra y guarda las actividades antes de registrar la salida.';
@@ -85,7 +82,7 @@ class _RegistroSalidaVisitaScreenState extends State<RegistroSalidaVisitaScreen>
 
     setState(() => _isSaving = true);
     try {
-      await _repository.registerTutorExit(
+      await context.read<ITutorRepository>().registerTutorExit(
         latitude: _position!.latitude,
         longitude: _position!.longitude,
       );

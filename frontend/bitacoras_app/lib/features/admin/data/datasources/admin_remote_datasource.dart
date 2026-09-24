@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/core/network/api_client.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class AdminRemoteDataSource {
   final ApiClient apiClient;

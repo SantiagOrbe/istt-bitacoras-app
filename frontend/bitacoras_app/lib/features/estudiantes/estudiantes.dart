@@ -6,10 +6,24 @@ library;
 
 // --- Shared / globales (material, config, temas, modelos comunes) ---
 export 'package:bitacoras_app/shared/exports.dart';
+export 'dart:typed_data';
+export 'package:bitacoras_app/features/admin/domain/models/registro_practica_model.dart';
+export 'package:bitacoras_app/app/apps.dart';
+export 'package:pdf/pdf.dart';
+export 'dart:io';
+export 'package:flutter/material.dart';
+export 'package:flutter/services.dart';
+export 'package:geolocator/geolocator.dart';
+export 'package:bitacoras_app/features/estudiantes/data/services/reporte_practica_pdf_service.dart';
+export 'package:flutter_map/flutter_map.dart';
 
-// --- Models ---
+
+export 'package:open_file/open_file.dart';
+export 'package:path_provider/path_provider.dart';
+export 'package:bitacoras_app/core/network/api_client.dart';
 export 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 export 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
+// --- Models ---
 
 // --- Repositories ---
 export 'package:bitacoras_app/features/estudiantes/data/repositories/asistencia_repository_impl.dart';
@@ -28,6 +42,7 @@ export 'package:bitacoras_app/features/estudiantes/presentation/controllers/regi
 export 'package:bitacoras_app/features/estudiantes/presentation/controllers/reportes_controller.dart';
 
 // --- Screens ---
+export 'package:bitacoras_app/features/estudiantes/presentation/screens/inicio_estudiante_screen.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/screens/asistencia/registro_asistencia_screen.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/screens/asistencia/registro_salida_screen.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/screens/bitacoras/registro_actividad_screen.dart';

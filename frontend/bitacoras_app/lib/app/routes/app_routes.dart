@@ -45,7 +45,6 @@ class AppRoutes {
   static const String assignedStudents = '/tutor/assigned-students';
   static const String academicTutorRegisterVisit = '/tutor/register-visit';
   static const String companyTutorTracking = '/company-tutor/tracking';
-  static const String visitActivityForm = '/tutor/visit-activity-form';
   static const String academicTutorTracking = '/academic-tutor/tracking';
   static const String academicTutorRegisterDeparture =
       '/tutor/register-departure';

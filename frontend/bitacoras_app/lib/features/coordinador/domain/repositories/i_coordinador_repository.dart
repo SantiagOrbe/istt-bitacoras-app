@@ -1,11 +1,13 @@
+import 'package:bitacoras_app/features/coordinador/coordinador.dart';
+
 abstract class ICoordinadorRepository {
-  /// Consulta exclusivamente de lectura para estudiantes.
-  Future<List<Map<String, dynamic>>> getEstudiantes();
+  /// Consulta de lectura para estudiantes de la carrera del coordinador.
+  Future<List<CoordinadorEstudianteModel>> getEstudiantes();
 
-  /// Consulta exclusivamente de lectura para carreras.
-  Future<List<Map<String, dynamic>>> getCarreras();
+  /// Consulta de lectura para el catálogo de carreras.
+  Future<List<CoordinadorCarreraModel>> getCarreras();
 
-  /// Consulta exclusivamente de lectura para tutores.
-  Future<List<Map<String, dynamic>>> getTutores();
-  Future<Map<String, dynamic>> getDatosCarrera();
+  /// Consulta de lectura para tutores académicos.
+  Future<List<CoordinadorTutorModel>> getTutores();
+  Future<CoordinadorDatosModel> getDatosCarrera();
 }

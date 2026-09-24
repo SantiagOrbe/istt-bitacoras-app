@@ -1,6 +1,4 @@
-import 'package:bitacoras_app/features/admin/domain/models/carrera_model.dart';
-import 'package:bitacoras_app/shared/exports.dart';
-import '../admin_form_components.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class CarreraFormSheet extends StatefulWidget {
   final List<CarreraModel> existingCareers;
@@ -32,9 +30,7 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
     final career = widget.career;
     _nameController = TextEditingController(text: career?.name ?? '');
     _codeController = TextEditingController(text: career?.code ?? '');
-    _shortNameController = TextEditingController(
-      text: career?.shortName ?? '',
-    );
+    _shortNameController = TextEditingController(text: career?.shortName ?? '');
     _descriptionController = TextEditingController(
       text: career?.description ?? '',
     );
@@ -104,22 +100,21 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                 ),
                 AppSizes.gapV20,
                 AdminFormHeader(
-                    title: widget.career == null
+                  title: widget.career == null
                       ? 'Nueva carrera'
                       : 'Editar carrera',
-                    subtitle: widget.career == null
+                  subtitle: widget.career == null
                       ? 'Registra la información académica de la carrera.'
                       : 'Actualiza la información académica de la carrera.',
                   icon: Icons.school_outlined,
                 ),
                 const AdminFormSectionLabel('Información general'),
-                TextFormField(
-                  controller: _nameController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre de la carrera',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _nameController,
+                  etiqueta: 'Nombre de la carrera',
+                  icono: Icons.school_outlined,
+                  capitalizacion: TextCapitalization.words,
+                  validador: (value) {
                     return AdminValidators.lettersWithAccents(
                           value,
                           label: 'El nombre de la carrera',
@@ -134,13 +129,12 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                   },
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _codeController,
-                  textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(
-                    labelText: 'Código de carrera',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _codeController,
+                  etiqueta: 'Código de carrera',
+                  icono: Icons.qr_code_2_outlined,
+                  capitalizacion: TextCapitalization.characters,
+                  validador: (value) {
                     return AdminValidators.careerCode(
                           value,
                           label: 'El código de la carrera',
@@ -155,11 +149,12 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                   },
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _shortNameController,
-                  textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(labelText: 'Sigla'),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _shortNameController,
+                  etiqueta: 'Sigla',
+                  icono: Icons.short_text_rounded,
+                  capitalizacion: TextCapitalization.characters,
+                  validador: (value) {
                     return AdminValidators.requiredText(
                           value,
                           label: 'La sigla',
@@ -168,20 +163,18 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                           value,
                           widget.existingCareers
                               .where((career) => career.id != widget.career?.id)
-                              .map(
-                            (career) => career.shortName,
-                          ),
+                              .map((career) => career.shortName),
                           label: 'La sigla',
                         );
                   },
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _descriptionController,
-                  maxLines: 3,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(labelText: 'Descripción'),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _descriptionController,
+                  etiqueta: 'Descripción',
+                  icono: Icons.description_outlined,
+                  maxLineas: 3,
+                  validador: (value) {
                     return AdminValidators.lettersWithAccents(
                       value,
                       label: 'La descripción',
@@ -189,38 +182,82 @@ class _CarreraFormSheetState extends State<CarreraFormSheet> {
                   },
                 ),
                 AppSizes.gapV12,
-                TextFormField(
-                  controller: _modalityController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Modalidad',
-                    hintText: 'Ej: Presencial',
-                    errorMaxLines: 2,
-                  ),
-                  validator: (value) => AdminValidators.letters(
-                    value,
-                    label: 'La modalidad',
-                  ),
+                CampoFormularioPrisma(
+                  controlador: _modalityController,
+                  etiqueta: 'Modalidad',
+                  textoSugerido: 'Ej: Presencial',
+                  icono: Icons.location_city_outlined,
+                  capitalizacion: TextCapitalization.words,
+                  validador: (value) =>
+                      AdminValidators.letters(value, label: 'La modalidad'),
                 ),
                 const AdminFormSectionLabel('Configuración académica'),
                 AppSizes.gapV16,
-                TextFormField(
-                  controller: _semestersController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Total de semestres',
-                  ),
-                  validator: (value) {
+                CampoFormularioPrisma(
+                  controlador: _semestersController,
+                  etiqueta: 'Total de semestres',
+                  icono: Icons.format_list_numbered_rounded,
+                  tipoTeclado: TextInputType.number,
+                  validador: (value) {
                     return AdminValidators.positiveInteger(
                       value,
                       label: 'El total de semestres',
                     );
                   },
                 ),
+                AppSizes.gapV16,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.md,
+                    vertical: AppSizes.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _isActive
+                        ? AppColors.successSoft
+                        : AppColors.disabledSurface,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    border: Border.all(
+                      color: _isActive
+                          ? AppColors.success.withValues(alpha: 0.35)
+                          : AppColors.outline,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _isActive
+                            ? Icons.check_circle_outline
+                            : Icons.pause_circle_outline,
+                        color: _isActive
+                            ? AppColors.success
+                            : AppColors.textSecondary,
+                      ),
+                      AppSizes.gapH8,
+                      Expanded(
+                        child: Text(
+                          _isActive ? 'Carrera activa' : 'Carrera inactiva',
+                          style: AppTextStyles.bodyMedium,
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: _isActive,
+                        onChanged: (value) => setState(() => _isActive = value),
+                        activeThumbColor: AppColors.primary,
+                        activeTrackColor: AppColors.primary.withValues(
+                          alpha: 0.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 AppSizes.gapV20,
-                AdminFormActionButton(
-                  label: 'Guardar carrera',
-                  onPressed: _submit,
+                BotonPrisma(
+                  texto: widget.career == null
+                      ? 'Guardar carrera'
+                      : 'Actualizar carrera',
+                  icono: Icons.save_outlined,
+                  anchoCompleto: true,
+                  alPresionar: _submit,
                 ),
               ],
             ),

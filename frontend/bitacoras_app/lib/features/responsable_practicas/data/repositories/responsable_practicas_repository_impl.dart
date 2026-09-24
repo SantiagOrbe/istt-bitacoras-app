@@ -1,9 +1,5 @@
-import 'package:bitacoras_app/features/inicio/domain/models/accion_rapida_model.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
-import '../../domain/models/asignacion_estudiante_model.dart';
-import '../../domain/models/empresa_model.dart';
-import '../../domain/repositories/i_responsable_practicas_repository.dart';
-import '../datasources/responsable_practicas_remote_datasource.dart';
 
 class ResponsablePracticasRepositoryImpl
     implements IResponsablePracticasRepository {
@@ -18,7 +14,34 @@ class ResponsablePracticasRepositoryImpl
   }
 
   @override
-  List<AccionRapidaModel> responsablePracticasActions() => const [];
+  List<AccionRapidaModel> responsablePracticasActions() {
+    return [
+      AccionRapidaModel(
+        title: 'Gestión de Empresas',
+        subtitle: 'Catálogo de instituciones y convenios',
+        icon: Icons.business_rounded,
+        iconBackgroundColor: const Color(0xFF1E88E5),
+        route: AppRoutes.responsablePracticasCompanies,
+        onTap: () {},
+      ),
+      AccionRapidaModel(
+        title: 'Asignación de Estudiantes',
+        subtitle: 'Vincular tutores académicos y empresariales',
+        icon: Icons.person_add_alt_1_rounded,
+        iconBackgroundColor: const Color(0xFF00897B),
+        route: AppRoutes.responsablePracticasAssignStudents,
+        onTap: () {},
+      ),
+      AccionRapidaModel(
+        title: 'Mi perfil',
+        subtitle: 'Datos personales y cuenta',
+        icon: Icons.person_rounded,
+        iconBackgroundColor: const Color(0xFF7B1FA2),
+        route: AppRoutes.perfil,
+        onTap: () {},
+      ),
+    ];
+  }
 
   Future<Map<String, dynamic>> _load() async {
     return _datos ??= await remoteDataSource.getDatos();
@@ -50,10 +73,23 @@ class ResponsablePracticasRepositoryImpl
   }
 
   @override
-  Future<bool> saveCompany(EmpresaModel company) async => false;
+  Future<bool> saveCompany(EmpresaModel company) async {
+    final data = company.toJson();
+    if (company.id.isEmpty) {
+      await remoteDataSource.createCompany(data);
+    } else {
+      await remoteDataSource.updateCompany(company.id, data);
+    }
+    invalidateCache();
+    return true;
+  }
 
   @override
-  Future<bool> toggleCompanyActiveStatus(String id, bool isActive) async => false;
+  Future<bool> toggleCompanyActiveStatus(String id, bool isActive) async {
+    await remoteDataSource.updateCompanyStatus(id, isActive);
+    invalidateCache();
+    return true;
+  }
 
   @override
   Future<List<AsignacionEstudianteModel>> getStudentAssignments({

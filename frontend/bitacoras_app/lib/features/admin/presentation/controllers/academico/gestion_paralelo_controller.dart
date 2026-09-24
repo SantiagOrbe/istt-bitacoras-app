@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/core/network/api_client.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class GestionParaleloController extends ChangeNotifier {
   final IAdminRepository repository;
@@ -74,8 +73,7 @@ class GestionParaleloController extends ChangeNotifier {
         ..clear()
         ..addAll(loadedParallels);
 
-        _selectedCycleId = _semesterId ??
-          (_selectedCycleId ??= _cycles.isNotEmpty ? _cycles.first.id : null);
+      _selectedCycleId = _semesterId;
     } catch (error) {
       _errorMessage = error is ApiException
           ? error.message

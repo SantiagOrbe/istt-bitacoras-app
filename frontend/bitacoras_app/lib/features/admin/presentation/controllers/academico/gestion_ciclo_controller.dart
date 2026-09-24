@@ -1,5 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/core/network/api_client.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class GestionCicloController extends ChangeNotifier {
   final IAdminRepository repository;

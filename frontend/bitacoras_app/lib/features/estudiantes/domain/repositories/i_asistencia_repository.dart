@@ -1,8 +1,5 @@
-﻿import 'dart:typed_data';
+﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
-import 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
-
-import '../models/registro_asistencia_model.dart';
 
 abstract class IAsistenciaRepository {
   Future<UbicacionEmpresaModel> getAssignedCompanyLocation();

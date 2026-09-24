@@ -1,8 +1,4 @@
-import 'dart:typed_data';
-
-import 'package:bitacoras_app/core/network/api_client.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class AsistenciaRemoteDataSource {
   final ApiClient apiClient;

@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
 
 class RegistrarActividadesTutorScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -10,7 +10,6 @@ class RegistrarActividadesTutorScreen extends StatefulWidget {
 }
 
 class _RegistrarActividadesTutorScreenState extends State<RegistrarActividadesTutorScreen> {
-  final FakeTutorRepository _repository = FakeTutorRepository();
   final List<TextEditingController> _controllers = [TextEditingController()];
   EstadoVisitaTutorModel? _visit;
   bool _isLoading = true;
@@ -32,7 +31,7 @@ class _RegistrarActividadesTutorScreenState extends State<RegistrarActividadesTu
 
   Future<void> _loadVisit() async {
     try {
-      final visit = await _repository.getTodayVisitStatus();
+      final visit = await context.read<ITutorRepository>().getTodayVisitStatus();
       if (!mounted) return;
       setState(() {
         _visit = visit;
@@ -69,7 +68,7 @@ class _RegistrarActividadesTutorScreenState extends State<RegistrarActividadesTu
 
     setState(() => _isSaving = true);
     try {
-      final updated = await _repository.updateTutorActivities(
+      final updated = await context.read<ITutorRepository>().updateTutorActivities(
         visitId: visit!.id!,
         activities: text,
       );

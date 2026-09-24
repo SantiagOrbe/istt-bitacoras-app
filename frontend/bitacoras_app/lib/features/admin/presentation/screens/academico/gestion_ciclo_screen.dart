@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/app/apps.dart';
+import 'package:bitacoras_app/features/admin/admin.dart';
 
 class GestionCicloScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -121,61 +121,131 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSizes.md,
+                AppSizes.sm,
+                AppSizes.md,
+                0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSizes.gapV12,
-                  Text(
-                    'Semestres de la carrera',
-                    style: AppTextStyles.heading.copyWith(
-                      color: AppColors.textPrimary,
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSizes.md,
+                      AppSizes.md,
+                      AppSizes.md,
+                      AppSizes.sm,
                     ),
-                  ),
-                  Text(
-                    'Carrera: ${_controller.careerName}',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      border: Border.all(color: AppColors.outline),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.shadow,
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ),
-                  AppSizes.gapV12,
-                  CarreraSearchBar(
-                    onChanged: _controller.setSearchQuery,
-                    hintText: 'Buscar curso...',
-                  ),
-                  AppSizes.gapV12,
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _FilterChip(
-                          label: 'Todos',
-                          selected: _controller.statusFilter == 'all',
-                          onSelected: (_) => _controller.setStatusFilter('all'),
+                        Row(
+                          children: [
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.secondary,
+                                    AppColors.warning,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppSizes.radiusSm,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.school_rounded,
+                                color: AppColors.surface,
+                              ),
+                            ),
+                            AppSizes.gapH12,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Semestres de la carrera',
+                                    style: AppTextStyles.title,
+                                  ),
+                                  Text(
+                                    _controller.careerName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              '${_controller.filteredCycles.length}',
+                              style: AppTextStyles.heading.copyWith(
+                                color: AppColors.primary,
+                                fontSize: 22,
+                              ),
+                            ),
+                          ],
                         ),
-                        _FilterChip(
-                          label: 'Activos',
-                          selected: _controller.statusFilter == 'active',
-                          onSelected: (_) => _controller.setStatusFilter('active'),
+                        AppSizes.gapV16,
+                        CarreraSearchBar(
+                          onChanged: _controller.setSearchQuery,
+                          hintText: 'Buscar semestre o nivel...',
                         ),
-                        _FilterChip(
-                          label: 'Inactivos',
-                          selected: _controller.statusFilter == 'inactive',
-                          onSelected: (_) => _controller.setStatusFilter('inactive'),
+                        AppSizes.gapV12,
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              _FilterChip(
+                                label: 'Todos',
+                                selected: _controller.statusFilter == 'all',
+                                onSelected: (_) =>
+                                    _controller.setStatusFilter('all'),
+                              ),
+                              _FilterChip(
+                                label: 'Activos',
+                                selected:
+                                    _controller.statusFilter == 'active',
+                                onSelected: (_) =>
+                                    _controller.setStatusFilter('active'),
+                              ),
+                              _FilterChip(
+                                label: 'Inactivos',
+                                selected:
+                                    _controller.statusFilter == 'inactive',
+                                onSelected: (_) =>
+                                    _controller.setStatusFilter('inactive'),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  AppSizes.gapV12,
-                  Text(
-                    '${_controller.filteredCycles.length} semestres registrados',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  AppSizes.gapV12,
+                  AppSizes.gapV16,
                   Expanded(
-                    child: _controller.filteredCycles.isEmpty
+                    child: _controller.isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          )
+                        : _controller.filteredCycles.isEmpty
                         ? AdminEmptyState(
                             title: _controller.searchQuery.isNotEmpty
                                 ? 'No se encontraron semestres'

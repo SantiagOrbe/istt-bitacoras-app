@@ -1,5 +1,4 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-import 'package:bitacoras_app/shared/exports.dart';
 
 class RegistroActividadList extends StatelessWidget {
   final List<TextEditingController> controllers;

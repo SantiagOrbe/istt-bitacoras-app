@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class EmpresaCard extends StatelessWidget {
   final String companyName;
@@ -7,19 +7,48 @@ class EmpresaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        border: Border.all(color: AppColors.outline),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.business, color: AppColors.primary),
-          AppSizes.gapH12,
-          Expanded(child: Text(companyName, style: AppTextStyles.bodyBold)),
-        ],
+    return InstitutionalGlowCard(
+      accentColor: AppColors.secondary,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
+              child: const Icon(
+                Icons.business_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
+            ),
+            AppSizes.gapH12,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Empresa asignada',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  AppSizes.gapV4,
+                  Text(
+                    companyName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.bodyBold,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

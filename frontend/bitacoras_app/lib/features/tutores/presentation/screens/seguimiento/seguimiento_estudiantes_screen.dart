@@ -1,14 +1,5 @@
-import 'package:bitacoras_app/features/admin/domain/models/registro_practica_model.dart';
-import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
-import 'package:bitacoras_app/features/inicio/presentation/widgets/inicio_app_bar.dart';
-import 'package:bitacoras_app/features/tutores/presentation/screens/seguimiento/detalle_seguimiento_estudiante_screen.dart';
-import 'package:flutter/material.dart';
-import '../../../../../config/constants/app_colors.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
 
-import '../../../data/repositories/fake_tutor_repository.dart';
-import '../../../domain/models/estudiante_asignado_model.dart';
-import '../../../domain/repositories/i_tutor_repository.dart';
-import '../../widgets/seguimiento/seguimiento_estudiante_card.dart';
 
 class SeguimientoEstudiantesScreen extends StatefulWidget {
   final UsuarioModel currentUser;
@@ -22,7 +13,6 @@ class SeguimientoEstudiantesScreen extends StatefulWidget {
 
 class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScreen>
     with SingleTickerProviderStateMixin {
-  final ITutorRepository _repository = FakeTutorRepository();
   final List<EstudianteAsignadoModel> _assignedList = [];
   final List<RegistroPracticaModel> _allPracticeLogs = [];
   bool _isLoading = true;
@@ -43,11 +33,15 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
 
   Future<void> _loadData() async {
     try {
-      final data = await _repository.getAssignedStudents(widget.currentUser.id, isAcademic: widget.isAcademic);
+      final repository = context.read<ITutorRepository>();
+      final data = await repository.getAssignedStudents(
+        widget.currentUser.id,
+        isAcademic: widget.isAcademic,
+      );
 
       final records = <RegistroPracticaModel>[];
       for (final item in data) {
-        final logs = await _repository.getStudentLogs(
+        final logs = await repository.getStudentLogs(
           item.student.id,
           isAcademic: widget.isAcademic,
         );
@@ -79,7 +73,10 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
 
   Future<void> _toggleLogStatus(RegistroPracticaModel log) async {
     try {
-      final updated = await _repository.updateLog(logId: log.id, isActive: !log.isActive);
+      final updated = await context.read<ITutorRepository>().updateLog(
+        logId: log.id,
+        isActive: !log.isActive,
+      );
       if (!mounted) return;
 
       setState(() {
@@ -128,7 +125,7 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
     }
 
     try {
-      final updated = await _repository.updateLog(
+      final updated = await context.read<ITutorRepository>().updateLog(
         logId: log.id,
         activityDescription: result,
       );
@@ -155,12 +152,12 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
     }
 
     if (_assignedList.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Text(
             'No hay tutoriados asignados.',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 15),
+            style: AppTextStyles.body,
           ),
         ),
       );
@@ -193,12 +190,12 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
     }
 
     if (_allPracticeLogs.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Text(
             'No hay registros de práctica para mostrar.',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 15),
+            style: AppTextStyles.body,
           ),
         ),
       );
@@ -211,11 +208,12 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
         final log = _allPracticeLogs[index];
         final isActive = log.isActive;
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSizes.sm),
+          child: InstitutionalGlowCard(
+            accentColor: isActive ? AppColors.primary : AppColors.textSecondary,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSizes.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -228,12 +226,12 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
                         children: [
                           Text(
                             log.studentName,
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                            style: AppTextStyles.bodyBold,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             log.date,
-                            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                            style: AppTextStyles.caption,
                           ),
                         ],
                       ),
@@ -271,19 +269,19 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                AppSizes.gapV12,
                 Text(
                   log.activityDescription,
-                  style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                  style: AppTextStyles.body,
                 ),
-                const SizedBox(height: 10),
+                AppSizes.gapV12,
                 Row(
                   children: [
                     const Icon(Icons.access_time_filled, size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     Text(
                       '${log.entryTimeLabel} - ${log.exitTimeLabel}',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                      style: AppTextStyles.caption,
                     ),
                     const Spacer(),
                     Container(
@@ -311,7 +309,8 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
                 ),
               ],
             ),
-          ),
+              ),
+            ),
         );
       },
     );
@@ -327,29 +326,21 @@ class _SeguimientoEstudiantesScreenState extends State<SeguimientoEstudiantesScr
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.outline),
-                boxShadow: const [
-                  BoxShadow(color: AppColors.shadow, blurRadius: 12, offset: Offset(0, 4)),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Seguimiento de Prácticas',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tutor: ${widget.currentUser.name}',
-                    style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                  ),
-                ],
+            InstitutionalGlowCard(
+              accentColor: AppColors.primary,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSizes.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Seguimiento de Prácticas', style: AppTextStyles.heading),
+                    AppSizes.gapV4,
+                    Text(
+                      'Tutor: ${widget.currentUser.name}',
+                      style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 14),

@@ -1,7 +1,5 @@
-// lib/features/responsable_practicas/data/responsable_practicas_drawer_options.dart
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
-import 'package:flutter/material.dart';
-import '../../../../app/apps.dart';
 
 List<SeccionMenuModel> getResponsablePracticasDrawerSections() {
   return [

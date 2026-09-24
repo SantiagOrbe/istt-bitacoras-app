@@ -1,9 +1,4 @@
-import 'package:bitacoras_app/features/auth/domain/repositories/i_auth_repository.dart';
-import 'package:bitacoras_app/features/auth/presentation/screens/login_screen.dart';
-import 'package:bitacoras_app/features/auth/presentation/screens/register_screen.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bitacoras_app/app/routes/app_routes.dart';
-import 'package:provider/provider.dart';
+import 'auth.dart';
 
 abstract class AuthRoutes {
   AuthRoutes._();

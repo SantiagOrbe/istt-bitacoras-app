@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
+import 'package:bitacoras_app/features/tutores/tutores.dart';
 
 class EstudianteAsignadoModel {
   final UsuarioModel student;
@@ -6,8 +6,8 @@ class EstudianteAsignadoModel {
   final String companyTutorId;
   final String companyTutorName;
   final String companyTutorPhone;
-  final int totalHoursRequired;
-  final int totalHoursCompleted;
+  final double totalHoursRequired;
+  final double totalHoursCompleted;
   final String status; // 'En Proceso', 'Completado', 'Pendiente'
   final String? lastActivityDescription;
   final String? lastActivityDate;
@@ -27,8 +27,17 @@ class EstudianteAsignadoModel {
     this.lastAttendanceTime,
   });
 
-  int get remainingHours => (totalHoursRequired - totalHoursCompleted).clamp(0, totalHoursRequired);
+  double get remainingHours => (totalHoursRequired - totalHoursCompleted).clamp(0, totalHoursRequired);
   double get progressPercentage => totalHoursRequired > 0 ? (totalHoursCompleted / totalHoursRequired).clamp(0.0, 1.0) : 0.0;
+  String get totalHoursCompletedLabel => _formatHours(totalHoursCompleted);
+  String get totalHoursRequiredLabel => _formatHours(totalHoursRequired);
+  String get remainingHoursLabel => _formatHours(remainingHours);
+
+  static String _formatHours(double value) {
+    return value == value.roundToDouble()
+        ? value.toStringAsFixed(0)
+        : value.toStringAsFixed(2);
+  }
 
   factory EstudianteAsignadoModel.fromJson(Map<String, dynamic> json) {
     final totalHoursRequiredRaw = json['total_hours_required'];
@@ -40,8 +49,8 @@ class EstudianteAsignadoModel {
       companyTutorId: json['company_tutor_id']?.toString() ?? '',
       companyTutorName: json['company_tutor_name'] ?? '',
       companyTutorPhone: json['company_tutor_phone'] ?? '',
-      totalHoursRequired: _toInt(totalHoursRequiredRaw, fallback: 240),
-      totalHoursCompleted: _toInt(totalHoursCompletedRaw, fallback: 0),
+      totalHoursRequired: _toDouble(totalHoursRequiredRaw, fallback: 240),
+      totalHoursCompleted: _toDouble(totalHoursCompletedRaw, fallback: 0),
       status: json['status'] ?? 'En Proceso',
       lastActivityDescription: json['last_activity_description'],
       lastActivityDate: json['last_activity_date'],
@@ -49,11 +58,10 @@ class EstudianteAsignadoModel {
     );
   }
 
-  static int _toInt(dynamic value, {required int fallback}) {
+  static double _toDouble(dynamic value, {required double fallback}) {
     if (value == null) return fallback;
-    if (value is int) return value;
-    if (value is num) return value.toInt();
-    if (value is String) return int.tryParse(value) ?? fallback;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? fallback;
     return fallback;
   }
 

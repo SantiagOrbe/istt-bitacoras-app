@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/shared/exports.dart';
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class HistorialEmptyState extends StatelessWidget {
   const HistorialEmptyState({super.key});

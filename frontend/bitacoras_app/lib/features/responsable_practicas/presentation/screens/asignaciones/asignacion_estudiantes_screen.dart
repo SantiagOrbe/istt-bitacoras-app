@@ -1,12 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import '../../../../../app/apps.dart';
-import '../../../../../config/constants/app_colors.dart';
-import '../../../../../app/auth_session.dart';
-import '../../../domain/repositories/i_responsable_practicas_repository.dart';
-import '../../controllers/asignacion_estudiante_controller.dart';
-import '../../widgets/asignaciones/asignacion_estudiantes_body.dart';
+import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
 class AsignacionEstudiantesScreen extends StatefulWidget {
   const AsignacionEstudiantesScreen({super.key});

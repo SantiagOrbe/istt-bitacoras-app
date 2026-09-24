@@ -1,8 +1,5 @@
-import 'package:bitacoras_app/core/network/token_storage.dart';
-import 'package:bitacoras_app/shared/exports.dart';
+import '../../auth.dart';
 
-import '../../domain/repositories/i_auth_repository.dart';
-import '../datasources/auth_remote_datasource.dart';
 
 class AuthRepositoryImpl implements IAuthRepository {
   final AuthRemoteDataSource remoteDataSource;
