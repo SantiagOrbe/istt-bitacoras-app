@@ -49,7 +49,7 @@ class _SessionRestorerState extends State<_SessionRestorer> {
       final authRepository = context.read<IAuthRepository>();
       final session = context.read<AuthSession>();
       try {
-        final user = await authRepository.getCurrentUser();
+        final user = await authRepository.obtenerUsuarioActual();
         if (!mounted) return;
         session.restoreUser(user);
       } catch (_) {

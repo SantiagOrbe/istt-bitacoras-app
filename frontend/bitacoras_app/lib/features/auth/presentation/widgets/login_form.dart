@@ -34,7 +34,7 @@ class LoginForm extends StatelessWidget {
           tipoTeclado: TextInputType.emailAddress,
           mensajeError: errorCorreo,
         ),
-        AppSizes.gapV16,
+        AppTamanos.gapV16,
         CampoFormularioPrisma(
           controlador: controladorContrasena,
           etiqueta: 'Contraseña',
@@ -50,7 +50,7 @@ class LoginForm extends StatelessWidget {
             onPressed: alAlternarContrasena,
           ),
         ),
-        AppSizes.gapV24,
+        AppTamanos.gapV24,
         BotonPrisma(
           texto: 'Iniciar sesión',
           icono: Icons.login_rounded,

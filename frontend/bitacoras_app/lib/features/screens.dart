@@ -3,9 +3,6 @@
 // Auth
 export 'package:bitacoras_app/features/auth/presentation/screens/login_screen.dart';
 
-// Home
-export 'package:bitacoras_app/features/inicio/presentation/screens/roles/inicio_admin_screen.dart';
-
 // Estudiante - Asistencia, Bitácoras, Historial y Reportes
 export 'package:bitacoras_app/features/estudiantes/presentation/screens/asistencia/registro_asistencia_screen.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/screens/bitacoras/registro_actividad_screen.dart';

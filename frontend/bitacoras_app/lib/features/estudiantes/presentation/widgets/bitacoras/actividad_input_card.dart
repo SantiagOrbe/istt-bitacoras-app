@@ -17,9 +17,9 @@ class ActividadInputCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.primary,
+      accentColor: AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -30,22 +30,22 @@ class ActividadInputCard extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                  color: AppColores.primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                 ),
                 child: const Icon(
                   Icons.notes_rounded,
-                  color: AppColors.primary,
+                  color: AppColores.primary,
                   size: 18,
                 ),
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Expanded(
                 child: Text(
                   'Detalle su actividad ${canRemove ? "#${index + 1}" : ""}',
-                  style: AppTextStyles.bodyBold.copyWith(
+                  style: AppEstiloTexto.bodyBold.copyWith(
                     fontSize: 13,
-                    color: AppColors.textPrimary,
+                    color: AppColores.textPrimary,
                   ),
                 ),
               ),
@@ -54,7 +54,7 @@ class ActividadInputCard extends StatelessWidget {
                   onPressed: onRemove,
                   icon: const Icon(
                     Icons.delete_outline_rounded,
-                    color: AppColors.error,
+                    color: AppColores.error,
                     size: 20,
                   ),
                   visualDensity: VisualDensity.compact,
@@ -64,36 +64,36 @@ class ActividadInputCard extends StatelessWidget {
                 ),
             ],
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           TextField(
             controller: controller,
             maxLines: 4,
-            style: AppTextStyles.body.copyWith(
+            style: AppEstiloTexto.body.copyWith(
               fontSize: 14,
-              color: AppColors.textPrimary,
+              color: AppColores.textPrimary,
             ),
             decoration: InputDecoration(
               labelText: 'Descripción de la actividad',
-              labelStyle: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
+              labelStyle: AppEstiloTexto.caption.copyWith(
+                color: AppColores.textSecondary,
               ),
               hintText:
                   'Describa detalladamente las tareas realizadas, herramientas utilizadas y resultados obtenidos...',
-              hintStyle: AppTextStyles.caption.copyWith(
-                color: AppColors.textHint,
+              hintStyle: AppEstiloTexto.caption.copyWith(
+                color: AppColores.textHint,
                 fontSize: 13,
               ),
               filled: true,
-              fillColor: AppColors.background,
-              contentPadding: const EdgeInsets.all(AppSizes.sm + 4),
+              fillColor: AppColores.background,
+              contentPadding: const EdgeInsets.all(AppTamanos.sm + 4),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                borderSide: const BorderSide(color: AppColors.outline),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+                borderSide: const BorderSide(color: AppColores.outline),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                 borderSide: const BorderSide(
-                  color: AppColors.primary,
+                  color: AppColores.primary,
                   width: 1.5,
                 ),
               ),

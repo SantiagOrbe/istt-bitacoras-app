@@ -24,21 +24,21 @@ class _EstudianteTutorizadoCardState extends State<EstudianteTutorizadoCard> {
     final student = item.student;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSizes.sm),
+      padding: const EdgeInsets.only(bottom: AppTamanos.sm),
       child: InstitutionalGlowCard(
-        accentColor: AppColors.primary,
+        accentColor: AppColores.primary,
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    backgroundColor: AppColores.primary.withValues(alpha: 0.1),
                     child: Text(
                       student.initials,
-                      style: AppTextStyles.bodyBold.copyWith(color: AppColors.primary),
+                      style: AppEstiloTexto.bodyBold.copyWith(color: AppColores.primary),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -46,23 +46,23 @@ class _EstudianteTutorizadoCardState extends State<EstudianteTutorizadoCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(student.name, style: AppTextStyles.bodyBold),
-                        Text(student.careerName ?? 'Sin carrera', style: AppTextStyles.caption),
+                        Text(student.name, style: AppEstiloTexto.bodyBold),
+                        Text(student.careerName ?? 'Sin carrera', style: AppEstiloTexto.caption),
                       ],
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
+                    decoration: BoxDecoration(color: AppColores.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
                     child: Text(
                       item.status,
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.primary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  AppSizes.gapH8,
+                  AppTamanos.gapH8,
                   IconButton(
                     onPressed: widget.onRecordsTap ??
                         () => setState(() => _isExpanded = !_isExpanded),
@@ -71,7 +71,7 @@ class _EstudianteTutorizadoCardState extends State<EstudianteTutorizadoCard> {
                           ? Icons.keyboard_arrow_up_rounded
                             : Icons.check_rounded,
                     ),
-                    color: AppColors.primary,
+                    color: AppColores.primary,
                     tooltip: widget.onRecordsTap != null
                       ? 'Ver registros del estudiante'
                       : _isExpanded
@@ -81,34 +81,34 @@ class _EstudianteTutorizadoCardState extends State<EstudianteTutorizadoCard> {
                   ),
                 ],
               ),
-              AppSizes.gapV12,
+              AppTamanos.gapV12,
               const Divider(height: 1),
-              AppSizes.gapV12,
+              AppTamanos.gapV12,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
                       'Empresa: ${student.company ?? 'N/A'}',
-                      style: AppTextStyles.caption,
+                      style: AppEstiloTexto.caption,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Text(
                     '${item.totalHoursCompletedLabel}/${item.totalHoursRequiredLabel} hrs',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.primary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.primary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
               ),
-              AppSizes.gapV8,
-              LinearProgressIndicator(value: item.progressPercentage, backgroundColor: AppColors.divider, color: AppColors.primary, minHeight: 6),
+              AppTamanos.gapV8,
+              LinearProgressIndicator(value: item.progressPercentage, backgroundColor: AppColores.divider, color: AppColores.primary, minHeight: 6),
               if (_isExpanded) ...[
-                AppSizes.gapV12,
+                AppTamanos.gapV12,
                 const Divider(height: 1),
-                AppSizes.gapV12,
+                AppTamanos.gapV12,
                 _DetailRow(icon: Icons.badge_outlined, label: 'Cédula', value: student.cedula ?? 'Sin registro'),
                 _DetailRow(icon: Icons.email_outlined, label: 'Correo', value: student.email),
                 _DetailRow(icon: Icons.phone_outlined, label: 'Teléfono', value: student.phone ?? 'Sin registro'),
@@ -137,16 +137,16 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSizes.sm),
+      padding: const EdgeInsets.only(bottom: AppTamanos.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppColors.primary),
-          AppSizes.gapH8,
+          Icon(icon, size: 18, color: AppColores.primary),
+          AppTamanos.gapH8,
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
+                style: AppEstiloTexto.caption.copyWith(color: AppColores.textPrimary),
                 children: [
                   TextSpan(text: '$label: ', style: const TextStyle(fontWeight: FontWeight.w700)),
                   TextSpan(text: value),

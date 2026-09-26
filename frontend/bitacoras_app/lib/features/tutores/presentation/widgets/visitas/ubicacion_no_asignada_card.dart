@@ -14,28 +14,28 @@ class UbicacionNoAsignadaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.error,
+      accentColor: AppColores.error,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(AppSizes.md),
-        color: AppColors.errorSoft,
+        padding: const EdgeInsets.all(AppTamanos.md),
+        color: AppColores.errorSoft,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.location_off_outlined, color: AppColors.error),
-          AppSizes.gapH12,
+          const Icon(Icons.location_off_outlined, color: AppColores.error),
+          AppTamanos.gapH12,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppTextStyles.bodyBold,
+                  style: AppEstiloTexto.bodyBold,
                 ),
-                AppSizes.gapV4,
+                AppTamanos.gapV4,
                 Text(
                   message,
-                  style: AppTextStyles.caption,
+                  style: AppEstiloTexto.caption,
                 ),
               ],
             ),

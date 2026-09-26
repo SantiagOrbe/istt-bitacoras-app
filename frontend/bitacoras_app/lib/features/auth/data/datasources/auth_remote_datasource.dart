@@ -5,7 +5,7 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource({required this.apiClient});
 
-  Future<Map<String, dynamic>> login({
+  Future<Map<String, dynamic>> iniciarSesion({
     required String email,
     required String password,
   }) async {
@@ -20,7 +20,7 @@ class AuthRemoteDataSource {
     return response;
   }
 
-  Future<void> register({
+  Future<void> registrarUsuario({
     required String email,
     required String password,
     required String confirmPassword,
@@ -36,7 +36,7 @@ class AuthRemoteDataSource {
     );
   }
 
-  Future<Map<String, dynamic>> getProfile() async {
+  Future<Map<String, dynamic>> obtenerPerfil() async {
     final response = await apiClient.get('usuarios/perfil/');
     if (response is! Map<String, dynamic>) {
       throw const FormatException('La respuesta del perfil no es válida.');

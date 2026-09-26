@@ -22,19 +22,19 @@ class EstudianteParaleloCard extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 160),
-      margin: const EdgeInsets.only(bottom: AppSizes.sm),
+      margin: const EdgeInsets.only(bottom: AppTamanos.sm),
       decoration: BoxDecoration(
         color: selected
-            ? AppColors.primary.withValues(alpha: 0.08)
-            : AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            ? AppColores.primary.withValues(alpha: 0.08)
+            : AppColores.surface,
+        borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
         border: Border.all(
-          color: selected ? AppColors.primary : AppColors.outline,
+          color: selected ? AppColores.primary : AppColores.outline,
         ),
         boxShadow: selected
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.12),
+                  color: AppColores.primary.withValues(alpha: 0.12),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -44,19 +44,19 @@ class EstudianteParaleloCard extends StatelessWidget {
       child: CheckboxListTile(
         value: selected,
         onChanged: blocked ? null : onChanged,
-        activeColor: AppColors.primary,
-        checkColor: AppColors.surface,
+        activeColor: AppColores.primary,
+        checkColor: AppColores.surface,
         controlAffinity: ListTileControlAffinity.trailing,
         secondary: CircleAvatar(
           backgroundColor: selected
-              ? AppColors.primary
-              : AppColors.primary.withValues(alpha: 0.12),
-          foregroundColor: selected ? AppColors.surface : AppColors.primary,
+              ? AppColores.primary
+              : AppColores.primary.withValues(alpha: 0.12),
+          foregroundColor: selected ? AppColores.surface : AppColores.primary,
           child: Text(name.isEmpty ? 'E' : name[0].toUpperCase()),
         ),
         title: Text(
           name,
-          style: AppTextStyles.bodyBold,
+          style: AppEstiloTexto.bodyBold,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(

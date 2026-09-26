@@ -29,6 +29,7 @@ class _FormularioEmpresaBodyState extends State<FormularioEmpresaBody> {
 
     _controllers['name'] = TextEditingController(text: c?.name ?? '');
     _controllers['ruc'] = TextEditingController(text: c?.ruc ?? '');
+    _controllers['canton'] = TextEditingController(text: c?.canton ?? '');
     _controllers['address'] = TextEditingController(text: c?.address ?? '');
     _controllers['phone'] = TextEditingController(text: c?.phone ?? '');
     _controllers['email'] = TextEditingController(text: c?.email ?? '');
@@ -52,6 +53,7 @@ class _FormularioEmpresaBodyState extends State<FormularioEmpresaBody> {
       id: widget.company?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       name: _controllers['name']!.text.trim(),
       ruc: _controllers['ruc']!.text.trim(),
+      canton: _controllers['canton']!.text.trim(),
       address: _controllers['address']!.text.trim(),
       phone: _controllers['phone']!.text.trim(),
       email: _controllers['email']!.text.trim(),
@@ -100,14 +102,14 @@ class _FormularioEmpresaBodyState extends State<FormularioEmpresaBody> {
           ElevatedButton(
             onPressed: _isSaving ? null : _submit,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColores.primary,
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             child: _isSaving
-                ? const CircularProgressIndicator(color: AppColors.surface)
+                ? const CircularProgressIndicator(color: AppColores.surface)
                 : Text(
                     isEditing ? 'Guardar Cambios' : 'Registrar Empresa',
-                    style: const TextStyle(color: AppColors.surface),
+                    style: const TextStyle(color: AppColores.surface),
                   ),
           ),
         ],

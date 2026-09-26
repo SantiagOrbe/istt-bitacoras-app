@@ -2,7 +2,7 @@ import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class ReportesScreen extends StatefulWidget {
   final UsuarioModel currentUser;
-  final IAsistenciaRepository attendanceRepository;
+  final IAsistenciaRepositorio attendanceRepository;
 
   const ReportesScreen({
     super.key,
@@ -38,9 +38,9 @@ class _ReportesScreenState extends State<ReportesScreen> {
       SnackBar(
         content: Text(
           'Generando archivo PDF de bitácora...',
-          style: AppTextStyles.body.copyWith(color: AppColors.surface),
+          style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColores.primary,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -56,9 +56,9 @@ class _ReportesScreenState extends State<ReportesScreen> {
       SnackBar(
         content: Text(
           statusMessage,
-          style: AppTextStyles.body.copyWith(color: AppColors.surface),
+          style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
         ),
-        backgroundColor: isSuccess ? AppColors.success : AppColors.error,
+        backgroundColor: isSuccess ? AppColores.success : AppColores.error,
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
       ),
@@ -71,7 +71,7 @@ class _ReportesScreenState extends State<ReportesScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(user: widget.currentUser),
           body: SafeArea(
             child: ReportesBody(

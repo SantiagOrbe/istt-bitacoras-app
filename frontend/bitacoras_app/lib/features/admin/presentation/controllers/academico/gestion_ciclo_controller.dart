@@ -10,6 +10,7 @@ class GestionCicloController extends ChangeNotifier {
   String _searchQuery = '';
   String? _careerId;
   String _statusFilter = 'all';
+  bool _isAscendingSort = true;
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;
@@ -38,6 +39,7 @@ class GestionCicloController extends ChangeNotifier {
       .name;
 
   String get statusFilter => _statusFilter;
+  bool get isAscendingSort => _isAscendingSort;
 
   List<CicloModel> get filteredCycles {
     var result = cycles;
@@ -48,15 +50,19 @@ class GestionCicloController extends ChangeNotifier {
       result = result.where((cycle) => !cycle.isActive).toList();
     }
 
-    if (_searchQuery.isEmpty) {
-      return result;
+    if (_searchQuery.isNotEmpty) {
+      final query = _searchQuery.toLowerCase();
+      result = result.where((cycle) {
+        return cycle.name.toLowerCase().contains(query) ||
+            cycle.level.toString().contains(query);
+      }).toList();
     }
 
-    final query = _searchQuery.toLowerCase();
-    return result.where((cycle) {
-      return cycle.name.toLowerCase().contains(query) ||
-          cycle.level.toString().contains(query);
-    }).toList();
+    final sortedResult = List<CicloModel>.from(result);
+    sortedResult.sort((first, second) => _isAscendingSort
+        ? first.level.compareTo(second.level)
+        : second.level.compareTo(first.level));
+    return sortedResult;
   }
 
   Future<void> loadCycles({String? careerId}) async {
@@ -65,11 +71,11 @@ class GestionCicloController extends ChangeNotifier {
     _clearMessages();
 
     try {
-      final loadedCareers = await repository.getCareers();
+      final loadedCareers = await repository.obtenerCarreras();
       _careers
         ..clear()
         ..addAll(loadedCareers);
-      final loadedCycles = await repository.getCycles(careerId: _careerId);
+      final loadedCycles = await repository.obtenerCiclos(careerId: _careerId);
       _cycles
         ..clear()
         ..addAll(loadedCycles);
@@ -89,6 +95,11 @@ class GestionCicloController extends ChangeNotifier {
 
   void setStatusFilter(String value) {
     _statusFilter = value;
+    notifyListeners();
+  }
+
+  void toggleSortOrder() {
+    _isAscendingSort = !_isAscendingSort;
     notifyListeners();
   }
 
@@ -160,8 +171,8 @@ class GestionCicloController extends ChangeNotifier {
       );
 
       final success = cycleId == null
-          ? await repository.createCycle(cycle)
-          : await repository.updateCycle(cycle);
+          ? await repository.crearCiclo(cycle)
+          : await repository.actualizarCiclo(cycle);
 
       if (!success) {
         _errorMessage = cycleId == null

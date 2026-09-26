@@ -19,42 +19,42 @@ class AsignacionEstudiantesBody extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSizes.md,
-            AppSizes.md,
-            AppSizes.md,
-            AppSizes.sm,
+            AppTamanos.md,
+            AppTamanos.md,
+            AppTamanos.md,
+            AppTamanos.sm,
           ),
           child: InstitutionalGlowCard(
-            accentColor: AppColors.primary,
+            accentColor: AppColores.primary,
             child: Padding(
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: const EdgeInsets.all(AppTamanos.md),
               child: Row(
                 children: [
                   Container(
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      color: AppColores.primary.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                     ),
                     child: const Icon(
                       Icons.assignment_ind_outlined,
-                      color: AppColors.primary,
+                      color: AppColores.primary,
                     ),
                   ),
-                  AppSizes.gapH12,
+                  AppTamanos.gapH12,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Asignación de estudiantes',
-                          style: AppTextStyles.title,
+                          style: AppEstiloTexto.title,
                         ),
-                        AppSizes.gapV4,
+                        AppTamanos.gapV4,
                         Text(
                           '${controller.assignments.length} estudiantes consultados',
-                          style: AppTextStyles.caption,
+                          style: AppEstiloTexto.caption,
                         ),
                       ],
                     ),
@@ -66,26 +66,26 @@ class AsignacionEstudiantesBody extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSizes.md,
-            AppSizes.sm,
-            AppSizes.md,
-            AppSizes.md,
+            AppTamanos.md,
+            AppTamanos.sm,
+            AppTamanos.md,
+            AppTamanos.md,
           ),
           child: TextField(
             onChanged: controller.searchAssignments,
-            style: const TextStyle(color: AppColors.textPrimary),
+            style: const TextStyle(color: AppColores.textPrimary),
             decoration: InputDecoration(
               hintText: 'Buscar por estudiante o cédula...',
-              hintStyle: const TextStyle(color: AppColors.textHint),
+              hintStyle: const TextStyle(color: AppColores.textHint),
               prefixIcon: const Icon(
                 Icons.search_rounded,
-                color: AppColors.textSecondary,
+                color: AppColores.textSecondary,
               ),
               filled: true,
-              fillColor: AppColors.surface,
+              fillColor: AppColores.surface,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                borderSide: const BorderSide(color: AppColors.outline),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+                borderSide: const BorderSide(color: AppColores.outline),
               ),
             ),
           ),
@@ -93,13 +93,13 @@ class AsignacionEstudiantesBody extends StatelessWidget {
         Expanded(
           child: controller.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(color: AppColores.primary),
                 )
               : controller.semesters.isEmpty
                   ? const Center(
                       child: Text(
                         'No hay semestres habilitados para prácticas.',
-                        style: TextStyle(color: AppColors.textSecondary),
+                        style: TextStyle(color: AppColores.textSecondary),
                       ),
                     )
                   : ListView(
@@ -112,11 +112,11 @@ class AsignacionEstudiantesBody extends StatelessWidget {
                             .toList();
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppSizes.md,
-                            vertical: AppSizes.sm,
+                            horizontal: AppTamanos.md,
+                            vertical: AppTamanos.sm,
                           ),
                           child: InstitutionalGlowCard(
-                            accentColor: AppColors.primary,
+                            accentColor: AppColores.primary,
                             child: Theme(
                               data: Theme.of(context).copyWith(
                                 dividerColor: Colors.transparent,
@@ -124,27 +124,27 @@ class AsignacionEstudiantesBody extends StatelessWidget {
                               child: ExpansionTile(
                                 leading: const Icon(
                                   Icons.school_outlined,
-                                  color: AppColors.primary,
+                                  color: AppColores.primary,
                                 ),
                                 title: Text(
                                   '${semester['nombre']} (Nivel ${semester['nivel']})',
-                                  style: AppTextStyles.bodyBold,
+                                  style: AppEstiloTexto.bodyBold,
                                 ),
                                 children: semesterParallels.map((parallel) {
                                   final students =
                                       assignmentsByParallel[parallel['id']] ?? [];
                                   return Padding(
                                     padding: const EdgeInsets.only(
-                                      bottom: AppSizes.sm,
+                                      bottom: AppTamanos.sm,
                                     ),
                                     child: ExpansionTile(
                                       leading: const Icon(
                                         Icons.groups_outlined,
-                                        color: AppColors.secondary,
+                                        color: AppColores.secondary,
                                       ),
                                       title: Text(
                                         'Paralelo ${parallel['nombre']}',
-                                        style: AppTextStyles.bodyBold,
+                                        style: AppEstiloTexto.bodyBold,
                                       ),
                                       subtitle: Text(
                                         '${students.length} estudiantes · ${parallel['jornada']}',

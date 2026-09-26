@@ -2,7 +2,7 @@
 
 
 class HistorialController extends ChangeNotifier {
-  final IAsistenciaRepository repository;
+  final IAsistenciaRepositorio repository;
 
   HistorialController({required this.repository});
 
@@ -14,8 +14,8 @@ class HistorialController extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    activeRecord = await repository.getCurrentRecord();
-    historyList = await repository.getAttendanceHistory();
+    activeRecord = await repository.obtenerRegistroActual();
+    historyList = await repository.obtenerHistorialAsistencia();
 
     isLoading = false;
     notifyListeners();

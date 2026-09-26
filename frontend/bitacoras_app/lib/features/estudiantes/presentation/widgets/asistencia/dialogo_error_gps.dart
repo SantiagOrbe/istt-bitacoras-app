@@ -12,58 +12,58 @@ Future<void> mostrarDialogoErrorGps(
     barrierDismissible: false,
     builder: (context) => Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       ),
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColores.surface,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.lg),
+        padding: const EdgeInsets.all(AppTamanos.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Ícono de Ubicación Deshabilitada / Fuera de Rango
             CircleAvatar(
               radius: 36,
-              backgroundColor: AppColors.error.withValues(alpha: 0.12),
+              backgroundColor: AppColores.error.withValues(alpha: 0.12),
               child: const Icon(
                 Icons.location_off_rounded,
-                color: AppColors.error,
+                color: AppColores.error,
                 size: 36,
               ),
             ),
 
-            AppSizes.gapV16,
+            AppTamanos.gapV16,
 
             Text(
               '¡UPS! Ubicación no válida',
               textAlign: TextAlign.center,
-              style: AppTextStyles.title.copyWith(
-                color: AppColors.error,
+              style: AppEstiloTexto.title.copyWith(
+                color: AppColores.error,
                 fontSize: 18,
               ),
             ),
 
-            AppSizes.gapV8,
+            AppTamanos.gapV8,
 
             Text(
               'Su ubicación actual no está dentro del rango permitido para la empresa/institución asignada.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
+              style: AppEstiloTexto.caption.copyWith(
+                color: AppColores.textSecondary,
                 fontSize: 13,
               ),
             ),
 
-            AppSizes.gapV16,
+            AppTamanos.gapV16,
 
             // Badge de Distancia Dinámica
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSizes.md,
-                vertical: AppSizes.xs + 2,
+                horizontal: AppTamanos.md,
+                vertical: AppTamanos.xs + 2,
               ),
               decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                color: AppColores.error.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -71,13 +71,13 @@ Future<void> mostrarDialogoErrorGps(
                   const Icon(
                     Icons.social_distance_rounded,
                     size: 16,
-                    color: AppColors.error,
+                    color: AppColores.error,
                   ),
-                  AppSizes.gapH8,
+                  AppTamanos.gapH8,
                   Text(
                     'Distancia: $distanceText',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.error,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.error,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -86,7 +86,7 @@ Future<void> mostrarDialogoErrorGps(
               ),
             ),
 
-            AppSizes.gapV24,
+            AppTamanos.gapV24,
 
             // Botón Intentar de Nuevo
             SizedBox(
@@ -94,10 +94,10 @@ Future<void> mostrarDialogoErrorGps(
               height: 44,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColores.primary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                   ),
                 ),
                 onPressed: () {
@@ -106,19 +106,19 @@ Future<void> mostrarDialogoErrorGps(
                 },
                 icon: const Icon(
                   Icons.refresh_rounded,
-                  color: AppColors.surface,
+                  color: AppColores.surface,
                   size: 18,
                 ),
                 label: Text(
                   'Intentar de Nuevo',
-                  style: AppTextStyles.bodyBold.copyWith(
-                    color: AppColors.surface,
+                  style: AppEstiloTexto.bodyBold.copyWith(
+                    color: AppColores.surface,
                   ),
                 ),
               ),
             ),
 
-            AppSizes.gapV8,
+            AppTamanos.gapV8,
 
             // Botón Cancelar
             SizedBox(
@@ -127,9 +127,9 @@ Future<void> mostrarDialogoErrorGps(
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                   ),
-                  side: const BorderSide(color: AppColors.primary),
+                  side: const BorderSide(color: AppColores.primary),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -139,8 +139,8 @@ Future<void> mostrarDialogoErrorGps(
                 },
                 child: Text(
                   'Cancelar',
-                  style: AppTextStyles.bodyBold.copyWith(
-                    color: AppColors.primary,
+                  style: AppEstiloTexto.bodyBold.copyWith(
+                    color: AppColores.primary,
                   ),
                 ),
               ),

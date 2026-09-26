@@ -9,7 +9,7 @@ class UbicacionEstadoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = isValid ? AppColors.success : AppColors.error;
+    final statusColor = isValid ? AppColores.success : AppColores.error;
     final statusText =
         message ??
         (isValid ? 'Dentro del rango permitido' : 'Fuera del rango permitido');
@@ -17,7 +17,7 @@ class UbicacionEstadoCard extends StatelessWidget {
     return InstitutionalGlowCard(
       accentColor: statusColor,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Row(
         children: [
           Container(
@@ -33,11 +33,11 @@ class UbicacionEstadoCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          AppSizes.gapH12,
+          AppTamanos.gapH12,
           Expanded(
             child: Text(
               statusText,
-              style: AppTextStyles.bodyBold.copyWith(color: statusColor),
+              style: AppEstiloTexto.bodyBold.copyWith(color: statusColor),
             ),
           ),
         ],

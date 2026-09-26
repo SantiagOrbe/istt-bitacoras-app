@@ -11,7 +11,7 @@ class AuthRepositoryImpl implements IAuthRepository {
   });
 
   @override
-  Future<UsuarioModel?> login({
+  Future<UsuarioModel?> iniciarSesion({
     required String email,
     required String password,
   }) async {
@@ -19,7 +19,7 @@ class AuthRepositoryImpl implements IAuthRepository {
       throw Exception('Por favor ingrese correo y contraseña.');
     }
 
-    final response = await remoteDataSource.login(
+    final response = await remoteDataSource.iniciarSesion(
       email: email,
       password: password,
     );
@@ -30,16 +30,16 @@ class AuthRepositoryImpl implements IAuthRepository {
 
     await tokenStorage.deleteToken();
     await tokenStorage.saveToken(token);
-    return getCurrentUser();
+    return obtenerUsuarioActual();
   }
 
   @override
-  Future<void> register({
+  Future<void> registrarUsuario({
     required String email,
     required String password,
     required String confirmPassword,
   }) {
-    return remoteDataSource.register(
+    return remoteDataSource.registrarUsuario(
       email: email,
       password: password,
       confirmPassword: confirmPassword,
@@ -47,15 +47,15 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<void> logout() async {
+  Future<void> cerrarSesion() async {
     await tokenStorage.deleteToken();
   }
 
   @override
-  Future<UsuarioModel?> getCurrentUser() async {
+  Future<UsuarioModel?> obtenerUsuarioActual() async {
     final token = await tokenStorage.getToken();
     if (token == null || token.isEmpty) return null;
-    final profile = await remoteDataSource.getProfile();
+    final profile = await remoteDataSource.obtenerPerfil();
     return UsuarioModel.fromJson(profile);
   }
 }

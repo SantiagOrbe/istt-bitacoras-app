@@ -36,6 +36,9 @@ class CarreraModel {
     );
   }
 
+  factory CarreraModel.desdeJson(Map<String, dynamic> json) =>
+      CarreraModel.fromJson(json);
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -48,6 +51,8 @@ class CarreraModel {
       'estado': isActive,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
 
   CarreraModel copyWith({
     String? id,
@@ -70,4 +75,47 @@ class CarreraModel {
       totalSemesters: totalSemesters ?? this.totalSemesters,
     );
   }
+
+  CarreraModel copiarCon({
+    String? nuevoId,
+    String? nombre,
+    String? codigo,
+    String? sigla,
+    String? descripcion,
+    String? modalidad,
+    bool? estado,
+    int? totalSemestres,
+  }) {
+    return CarreraModel(
+      id: nuevoId ?? id,
+      name: nombre ?? name,
+      code: codigo ?? code,
+      shortName: sigla ?? shortName,
+      description: descripcion ?? description,
+      modality: modalidad ?? modality,
+      isActive: estado ?? isActive,
+      totalSemesters: totalSemestres ?? totalSemesters,
+    );
+  }
+}
+
+typedef CarreraModelo = CarreraModel;
+
+extension CarreraModelEspanol on CarreraModel {
+  String get nombre => name;
+  String get codigo => code;
+  String get sigla => shortName;
+  String get descripcionCarrera => description;
+  String get modalidadCarrera => modality;
+  bool get estado => isActive;
+  int get totalSemestresCarrera => totalSemesters;
+
+  CarreraModel conNombre(String nuevoNombre) => copyWith(name: nuevoNombre);
+  CarreraModel conCodigo(String nuevoCodigo) => copyWith(code: nuevoCodigo);
+  CarreraModel conSigla(String nuevaSigla) => copyWith(shortName: nuevaSigla);
+  CarreraModel conDescripcion(String nuevaDescripcion) =>
+      copyWith(description: nuevaDescripcion);
+  CarreraModel conModalidad(String nuevaModalidad) =>
+      copyWith(modality: nuevaModalidad);
+  CarreraModel conEstado(bool nuevoEstado) => copyWith(isActive: nuevoEstado);
 }

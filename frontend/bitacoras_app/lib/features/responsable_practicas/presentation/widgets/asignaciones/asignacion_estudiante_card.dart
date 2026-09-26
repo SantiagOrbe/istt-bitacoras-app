@@ -15,11 +15,11 @@ class AsignacionEstudianteCard extends StatelessWidget {
     final isAssigned = assignment.isAssigned;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+      padding: const EdgeInsets.symmetric(horizontal: AppTamanos.md, vertical: AppTamanos.xs),
       child: InstitutionalGlowCard(
-        accentColor: isAssigned ? AppColors.success : AppColors.warning,
+        accentColor: isAssigned ? AppColores.success : AppColores.warning,
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,20 +31,20 @@ class AsignacionEstudianteCard extends StatelessWidget {
                     assignment.studentName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.bodyBold,
+                    style: AppEstiloTexto.bodyBold,
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: isAssigned ? AppColors.successSoft : AppColors.warningSoft,
+                    color: isAssigned ? AppColores.successSoft : AppColores.warningSoft,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     isAssigned ? 'Asignado' : 'Pendiente',
                     style: TextStyle(
                       fontSize: 11,
-                      color: isAssigned ? AppColors.success : AppColors.warning,
+                      color: isAssigned ? AppColores.success : AppColores.warning,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -54,12 +54,12 @@ class AsignacionEstudianteCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               'Cédula: ${assignment.studentIdentification.isEmpty ? 'No registrada' : assignment.studentIdentification}',
-              style: AppTextStyles.caption,
+              style: AppEstiloTexto.caption,
             ),
             if (isAssigned) ...[
-              const Divider(color: AppColors.divider),
-              Text('Empresa: ${assignment.companyName}', style: AppTextStyles.body),
-              Text('Tutor Académico: ${assignment.academicTutorName}', style: AppTextStyles.body),
+              const Divider(color: AppColores.divider),
+              Text('Empresa: ${assignment.companyName}', style: AppEstiloTexto.body),
+              Text('Tutor Académico: ${assignment.academicTutorName}', style: AppEstiloTexto.body),
             ],
             const SizedBox(height: 12),
             SizedBox(
@@ -67,22 +67,22 @@ class AsignacionEstudianteCard extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   context.push(
-                    AppRoutes.responsablePracticasAssignStudentForm,
+                    AppRoutes.formularioAsignacionResponsable,
                     extra: {'assignment': assignment, 'controller': controller},
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.surface,
+                  backgroundColor: AppColores.primary,
+                  foregroundColor: AppColores.surface,
                   elevation: 3,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   ),
                 ),
-                icon: Icon(isAssigned ? Icons.edit_rounded : Icons.add_link_rounded, color: AppColors.surface, size: 18),
+                icon: Icon(isAssigned ? Icons.edit_rounded : Icons.add_link_rounded, color: AppColores.surface, size: 18),
                 label: Text(
                   isAssigned ? 'Reasignar Tutores' : 'Asignar Tutores',
-                  style: const TextStyle(color: AppColors.surface),
+                  style: const TextStyle(color: AppColores.surface),
                 ),
               ),
             ),

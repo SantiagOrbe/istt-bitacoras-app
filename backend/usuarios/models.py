@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Q
 
 from empresas.models import Empresa
-from gestion_academica.models import Carrera, Paralelo, Semestre
+from gestion_academica.models import Carrera, CarreraPeriodo, Paralelo, Semestre
 """ Modelos de los usuarios y de todos los roles correspondientes de la app en Django."""
 
 class Usuario(AbstractUser):
@@ -29,12 +29,12 @@ class Usuario(AbstractUser):
         return self.username
 
 
-class Docente(models.Model):
+""" class Docente(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     cedula = models.CharField(max_length=10)
 
     def __str__(self):
-        return self.usuario.username
+        return self.usuario.username """
 
 
 class ResponsablePracticas(models.Model):
@@ -143,6 +143,31 @@ class Estudiante(models.Model):
         self.horas_acumuladas = round(total_horas, 2)
         self.save(update_fields=['horas_acumuladas'])
         return self.horas_acumuladas
+
+    @property
+    def puede_registrar_practicas(self):
+        if (
+            self.carrera_id is None
+            or self.semestre_id is None
+            or self.paralelo_id is None
+            or self.semestre is None
+            or self.paralelo is None
+            or self.empresa_id is None
+        ):
+            return False
+
+        if not self.semestre.estado or not self.paralelo.estado:
+            return False
+
+        tiene_semestre_habilitado = CarreraPeriodo.objects.filter(
+            carrera_id=self.carrera_id,
+            semestre_id=self.semestre_id,
+            estado=True,
+            periodo__estado=True,
+            semestre__estado=True,
+        ).exists()
+
+        return tiene_semestre_habilitado
 
     def get_avance_practicas(self):
         horas_requeridas = self.semestre.horas_practicas if self.semestre else 0

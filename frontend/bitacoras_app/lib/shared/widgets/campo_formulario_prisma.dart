@@ -43,11 +43,11 @@ class _CampoFormularioPrismaState extends State<CampoFormularioPrisma> {
   bool _estaSobre = false;
 
   Color get _colorAcento =>
-      Color.lerp(AppColors.secondary, AppColors.warning, 0.30)!;
+      Color.lerp(AppColores.secondary, AppColores.warning, 0.30)!;
 
   @override
   Widget build(BuildContext context) {
-    final colorBorde = _estaSobre ? _colorAcento : AppColors.outline;
+    final colorBorde = _estaSobre ? _colorAcento : AppColores.outline;
 
     return MouseRegion(
       cursor: SystemMouseCursors.text,
@@ -62,21 +62,22 @@ class _CampoFormularioPrismaState extends State<CampoFormularioPrisma> {
         readOnly: widget.soloLectura,
         onTap: widget.alPresionar,
         validator: widget.validador,
-        style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+        style: const TextStyle(color: AppColores.textPrimary, fontSize: 15),
         decoration: InputDecoration(
           labelText: widget.etiqueta,
           hintText: widget.textoSugerido.isEmpty ? null : widget.textoSugerido,
           helperText: widget.textoAyuda,
-          labelStyle: AppTextStyles.body.copyWith(
-            color: _estaSobre ? _colorAcento : AppColors.textSecondary,
+          labelStyle: AppEstiloTexto.body.copyWith(
+            color: _estaSobre ? _colorAcento : AppColores.textSecondary,
           ),
           prefixIcon: Icon(
             widget.icono,
-            color: _estaSobre ? _colorAcento : AppColors.primary,
+            color: _estaSobre ? _colorAcento : AppColores.primary,
           ),
           suffixIcon: widget.accion,
           errorText: widget.mensajeError,
-          errorStyle: AppTextStyles.caption.copyWith(color: AppColors.error),
+          errorMaxLines: 2,
+          errorStyle: AppEstiloTexto.caption.copyWith(color: AppColores.error),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: colorBorde),

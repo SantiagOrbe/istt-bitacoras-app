@@ -25,17 +25,17 @@ class RegistroActividadActionButtons extends StatelessWidget {
           isLoading: isLoading,
           onPressed: enabled ? onSave : null,
         ),
-        AppSizes.gapV16,
+        AppTamanos.gapV16,
         Container(
           decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            color: AppColores.surface,
+            borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
             border: Border.all(
-              color: AppColors.secondary.withValues(alpha: 0.28),
+              color: AppColores.secondary.withValues(alpha: 0.28),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.secondary.withValues(alpha: 0.10),
+                color: AppColores.secondary.withValues(alpha: 0.10),
                 blurRadius: 12,
                 offset: const Offset(0, 5),
               ),
@@ -43,22 +43,22 @@ class RegistroActividadActionButtons extends StatelessWidget {
           ),
           child: InkWell(
             onTap: onAddMore,
-            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
+              padding: const EdgeInsets.symmetric(vertical: AppTamanos.sm),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.add_circle_outline_rounded,
-                    color: AppColors.primary,
+                    color: AppColores.primary,
                     size: 20,
                   ),
-                  AppSizes.gapH8,
+                  AppTamanos.gapH8,
                   Text(
                     'Agregar otra actividad',
-                    style: AppTextStyles.bodyBold.copyWith(
-                      color: AppColors.primary,
+                    style: AppEstiloTexto.bodyBold.copyWith(
+                      color: AppColores.primary,
                       fontSize: 14,
                     ),
                   ),

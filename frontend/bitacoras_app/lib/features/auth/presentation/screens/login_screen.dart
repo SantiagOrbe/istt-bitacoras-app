@@ -34,34 +34,34 @@ class _LoginScreenState extends State<LoginScreen> {
       context.read<AuthSession>().setUser(user);
       switch (user.role) {
         case RolUsuarioModel.student:
-          context.go(AppRoutes.studentHome);
+          context.go(AppRoutes.inicioEstudiante);
           break;
         case RolUsuarioModel.academicTutor:
-          context.go(AppRoutes.academicTutorHome);
+          context.go(AppRoutes.inicioTutorAcademico);
           break;
         case RolUsuarioModel.companyTutor:
-          context.go(AppRoutes.companyTutorHome);
+          context.go(AppRoutes.inicioTutorEmpresarial);
           break;
         case RolUsuarioModel.admin:
-          context.go(AppRoutes.adminHome);
+          context.go(AppRoutes.inicioAdmin);
           break;
         case RolUsuarioModel.practiceManager:
-          context.go(AppRoutes.practiceManagerHome);
+          context.go(AppRoutes.inicioResponsablePracticas);
           break;
         case RolUsuarioModel.coordinator:
-          context.go(AppRoutes.coordinatorHome);
+          context.go(AppRoutes.inicioCoordinador);
           break;
         default:
-          context.go(AppRoutes.studentHome);
+          context.go(AppRoutes.inicioEstudiante);
       }
     } else if (_controller.mensajeError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             _controller.mensajeError!,
-            style: AppTextStyles.body.copyWith(color: AppColors.surface),
+            style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
           ),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -74,17 +74,17 @@ class _LoginScreenState extends State<LoginScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           body: SafeArea(
             child: Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(AppSizes.lg),
+                padding: const EdgeInsets.all(AppTamanos.lg),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const LoginHeader(),
-                    AppSizes.gapV32,
+                    AppTamanos.gapV32,
                     LoginForm(
                       controladorCorreo: _controller.controladorCorreo,
                       controladorContrasena: _controller.controladorContrasena,
@@ -96,9 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           _controller.alternarVisibilidadContrasena,
                       alEnviar: _handleLogin,
                     ),
-                    AppSizes.gapV16,
+                    AppTamanos.gapV16,
                     TextButton(
-                      onPressed: () => context.push(AppRoutes.register),
+                      onPressed: () => context.push(AppRoutes.registro),
                       child: const Text('¿No tienes cuenta? Regístrate aquí'),
                     ),
                     const SizedBox(height: 24),

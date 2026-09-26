@@ -31,8 +31,8 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
   @override
   Widget build(BuildContext context) {
     final colorEstado = widget.estadoActivo
-        ? AppColors.success
-        : AppColors.textDisabled;
+        ? AppColores.success
+        : AppColores.textDisabled;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _estaSobre = true),
@@ -42,17 +42,17 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
         transform: Matrix4.translationValues(0, _estaSobre ? -1 : 0, 0),
         padding: const EdgeInsets.fromLTRB(24, 26, 24, 22),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColores.surface,
           border: Border.all(
             color: _estaSobre
-                ? AppColors.primary.withValues(alpha: 0.45)
-                : AppColors.outline,
+                ? AppColores.primary.withValues(alpha: 0.45)
+                : AppColores.outline,
           ),
           borderRadius: BorderRadius.circular(6),
           boxShadow: _estaSobre
               ? [
                   BoxShadow(
-                    color: AppColors.shadow,
+                    color: AppColores.shadow,
                     blurRadius: 14,
                     offset: const Offset(0, 5),
                   ),
@@ -69,7 +69,7 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                 height: 3,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.secondary],
+                    colors: [AppColores.primary, AppColores.secondary],
                   ),
                 ),
               ),
@@ -82,8 +82,8 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                   children: [
                     Text(
                       widget.indice.toUpperCase(),
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 1.5,
@@ -115,8 +115,8 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                           const SizedBox(width: 6),
                           Text(
                             widget.estado.toUpperCase(),
-                            style: AppTextStyles.caption.copyWith(
-                              color: AppColors.textPrimary,
+                            style: AppEstiloTexto.caption.copyWith(
+                              color: AppColores.textPrimary,
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1.1,
@@ -130,7 +130,7 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                 const SizedBox(height: 18),
                 Text(
                   widget.titulo,
-                  style: AppTextStyles.title.copyWith(
+                  style: AppEstiloTexto.title.copyWith(
                     fontSize: 21,
                     height: 1.2,
                   ),
@@ -138,13 +138,13 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                 const SizedBox(height: 12),
                 Text(
                   widget.descripcion,
-                  style: AppTextStyles.body.copyWith(
-                    color: AppColors.textSecondary,
+                  style: AppEstiloTexto.body.copyWith(
+                    color: AppColores.textSecondary,
                     height: 1.55,
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Divider(color: AppColors.divider, height: 1),
+                const Divider(color: AppColores.divider, height: 1),
                 const SizedBox(height: 14),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,8 +153,8 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                       child: Text(
                         widget.metadato.toUpperCase(),
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textSecondary,
+                        style: AppEstiloTexto.caption.copyWith(
+                          color: AppColores.textSecondary,
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1.2,
@@ -174,9 +174,9 @@ class _TarjetaResumenPrismaState extends State<TarjetaResumenPrisma> {
                       ),
                       label: const Text('Abrir'),
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.primary,
+                        foregroundColor: AppColores.primary,
                         padding: EdgeInsets.zero,
-                        textStyle: AppTextStyles.caption.copyWith(
+                        textStyle: AppEstiloTexto.caption.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1.1,

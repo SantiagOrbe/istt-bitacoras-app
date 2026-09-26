@@ -3,11 +3,13 @@ import 'package:bitacoras_app/features/admin/admin.dart';
 class CarreraPeriodoScreen extends StatefulWidget {
   final UsuarioModel currentUser;
   final IAdminRepository adminRepository;
+  final String? initialPeriodId;
 
   const CarreraPeriodoScreen({
     super.key,
     required this.currentUser,
     required this.adminRepository,
+    this.initialPeriodId,
   });
 
   @override
@@ -21,7 +23,7 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
   void initState() {
     super.initState();
     _controller = CarreraPeriodoController(repository: widget.adminRepository);
-    _controller.loadData();
+    _controller.loadData(initialPeriodId: widget.initialPeriodId);
   }
 
   @override
@@ -39,9 +41,9 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
             success
                 ? 'Configuración guardada exitosamente.'
                 : _controller.errorMessage!,
-            style: AppTextStyles.body.copyWith(color: AppColors.surface),
+            style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
           ),
-          backgroundColor: success ? AppColors.success : AppColors.error,
+          backgroundColor: success ? AppColores.success : AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -54,7 +56,7 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(
             user: widget.currentUser,
             showBackButton: true,
@@ -62,7 +64,7 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
           ),
           body: _controller.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(color: AppColores.primary),
                 )
               : _controller.errorMessage != null
               ? Center(child: Text(_controller.errorMessage!))
@@ -77,7 +79,7 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
                 ),
           bottomNavigationBar: _controller.isLoading
               ? null
-              : SaveBottomBar(onSave: _handleSave),
+              : BarraGuardarAdmin(onSave: _handleSave),
         );
       },
     );

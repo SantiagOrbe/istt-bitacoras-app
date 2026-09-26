@@ -3,28 +3,28 @@ import 'dart:typed_data';
 import 'package:bitacoras_app/features/estudiantes/data/services/reporte_practica_pdf_service.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empresa_model.dart';
-import 'package:bitacoras_app/features/estudiantes/domain/repositories/i_asistencia_repository.dart';
+import 'package:bitacoras_app/features/estudiantes/domain/repositories/i_asistencia_repositorio.dart';
 import 'package:bitacoras_app/features/estudiantes/presentation/controllers/reportes_controller.dart';
 import 'package:bitacoras_app/features/inicio/domain/models/rol_usuario_model.dart';
 import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class _MockAsistenciaRepository implements IAsistenciaRepository {
+class _MockAsistenciaRepository implements IAsistenciaRepositorio {
   @override
-  Future<UbicacionEmpresaModel> getAssignedCompanyLocation() async => const UbicacionEmpresaModel(
+  Future<UbicacionEmpresaModel> obtenerUbicacionEmpresaAsignada() async => const UbicacionEmpresaModel(
         name: 'Empresa Demo',
         latitude: 0,
         longitude: 0,
       );
 
   @override
-  Future<RegistroAsistenciaModel?> getCurrentRecord() async => null;
+  Future<RegistroAsistenciaModel?> obtenerRegistroActual() async => null;
 
   @override
-  Future<RegistroAsistenciaModel?> getTodayRecord() async => null;
+  Future<RegistroAsistenciaModel?> obtenerRegistroHoy() async => null;
 
   @override
-  Future<List<RegistroAsistenciaModel>> getAttendanceHistory() async => [
+  Future<List<RegistroAsistenciaModel>> obtenerHistorialAsistencia() async => [
         RegistroAsistenciaModel(
           id: '1',
           date: '2026-09-01',
@@ -39,21 +39,21 @@ class _MockAsistenciaRepository implements IAsistenciaRepository {
       ];
 
   @override
-  Future<Map<String, dynamic>> getStudentPracticeProgress() async => {
+  Future<Map<String, dynamic>> obtenerProgresoPracticasEstudiante() async => {
         'horas_acumuladas': 20,
         'horas_requeridas': 120,
       };
 
   @override
-  Future<Uint8List> downloadPracticeReportPdf() async {
+  Future<Uint8List> descargarReportePracticasPdf() async {
     throw UnsupportedError('Descarga remota no disponible en este mock');
   }
 
   @override
-  Future<bool> registerAttendance({
-    required String type,
-    required double latitude,
-    required double longitude,
+  Future<bool> registrarAsistencia({
+    required String tipo,
+    required double latitud,
+    required double longitud,
   }) async => true;
 }
 

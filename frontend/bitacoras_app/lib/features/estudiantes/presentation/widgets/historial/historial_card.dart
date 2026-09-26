@@ -16,15 +16,15 @@ class HistorialCard extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'completado':
       case 'aprobado':
-        return AppColors.success;
+        return AppColores.success;
       case 'pendiente':
       case 'en proceso':
-        return AppColors.warning;
+        return AppColores.warning;
       case 'rechazado':
       case 'incompleto':
-        return AppColors.error;
+        return AppColores.error;
       default:
-        return AppColors.primary;
+        return AppColores.primary;
     }
   }
 
@@ -33,12 +33,12 @@ class HistorialCard extends StatelessWidget {
     final statusColor = _getStatusColor(record.status);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSizes.md),
-      padding: const EdgeInsets.all(AppSizes.md),
+      margin: const EdgeInsets.only(bottom: AppTamanos.md),
+      padding: const EdgeInsets.all(AppTamanos.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.outline),
+        color: AppColores.surface,
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
+        border: Border.all(color: AppColores.outline),
       ),
       child: Column(
         children: [
@@ -50,27 +50,27 @@ class HistorialCard extends StatelessWidget {
                 children: [
                   const Icon(
                     Icons.calendar_today_rounded,
-                    color: AppColors.textPrimary,
+                    color: AppColores.textPrimary,
                     size: 18,
                   ),
-                  AppSizes.gapH8,
+                  AppTamanos.gapH8,
                   Text(
                     record.date,
-                    style: AppTextStyles.bodyBold.copyWith(
+                    style: AppEstiloTexto.bodyBold.copyWith(
                       fontSize: 16,
-                      color: AppColors.textPrimary,
+                      color: AppColores.textPrimary,
                     ),
                   ),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.sm + 2,
-                  vertical: AppSizes.xs,
+                  horizontal: AppTamanos.sm + 2,
+                  vertical: AppTamanos.xs,
                 ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -80,10 +80,10 @@ class HistorialCard extends StatelessWidget {
                       size: 14,
                       color: statusColor,
                     ),
-                    AppSizes.gapH4,
+                    AppTamanos.gapH4,
                     Text(
                       record.status,
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: statusColor,
@@ -95,7 +95,7 @@ class HistorialCard extends StatelessWidget {
             ],
           ),
 
-          Divider(height: 24, color: AppColors.divider),
+          Divider(height: 24, color: AppColores.divider),
 
           // Fila de Horarios: Entrada y Salida
           Row(
@@ -106,17 +106,17 @@ class HistorialCard extends StatelessWidget {
                   children: [
                     Text(
                       'Entrada',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                         fontSize: 12,
                       ),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       record.entryTimeLabel,
-                      style: AppTextStyles.bodyBold.copyWith(
+                      style: AppEstiloTexto.bodyBold.copyWith(
                         fontSize: 15,
-                        color: AppColors.textPrimary,
+                        color: AppColores.textPrimary,
                       ),
                     ),
                   ],
@@ -128,17 +128,17 @@ class HistorialCard extends StatelessWidget {
                   children: [
                     Text(
                       'Salida',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                         fontSize: 12,
                       ),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       record.exitTime != null ? record.exitTimeLabel : '--:--',
-                      style: AppTextStyles.bodyBold.copyWith(
+                      style: AppEstiloTexto.bodyBold.copyWith(
                         fontSize: 15,
-                        color: AppColors.textPrimary,
+                        color: AppColores.textPrimary,
                       ),
                     ),
                   ],
@@ -147,19 +147,19 @@ class HistorialCard extends StatelessWidget {
             ],
           ),
 
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
 
           Align(
             alignment: Alignment.centerRight,
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                 ),
-                side: const BorderSide(color: AppColors.primary),
+                side: const BorderSide(color: AppColores.primary),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.md,
-                  vertical: AppSizes.xs,
+                  horizontal: AppTamanos.md,
+                  vertical: AppTamanos.xs,
                 ),
               ),
               onPressed: onDetailPressed,
@@ -168,17 +168,17 @@ class HistorialCard extends StatelessWidget {
                 children: [
                   Text(
                     'Ver actividades',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.primary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.primary,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  AppSizes.gapH4,
+                  AppTamanos.gapH4,
                   const Icon(
                     Icons.chevron_right_rounded,
                     size: 16,
-                    color: AppColors.primary,
+                    color: AppColores.primary,
                   ),
                 ],
               ),

@@ -32,7 +32,16 @@ SECRET_KEY = 'django-insecure-fxj2+@lg76j#qy#aegd@i1_er^c_(pp^2muewa3umhp(9vkbbi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', '10.0.2.2', '192.168.1.39']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '0.0.0.0',
+    '10.0.2.2',
+    '192.168.1.39',
+    '192.168.1.41',
+    '172.23.192.1',
+    '*',
+]
 
 # Temporal para desarrollo: permite la comunicación con el frontend Flutter.
 CORS_ALLOW_ALL_ORIGINS = True
@@ -129,7 +138,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', 'bitacoras_db'),
         'USER': os.getenv('DB_USER', 'santi'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'santicool24'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'HOST': os.getenv('DB_HOST', '172.23.192.1'),
         'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
@@ -157,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'America/Guayaquil'
 

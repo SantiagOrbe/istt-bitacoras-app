@@ -16,7 +16,7 @@ class GestionUsuarioController extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    _allUsers = await repository.getUsers();
+    _allUsers = await repository.obtenerUsuarios();
     applyFilter();
 
     isLoading = false;

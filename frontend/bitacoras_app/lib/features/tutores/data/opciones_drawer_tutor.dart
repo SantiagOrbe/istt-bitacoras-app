@@ -8,27 +8,27 @@ List<SeccionMenuModel> getOpcionesDrawerTutorAcademico() {
         ItemMenuModel(
           icon: Icons.people_outline_rounded,
           title: 'Mis Tutoriados',
-          route: AppRoutes.assignedStudents,
+          route: AppRoutes.estudiantesAsignados,
         ),
         ItemMenuModel(
           icon: Icons.assignment_turned_in_outlined,
           title: 'Registrar Entrada',
-          route: AppRoutes.academicTutorRegisterVisit,
+          route: AppRoutes.registrarVisitaTutor,
         ),
         ItemMenuModel(
           icon: Icons.exit_to_app_outlined,
           title: 'Registrar Salida',
-          route: AppRoutes.academicTutorRegisterDeparture,
+          route: AppRoutes.registrarSalidaTutor,
         ),
         ItemMenuModel(
           icon: Icons.edit_note_outlined,
           title: 'Registrar Actividades',
-          route: AppRoutes.academicTutorActivities,
+          route: AppRoutes.actividadesTutor,
         ),
         ItemMenuModel(
           icon: Icons.description_outlined,
           title: 'Reportes',
-          route: AppRoutes.reports,
+          route: AppRoutes.reportes,
         ),
       ],
     ),
@@ -43,12 +43,12 @@ List<SeccionMenuModel> getOpcionesDrawerTutorEmpresarial() {
         ItemMenuModel(
           icon: Icons.business_center_outlined,
           title: 'Pasantes Asignados',
-          route: AppRoutes.assignedStudents,
+          route: AppRoutes.estudiantesAsignados,
         ),
         ItemMenuModel(
           icon: Icons.analytics_outlined,
           title: 'Seguimiento',
-          route: AppRoutes.companyTutorTracking,
+          route: AppRoutes.seguimientoTutorEmpresarial,
         ),
       ],
     ),

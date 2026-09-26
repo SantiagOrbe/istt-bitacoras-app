@@ -8,9 +8,9 @@ class GeneradorPdfCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.primary,
+      accentColor: AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
           children: [
             Row(
@@ -18,60 +18,60 @@ class GeneradorPdfCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    color: AppColores.primary.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                   ),
                   child: const Icon(
                     Icons.article_outlined,
-                    color: AppColors.primary,
+                    color: AppColores.primary,
                     size: 28,
                   ),
                 ),
-                AppSizes.gapH12,
+                AppTamanos.gapH12,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Bitácora oficial de prácticas',
-                        style: AppTextStyles.bodyBold.copyWith(fontSize: 15),
+                        style: AppEstiloTexto.bodyBold.copyWith(fontSize: 15),
                       ),
-                      AppSizes.gapV4,
+                      AppTamanos.gapV4,
                       Text(
                         'Genera el documento consolidado de tus actividades registradas.',
-                        style: AppTextStyles.caption,
+                        style: AppEstiloTexto.caption,
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            AppSizes.gapV16,
+            AppTamanos.gapV16,
             SizedBox(
               width: double.infinity,
               height: 48,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.surface,
+                  backgroundColor: AppColores.primary,
+                  foregroundColor: AppColores.surface,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   ),
                 ),
                 onPressed: onGeneratePressed,
                 icon: const Icon(Icons.picture_as_pdf_rounded),
                 label: Text(
                   'Generar y descargar PDF',
-                  style: AppTextStyles.bodyBold.copyWith(
-                    color: AppColors.surface,
+                  style: AppEstiloTexto.bodyBold.copyWith(
+                    color: AppColores.surface,
                   ),
                 ),
               ),
             ),
-            AppSizes.gapV8,
+            AppTamanos.gapV8,
             Text(
               'El documento se genera con tus registros reales de prácticas.',
-              style: AppTextStyles.caption.copyWith(fontSize: 11),
+              style: AppEstiloTexto.caption.copyWith(fontSize: 11),
             ),
           ],
         ),

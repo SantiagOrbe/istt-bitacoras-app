@@ -174,6 +174,93 @@ class BitacorasGeofencingTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('horas de práctica', str(response.data))
 
+    def test_check_in_requires_assigned_and_active_semester_and_parallel(self):
+        self.client.force_authenticate(user=self.user_estudiante)
+
+        self.estudiante.semestre = None
+        self.estudiante.paralelo = None
+        self.estudiante.save(update_fields=['semestre', 'paralelo'])
+
+        response = self.client.post(
+            self.check_in_url,
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('semestre', str(response.data).lower())
+        self.assertIn('paralelo', str(response.data).lower())
+
+        self.estudiante.semestre = self.semestre
+        self.estudiante.paralelo = self.paralelo
+        self.estudiante.save(update_fields=['semestre', 'paralelo'])
+        self.semestre.estado = False
+        self.semestre.save(update_fields=['estado'])
+
+        response = self.client.post(
+            self.check_in_url,
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('semestre', str(response.data).lower())
+
+        self.semestre.estado = True
+        self.semestre.save(update_fields=['estado'])
+        self.paralelo.estado = False
+        self.paralelo.save(update_fields=['estado'])
+
+        response = self.client.post(
+            self.check_in_url,
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('paralelo', str(response.data).lower())
+
+    def test_check_in_requires_student_semester_to_be_enabled_for_practices(self):
+        from gestion_academica.models import CarreraPeriodo, Periodo
+
+        self.semestre.estado = True
+        self.semestre.save(update_fields=['estado'])
+        self.paralelo.estado = True
+        self.paralelo.save(update_fields=['estado'])
+
+        period = Periodo.objects.create(
+            nombre='2026-A',
+            fecha_inicio='2026-01-01',
+            fecha_fin='2026-06-30',
+            estado=True,
+        )
+        CarreraPeriodo.objects.filter(
+            carrera=self.carrera,
+            semestre=self.semestre,
+            periodo=period,
+        ).delete()
+
+        self.assertFalse(self.estudiante.puede_registrar_practicas)
+
+        self.client.force_authenticate(user=self.user_estudiante)
+        response = self.client.post(
+            self.check_in_url,
+            {'latitud': -0.1807, 'longitud': -78.4834},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('habilitado', str(response.data).lower())
+
+        CarreraPeriodo.objects.create(
+            carrera=self.carrera,
+            semestre=self.semestre,
+            periodo=period,
+            estado=True,
+        )
+
+        self.assertTrue(self.estudiante.puede_registrar_practicas)
+
     def test_student_can_download_report_pdf(self):
         from datetime import time
 

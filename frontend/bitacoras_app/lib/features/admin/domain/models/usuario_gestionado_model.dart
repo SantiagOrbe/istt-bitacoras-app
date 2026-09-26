@@ -13,8 +13,15 @@ class UsuarioGestionadoModel {
     required this.isActive,
   });
 
-  /// Getter útil para avatar o insignias con iniciales
-  String get initials {
+  String get nombre => name;
+  String get numeroIdentificacion => idNumber;
+  String get rol => role;
+  bool get activo => isActive;
+
+  /// Getter útil para avatar o insignias con iniciales.
+  String get initials => iniciales;
+
+  String get iniciales {
     final names = name.trim().split(' ');
     if (names.length >= 2 && names[0].isNotEmpty && names[1].isNotEmpty) {
       return '${names[0][0]}${names[1][0]}'.toUpperCase();
@@ -34,6 +41,10 @@ class UsuarioGestionadoModel {
     );
   }
 
+  factory UsuarioGestionadoModel.desdeJson(Map<String, dynamic> json) {
+    return UsuarioGestionadoModel.fromJson(json);
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -43,6 +54,8 @@ class UsuarioGestionadoModel {
       'is_active': isActive,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
 
   UsuarioGestionadoModel copyWith({
     String? id,
@@ -59,4 +72,23 @@ class UsuarioGestionadoModel {
       isActive: isActive ?? this.isActive,
     );
   }
+
+  UsuarioGestionadoModel copiarCon({
+    String? id,
+    String? name,
+    String? idNumber,
+    String? role,
+    bool? isActive,
+  }) {
+    return copyWith(
+      id: id,
+      name: name,
+      idNumber: idNumber,
+      role: role,
+      isActive: isActive,
+    );
+  }
 }
+
+/// Alias de compatibilidad para uso en español en el código del front.
+typedef UsuarioGestionadoModelo = UsuarioGestionadoModel;

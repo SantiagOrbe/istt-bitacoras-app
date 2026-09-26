@@ -15,7 +15,7 @@ class AsistenciaInfoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.primary,
+      accentColor: AppColores.primary,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
         child: Row(
@@ -28,12 +28,12 @@ class AsistenciaInfoTile extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColores.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.access_time_rounded,
-                      color: AppColors.primary,
+                      color: AppColores.primary,
                       size: 20,
                     ),
                   ),
@@ -45,10 +45,10 @@ class AsistenciaInfoTile extends StatelessWidget {
                       children: [
                         Text(
                           'HORA',
-                          style: AppTextStyles.caption.copyWith(
+                          style: AppEstiloTexto.caption.copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textSecondary,
+                            color: AppColores.textSecondary,
                             letterSpacing: 1.0,
                           ),
                         ),
@@ -58,9 +58,9 @@ class AsistenciaInfoTile extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             time,
-                            style: AppTextStyles.bodyBold.copyWith(
+                            style: AppEstiloTexto.bodyBold.copyWith(
                               fontSize: 15,
-                              color: AppColors.textPrimary,
+                              color: AppColores.textPrimary,
                             ),
                           ),
                         ),
@@ -76,7 +76,7 @@ class AsistenciaInfoTile extends StatelessWidget {
               height: 32,
               width: 1,
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              color: AppColors.outline.withValues(alpha: 0.6),
+              color: AppColores.outline.withValues(alpha: 0.6),
             ),
 
             // Sección de Fecha
@@ -87,12 +87,12 @@ class AsistenciaInfoTile extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColores.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.calendar_today_rounded,
-                      color: AppColors.primary,
+                      color: AppColores.primary,
                       size: 18,
                     ),
                   ),
@@ -104,10 +104,10 @@ class AsistenciaInfoTile extends StatelessWidget {
                       children: [
                         Text(
                           'FECHA',
-                          style: AppTextStyles.caption.copyWith(
+                          style: AppEstiloTexto.caption.copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textSecondary,
+                            color: AppColores.textSecondary,
                             letterSpacing: 1.0,
                           ),
                         ),
@@ -117,9 +117,9 @@ class AsistenciaInfoTile extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             date,
-                            style: AppTextStyles.bodyBold.copyWith(
+                            style: AppEstiloTexto.bodyBold.copyWith(
                               fontSize: 14,
-                              color: AppColors.textPrimary,
+                              color: AppColores.textPrimary,
                             ),
                           ),
                         ),

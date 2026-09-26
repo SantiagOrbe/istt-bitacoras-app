@@ -31,6 +31,9 @@ class ParaleloModel {
     );
   }
 
+  factory ParaleloModel.desdeJson(Map<String, dynamic> json) =>
+      ParaleloModel.fromJson(json);
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -40,6 +43,8 @@ class ParaleloModel {
       'estado': isActive,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
 
   ParaleloModel copyWith({
     String? id,
@@ -56,4 +61,37 @@ class ParaleloModel {
       isActive: isActive ?? this.isActive,
     );
   }
+
+  ParaleloModel copiarCon({
+    String? nuevoId,
+    String? cicloId,
+    String? nombre,
+    String? jornadaParalelo,
+    bool? estado,
+  }) {
+    return ParaleloModel(
+      id: nuevoId ?? id,
+      cycleId: cicloId ?? cycleId,
+      name: nombre ?? name,
+      jornada: jornadaParalelo ?? jornada,
+      isActive: estado ?? isActive,
+    );
+  }
+}
+
+typedef ParaleloModelo = ParaleloModel;
+
+extension ParaleloModelEspanol on ParaleloModel {
+  String get nombre => name;
+  String get cicloId => cycleId;
+  String get jornadaParalelo => jornada;
+  bool get estado => isActive;
+  String get semestreId => cycleId;
+
+  ParaleloModel conNombre(String nuevoNombre) => copyWith(name: nuevoNombre);
+  ParaleloModel conCicloId(String nuevoCicloId) =>
+      copyWith(cycleId: nuevoCicloId);
+  ParaleloModel conJornada(String nuevaJornada) =>
+      copyWith(jornada: nuevaJornada);
+  ParaleloModel conEstado(bool nuevoEstado) => copyWith(isActive: nuevoEstado);
 }

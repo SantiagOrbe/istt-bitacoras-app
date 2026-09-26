@@ -42,7 +42,7 @@ class GestionCarreraController extends ChangeNotifier {
     try {
       _careers
         ..clear()
-        ..addAll(await repository.getCareers());
+        ..addAll(await repository.obtenerCarreras());
     } catch (error) {
       _errorMessage = 'No se pudieron cargar las carreras.';
     } finally {
@@ -60,7 +60,7 @@ class GestionCarreraController extends ChangeNotifier {
     _clearError();
 
     try {
-      final success = await repository.createCareer(career);
+      final success = await repository.crearCarrera(career);
       if (success) {
         await loadCareers();
       }

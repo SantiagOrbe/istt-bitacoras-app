@@ -1,7 +1,7 @@
 ﻿import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class RegistroSalidaController extends ChangeNotifier {
-  final IAsistenciaRepository repository;
+  final IAsistenciaRepositorio repository;
 
   RegistroSalidaController({required this.repository});
 
@@ -29,8 +29,8 @@ class RegistroSalidaController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _company = await repository.getAssignedCompanyLocation();
-      _currentRecord = await repository.getCurrentRecord();
+      _company = await repository.obtenerUbicacionEmpresaAsignada();
+      _currentRecord = await repository.obtenerRegistroActual();
       await validateLocation();
     } catch (error) {
       _validationMessage = error.toString();
@@ -54,10 +54,10 @@ class RegistroSalidaController extends ChangeNotifier {
       return false;
     }
 
-    final success = await repository.registerAttendance(
-      type: 'EXIT',
-      latitude: position.latitude,
-      longitude: position.longitude,
+    final success = await repository.registrarAsistencia(
+      tipo: 'EXIT',
+      latitud: position.latitude,
+      longitud: position.longitude,
     );
 
     _isSaving = false;

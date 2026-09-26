@@ -15,28 +15,28 @@ class PerfilHeaderCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSizes.lg),
+      padding: const EdgeInsets.all(AppTamanos.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.surface,
-            AppColors.infoSoft.withValues(alpha: 0.72),
+            AppColores.surface,
+            AppColores.infoSoft.withValues(alpha: 0.72),
           ],
         ),
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.14),
+          color: AppColores.primary.withValues(alpha: 0.14),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.10),
+            color: AppColores.primary.withValues(alpha: 0.10),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
           const BoxShadow(
-            color: AppColors.shadow,
+            color: AppColores.shadow,
             blurRadius: 10,
             offset: Offset(0, 3),
           ),
@@ -48,53 +48,53 @@ class PerfilHeaderCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(3),
             decoration: const BoxDecoration(
-              color: AppColors.success,
+              color: AppColores.success,
               shape: BoxShape.circle,
             ),
             child: CircleAvatar(
               radius: 38,
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColores.primary,
               child: Text(
                 initialLetter,
-                style: AppTextStyles.heading.copyWith(
-                  color: AppColors.surface,
+                style: AppEstiloTexto.heading.copyWith(
+                  color: AppColores.surface,
                   fontSize: 30,
                 ),
               ),
             ),
           ),
-          AppSizes.gapV12,
+          AppTamanos.gapV12,
 
           // Nombre del Usuario
           Text(
             displayName,
-            style: AppTextStyles.title.copyWith(
+            style: AppEstiloTexto.title.copyWith(
               fontSize: 18,
-              color: AppColors.textPrimary,
+              color: AppColores.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
 
           // Badge con el Rol
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.warningSoft,
-              borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-              border: Border.all(color: AppColors.warning),
+              color: AppColores.warningSoft,
+              borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
+              border: Border.all(color: AppColores.warning),
             ),
             child: Text(
               user.role.label,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textPrimary,
+              style: AppEstiloTexto.caption.copyWith(
+                color: AppColores.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
 
           if (user.company?.isNotEmpty ?? false) ...[
-            AppSizes.gapV12,
+            AppTamanos.gapV12,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -102,14 +102,14 @@ class PerfilHeaderCard extends StatelessWidget {
                 const Icon(
                   Icons.business_outlined,
                   size: 16,
-                  color: AppColors.secondary,
+                  color: AppColores.secondary,
                 ),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
                     'Empresa: ${user.company!}',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.secondary,
+                    style: AppEstiloTexto.bodyMedium.copyWith(
+                      color: AppColores.secondary,
                       fontWeight: FontWeight.w600,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -119,7 +119,7 @@ class PerfilHeaderCard extends StatelessWidget {
               ],
             ),
           ] else if (_puedeMostrarEmpresa) ...[
-            AppSizes.gapV12,
+            AppTamanos.gapV12,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -127,14 +127,14 @@ class PerfilHeaderCard extends StatelessWidget {
                 const Icon(
                   Icons.business_outlined,
                   size: 16,
-                  color: AppColors.error,
+                  color: AppColores.error,
                 ),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
                     'Sin empresa asignada',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.error,
+                    style: AppEstiloTexto.bodyMedium.copyWith(
+                      color: AppColores.error,
                       fontWeight: FontWeight.w600,
                     ),
                     overflow: TextOverflow.ellipsis,

@@ -192,6 +192,59 @@ class CarreraPeriodoSerializer(serializers.ModelSerializer):
         )
 
 
+class CarreraSemestresPeriodoSerializer(serializers.Serializer):
+    carrera = serializers.PrimaryKeyRelatedField(
+        queryset=Carrera.objects.filter(estado=True)
+    )
+    active_semesters = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), allow_empty=True
+    )
+
+    def validate(self, attrs):
+        career = attrs['carrera']
+        levels = attrs['active_semesters']
+        if len(levels) != len(set(levels)):
+            raise serializers.ValidationError({
+                'active_semesters': 'No repitas niveles de semestre.'
+            })
+
+        existing_levels = set(
+            Semestre.objects.filter(
+                carrera=career,
+                estado=True,
+                nivel__in=levels,
+            ).values_list('nivel', flat=True)
+        )
+        if existing_levels != set(levels):
+            raise serializers.ValidationError({
+                'active_semesters': (
+                    'Uno o más semestres no existen o están inactivos en esta carrera.'
+                )
+            })
+        return attrs
+
+
+class ConfiguracionMasivaCarrerasPeriodoSerializer(serializers.Serializer):
+    periodo = serializers.PrimaryKeyRelatedField(
+        queryset=Periodo.objects.filter(estado=True)
+    )
+    carreras = CarreraSemestresPeriodoSerializer(many=True)
+
+    def validate_carreras(self, careers):
+        career_ids = [item['carrera'].pk for item in careers]
+        if len(career_ids) != len(set(career_ids)):
+            raise serializers.ValidationError('No repitas carreras.')
+
+        active_career_ids = set(
+            Carrera.objects.filter(estado=True).values_list('pk', flat=True)
+        )
+        if set(career_ids) != active_career_ids:
+            raise serializers.ValidationError(
+                'Incluye todas las carreras activas en la configuración.'
+            )
+        return careers
+
+
 class SemestreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Semestre
@@ -248,6 +301,15 @@ class ParaleloSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paralelo
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['estado'] = bool(
+            instance.estado
+            and instance.semestre.estado
+            and instance.semestre.carrera.estado
+        )
+        return data
 
     def validate_nombre(self, value):
         value = value.strip().upper()

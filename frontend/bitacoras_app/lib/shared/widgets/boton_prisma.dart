@@ -27,8 +27,8 @@ class _BotonPrismaState extends State<BotonPrisma> {
   Widget build(BuildContext context) {
     final estaHabilitado = widget.alPresionar != null && !widget.cargando;
     final colorTexto = estaHabilitado
-        ? AppColors.surface
-        : AppColors.textDisabled;
+        ? AppColores.surface
+        : AppColores.textDisabled;
 
     return MouseRegion(
       cursor: estaHabilitado
@@ -46,15 +46,15 @@ class _BotonPrismaState extends State<BotonPrisma> {
         width: widget.anchoCompleto ? double.infinity : null,
         height: 48,
         decoration: BoxDecoration(
-          color: estaHabilitado ? AppColors.primary : AppColors.disabledSurface,
+          color: estaHabilitado ? AppColores.primary : AppColores.disabledSurface,
           border: Border.all(
-            color: estaHabilitado ? AppColors.primary : AppColors.disabled,
+            color: estaHabilitado ? AppColores.primary : AppColores.disabled,
           ),
           borderRadius: BorderRadius.circular(4),
           boxShadow: _estaSobre && estaHabilitado
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.16),
+                    color: AppColores.primary.withValues(alpha: 0.16),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -72,7 +72,7 @@ class _BotonPrismaState extends State<BotonPrisma> {
                 height: _estaSobre && estaHabilitado ? 4 : 2,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.secondary, AppColors.warning],
+                    colors: [AppColores.secondary, AppColores.warning],
                   ),
                 ),
               ),
@@ -99,7 +99,7 @@ class _BotonPrismaState extends State<BotonPrisma> {
                             children: [
                               Text(
                                 widget.texto.toUpperCase(),
-                                style: AppTextStyles.button.copyWith(
+                                style: AppEstiloTexto.button.copyWith(
                                   color: colorTexto,
                                   fontSize: 12,
                                   letterSpacing: 1.4,

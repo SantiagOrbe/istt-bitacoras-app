@@ -26,7 +26,7 @@ class _CoordinadorTutoresScreenState extends State<CoordinadorTutoresScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(
         user: widget.currentUser,
         showBackButton: true,
@@ -38,49 +38,17 @@ class _CoordinadorTutoresScreenState extends State<CoordinadorTutoresScreen> {
         builder: (context, _) {
           if (_controller.estaCargando) {
             return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(color: AppColores.primary),
             );
           }
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              InstitutionalGlowCard(
-                accentColor: AppColors.primary,
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSizes.lg),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.10),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.badge_rounded,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Tutores académicos', style: AppTextStyles.title),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${_controller.tutores.length} registros activos',
-                              style: AppTextStyles.body.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              CoordinadorEncabezadoSeccion(
+                icono: Icons.badge_rounded,
+                titulo: 'Tutores académicos',
+                subtitulo: '${_controller.tutores.length} registros activos',
+                color: AppColores.primary,
               ),
               const SizedBox(height: 16),
               ..._controller.tutores.asMap().entries.map((entry) {

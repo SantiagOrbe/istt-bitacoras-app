@@ -10,7 +10,7 @@ class FormularioEmpresaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(
         user: context.read<AuthSession>().currentUser!,
         showBackButton: true,

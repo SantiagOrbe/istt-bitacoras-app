@@ -32,7 +32,7 @@ class AsistenciaProvider extends ChangeNotifier {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       _state = LocationState.gpsDisabled;
-      _errorMessage = "El GPS está desactivado. Debe activarlo para continuar.";
+      _errorMessage = 'El GPS está desactivado. Actívalo para continuar.';
       notifyListeners();
       return;
     }
@@ -43,7 +43,7 @@ class AsistenciaProvider extends ChangeNotifier {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         _state = LocationState.gpsDisabled;
-        _errorMessage = "Permisos de ubicación denegados.";
+        _errorMessage = 'No se otorgaron los permisos de ubicación.';
         notifyListeners();
         return;
       }
@@ -52,7 +52,7 @@ class AsistenciaProvider extends ChangeNotifier {
     if (permission == LocationPermission.deniedForever) {
       _state = LocationState.gpsDisabled;
       _errorMessage =
-          "Los permisos de ubicación están denegados permanentemente en la configuración.";
+          'Los permisos de ubicación están bloqueados. Actívalos desde la configuración del dispositivo.';
       notifyListeners();
       return;
     }
@@ -78,11 +78,11 @@ class AsistenciaProvider extends ChangeNotifier {
       } else {
         _state = LocationState.invalidError;
         _errorMessage =
-            "Te encuentras fuera del rango permitido (${distanceInMeters.round()}m del punto de marcación).";
+            'Estás fuera del rango permitido (${distanceInMeters.round()} m del punto de marcación).';
       }
-    } catch (e) {
+    } catch (_) {
       _state = LocationState.gpsDisabled;
-      _errorMessage = "Error al obtener la ubicación actual: $e";
+      _errorMessage = 'No se pudo obtener tu ubicación actual.';
     }
 
     notifyListeners();
@@ -97,7 +97,7 @@ class AsistenciaProvider extends ChangeNotifier {
     ); // Simulación Async API
     _hasCheckedIn = true;
     _checkInTime = DateTime.now();
-    _assignedCompany = companyName ?? 'Empresa Asignada';
+    _assignedCompany = companyName ?? 'Empresa asignada';
     notifyListeners();
     return true;
   }

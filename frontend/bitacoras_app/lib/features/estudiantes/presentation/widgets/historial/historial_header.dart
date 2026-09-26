@@ -17,42 +17,42 @@ class HistorialHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: percentage >= 100 ? AppColors.success : AppColors.primary,
+      accentColor: percentage >= 100 ? AppColores.success : AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSizes.sm + 2),
+                padding: const EdgeInsets.all(AppTamanos.sm + 2),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                  color: AppColores.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                 ),
                 child: const Icon(
                   Icons.timeline_rounded,
-                  color: AppColors.primary,
+                  color: AppColores.primary,
                   size: 24,
                 ),
               ),
-              AppSizes.gapH16,
+              AppTamanos.gapH16,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Avance de prácticas',
-                      style: AppTextStyles.title.copyWith(
+                      style: AppEstiloTexto.title.copyWith(
                         fontSize: 22,
-                        color: AppColors.primary,
+                        color: AppColores.primary,
                       ),
                     ),
                     Text(
                       semesterName,
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                       ),
                     ),
                   ],
@@ -60,21 +60,21 @@ class HistorialHeader extends StatelessWidget {
               ),
             ],
           ),
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 '$percentage% completado',
-                style: AppTextStyles.bodyBold.copyWith(
+                style: AppEstiloTexto.bodyBold.copyWith(
                   fontSize: 16,
-                  color: AppColors.textPrimary,
+                  color: AppColores.textPrimary,
                 ),
               ),
               Text(
                 '${completedHours.toStringAsFixed(1)}h / ${totalHours.toStringAsFixed(0)}h',
-                style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textSecondary,
+                style: AppEstiloTexto.caption.copyWith(
+                  color: AppColores.textSecondary,
                 ),
               ),
             ],

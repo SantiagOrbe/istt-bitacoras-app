@@ -6,29 +6,29 @@ class RegistroActividadHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.primary,
+      accentColor: AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Row(
           children: [
-            const Icon(Icons.edit_note_rounded, color: AppColors.primary, size: 28),
-            AppSizes.gapH12,
+            const Icon(Icons.edit_note_rounded, color: AppColores.primary, size: 28),
+            AppTamanos.gapH12,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Detalles de la actividad',
-                    style: AppTextStyles.title.copyWith(
-                      color: AppColors.primary,
+                    style: AppEstiloTexto.title.copyWith(
+                      color: AppColores.primary,
                       fontSize: 20,
                     ),
                   ),
-                  AppSizes.gapV4,
+                  AppTamanos.gapV4,
                   Text(
                     'Registra las tareas realizadas en tu bitácora de prácticas.',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.textSecondary,
                       fontSize: 13,
                     ),
                   ),

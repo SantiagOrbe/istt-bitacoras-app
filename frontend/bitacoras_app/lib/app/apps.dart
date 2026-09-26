@@ -10,7 +10,7 @@ export 'package:bitacoras_app/shared/exports.dart';
 export 'package:bitacoras_app/features/admin/admin.dart';
 export 'package:bitacoras_app/features/coordinador/coordinador.dart';
 export 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
-export 'package:bitacoras_app/features/inicio/inicio.dart';
+export 'package:bitacoras_app/features/inicio/principal.dart';
 export 'package:bitacoras_app/features/perfiles/perfiles.dart';
 export 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart'
     hide EmpresaCard, EmpresaModel;

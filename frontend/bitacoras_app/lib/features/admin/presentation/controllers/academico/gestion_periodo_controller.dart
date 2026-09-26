@@ -48,7 +48,7 @@ class GestionPeriodoController extends ChangeNotifier {
     try {
       _periods
         ..clear()
-        ..addAll(await repository.getPeriods());
+        ..addAll(await repository.obtenerPeriodos());
     } catch (error) {
       _errorMessage = error is ApiException
           ? error.message
@@ -132,13 +132,13 @@ class GestionPeriodoController extends ChangeNotifier {
       );
 
       if (periodId == null) {
-        final created = await repository.createPeriod(period);
+        final created = await repository.crearPeriodo(period);
         if (!created) {
           _errorMessage = 'No se pudo crear el período lectivo.';
           return false;
         }
       } else {
-        final updated = await repository.updatePeriod(
+        final updated = await repository.actualizarPeriodo(
           period,
           confirmDesactivate: confirmDesactivate,
         );
@@ -202,7 +202,7 @@ class GestionPeriodoController extends ChangeNotifier {
 
     for (final activePeriod in activePeriods) {
       final updated = activePeriod.copyWith(isActive: false);
-      await repository.updatePeriod(updated);
+      await repository.actualizarPeriodo(updated);
     }
   }
 

@@ -3,7 +3,7 @@ import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 
 class ReportesController extends ChangeNotifier {
-  final IAsistenciaRepository repository;
+  final IAsistenciaRepositorio repository;
   final UsuarioModel currentUser;
 
   ReportesController({
@@ -19,8 +19,8 @@ class ReportesController extends ChangeNotifier {
 
   Future<void> loadReportData() async {
     try {
-      final records = await repository.getAttendanceHistory();
-      final progress = await repository.getStudentPracticeProgress();
+      final records = await repository.obtenerHistorialAsistencia();
+      final progress = await repository.obtenerProgresoPracticasEstudiante();
       final accumulated = (progress['horas_acumuladas'] as num?)?.toDouble() ?? 0.0;
       final required = (progress['horas_requeridas'] as num?)?.toDouble() ?? 0.0;
 
@@ -42,7 +42,7 @@ class ReportesController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final bytes = await repository.downloadPracticeReportPdf();
+      final bytes = await repository.descargarReportePracticasPdf();
       final directory = await getApplicationDocumentsDirectory();
       final sanitizedName = currentUser.name
           .replaceAll(RegExp(r'[^A-Za-z0-9\u00C0-\u024F\u1E00-\u1EFF]+'), '_')

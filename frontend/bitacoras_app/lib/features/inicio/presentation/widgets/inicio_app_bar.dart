@@ -1,4 +1,4 @@
-import 'package:bitacoras_app/config/constants/app_colors.dart';
+import 'package:bitacoras_app/config/constants/app_colores.dart';
 import 'package:bitacoras_app/features/inicio/domain/models/usuario_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +28,7 @@ class InicioAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       elevation: 0,
-      backgroundColor: AppColors.primary, 
+      backgroundColor: AppColores.primary, 
       centerTitle: true,
       automaticallyImplyLeading: false,
       iconTheme: const IconThemeData(
@@ -41,7 +41,7 @@ class InicioAppBar extends StatelessWidget implements PreferredSizeWidget {
                 if (context.canPop()) {
                   context.pop();
                 } else {
-                  context.go(AppRoutes.studentHome);
+                  context.go(AppRoutes.inicioEstudiante);
                 }
               },
             )
@@ -65,10 +65,10 @@ class InicioAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 15),
           child: CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.white.withOpacity(0.2),
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
             child: InkWell(
               borderRadius: BorderRadius.circular(100),
-              onTap: () => context.push(AppRoutes.perfil),
+              onTap: () => context.push(AppRoutes.perfilUsuario),
               child: const Icon(
                 Icons.person_outline,
                 color: Colors.white,

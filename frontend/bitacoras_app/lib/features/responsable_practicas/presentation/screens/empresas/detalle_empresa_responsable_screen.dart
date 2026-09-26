@@ -12,7 +12,7 @@ class DetalleEmpresaResponsableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(
         user: context.read<AuthSession>().currentUser!,
         showBackButton: true,
@@ -22,9 +22,9 @@ class DetalleEmpresaResponsableScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: InstitutionalGlowCard(
-          accentColor: company.isActive ? AppColors.secondary : AppColors.textSecondary,
+          accentColor: company.isActive ? AppColores.secondary : AppColores.textSecondary,
           child: Padding(
-            padding: const EdgeInsets.all(AppSizes.lg),
+            padding: const EdgeInsets.all(AppTamanos.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -34,16 +34,16 @@ class DetalleEmpresaResponsableScreen extends StatelessWidget {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.10),
-                        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                        color: AppColores.primary.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                       ),
                       child: const Icon(
                         Icons.business_rounded,
-                        color: AppColors.primary,
+                        color: AppColores.primary,
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Expanded(child: Text(company.name, style: AppTextStyles.heading)),
+                    Expanded(child: Text(company.name, style: AppEstiloTexto.heading)),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -52,7 +52,7 @@ class DetalleEmpresaResponsableScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Información de la empresa',
-                        style: AppTextStyles.bodyBold,
+                        style: AppEstiloTexto.bodyBold,
                       ),
                     ),
                     _StatusBadge(isActive: company.isActive),
@@ -60,11 +60,15 @@ class DetalleEmpresaResponsableScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 _Info(label: 'Dirección', value: company.address),
+                _Info(
+                  label: 'Cantón',
+                  value: company.canton.isNotEmpty ? company.canton : 'No registrado',
+                ),
                 _Info(label: 'Teléfono', value: company.phone),
                 _Info(label: 'Correo', value: company.email),
                 _Info(label: 'Radio permitido', value: '${company.allowedRadius.toStringAsFixed(0)} m'),
                 const SizedBox(height: 18),
-                Text('Ubicación geográfica', style: AppTextStyles.bodyBold),
+                Text('Ubicación geográfica', style: AppEstiloTexto.bodyBold),
                 const SizedBox(height: 10),
                 MapaPreview(
                   latitude: company.latitude,
@@ -95,8 +99,8 @@ class _Info extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 110, child: Text(label, style: AppTextStyles.caption)),
-          Expanded(child: Text(value.isEmpty ? 'No registrado' : value, style: AppTextStyles.body)),
+          SizedBox(width: 110, child: Text(label, style: AppEstiloTexto.caption)),
+          Expanded(child: Text(value.isEmpty ? 'No registrado' : value, style: AppEstiloTexto.body)),
         ],
       ),
     );
@@ -110,12 +114,12 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? AppColors.success : AppColors.textSecondary;
+    final color = isActive ? AppColores.success : AppColores.textSecondary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
       ),
       child: Text(
         isActive ? 'Activa' : 'Inactiva',

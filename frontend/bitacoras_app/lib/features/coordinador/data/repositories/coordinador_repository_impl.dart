@@ -6,24 +6,24 @@ class CoordinadorRepositoryImpl implements ICoordinadorRepository {
   CoordinadorRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<CoordinadorEstudianteModel>> getEstudiantes() async =>
-      (await remoteDataSource.getEstudiantes())
+  Future<List<CoordinadorEstudianteModel>> obtenerEstudiantes() async =>
+      (await remoteDataSource.obtenerEstudiantes())
           .map(CoordinadorEstudianteModel.fromJson)
           .toList();
 
   @override
-  Future<List<CoordinadorCarreraModel>> getCarreras() async =>
-      (await remoteDataSource.getCarreras())
+  Future<List<CoordinadorCarreraModel>> obtenerCarreras() async =>
+      (await remoteDataSource.obtenerCarreras())
           .map(CoordinadorCarreraModel.fromJson)
           .toList();
 
   @override
-  Future<List<CoordinadorTutorModel>> getTutores() async =>
-      (await remoteDataSource.getTutores())
+  Future<List<CoordinadorTutorModel>> obtenerTutores() async =>
+      (await remoteDataSource.obtenerTutores())
           .map(CoordinadorTutorModel.fromJson)
           .toList();
 
   @override
-  Future<CoordinadorDatosModel> getDatosCarrera() async =>
-      CoordinadorDatosModel.fromJson(await remoteDataSource.getDatosCarrera());
+  Future<CoordinadorDatosModel> obtenerDatosCarrera() async =>
+      CoordinadorDatosModel.fromJson(await remoteDataSource.obtenerDatosCarrera());
 }

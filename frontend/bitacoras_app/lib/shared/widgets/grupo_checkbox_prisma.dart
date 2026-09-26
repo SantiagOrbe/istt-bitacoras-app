@@ -30,8 +30,8 @@ class GrupoCheckboxPrisma extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.outline),
+        color: AppColores.surface,
+        border: Border.all(color: AppColores.outline),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
@@ -39,8 +39,8 @@ class GrupoCheckboxPrisma extends StatelessWidget {
         children: [
           Text(
             titulo.toUpperCase(),
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary,
+            style: AppEstiloTexto.caption.copyWith(
+              color: AppColores.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.5,
@@ -81,12 +81,12 @@ class _OpcionCheckbox extends StatelessWidget {
               height: 18,
               decoration: BoxDecoration(
                 color: opcion.seleccionado
-                    ? AppColors.primary
+                    ? AppColores.primary
                     : Colors.transparent,
                 border: Border.all(
                   color: opcion.seleccionado
-                      ? AppColors.primary
-                      : AppColors.outline,
+                      ? AppColores.primary
+                      : AppColores.outline,
                 ),
                 borderRadius: BorderRadius.circular(3),
               ),
@@ -94,7 +94,7 @@ class _OpcionCheckbox extends StatelessWidget {
                   ? const Icon(
                       Icons.check_rounded,
                       size: 13,
-                      color: AppColors.surface,
+                      color: AppColores.surface,
                     )
                   : null,
             ),
@@ -102,14 +102,14 @@ class _OpcionCheckbox extends StatelessWidget {
             Expanded(
               child: Text(
                 opcion.etiqueta,
-                style: AppTextStyles.body.copyWith(fontSize: 14),
+                style: AppEstiloTexto.body.copyWith(fontSize: 14),
               ),
             ),
             if (opcion.metadato != null)
               Text(
                 opcion.metadato!,
-                style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textSecondary,
+                style: AppEstiloTexto.caption.copyWith(
+                  color: AppColores.textSecondary,
                   fontSize: 11,
                   letterSpacing: 1.1,
                 ),

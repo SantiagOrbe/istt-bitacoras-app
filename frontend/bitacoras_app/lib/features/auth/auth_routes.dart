@@ -5,13 +5,13 @@ abstract class AuthRoutes {
 
   static List<RouteBase> get routes => [
         GoRoute(
-          path: AppRoutes.login,
+          path: AppRoutes.inicioSesion,
           builder: (context, state) => LoginScreen(
             authRepository: context.read<IAuthRepository>(),
           ),
         ),
         GoRoute(
-          path: AppRoutes.register,
+          path: AppRoutes.registro,
           builder: (context, state) => RegisterScreen(
             authRepository: context.read<IAuthRepository>(),
           ),

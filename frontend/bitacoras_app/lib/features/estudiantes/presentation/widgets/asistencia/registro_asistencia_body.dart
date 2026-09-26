@@ -35,43 +35,43 @@ class RegistroAsistenciaBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InstitutionalGlowCard(
-          accentColor: isEntry ? AppColors.primary : AppColors.secondary,
+          accentColor: isEntry ? AppColores.primary : AppColores.secondary,
           child: Padding(
-            padding: const EdgeInsets.all(AppSizes.lg),
+            padding: const EdgeInsets.all(AppTamanos.lg),
             child: Row(
               children: [
                 Container(
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: (isEntry ? AppColors.primary : AppColors.secondary)
+                    color: (isEntry ? AppColores.primary : AppColores.secondary)
                         .withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   ),
                   child: Icon(
                     isEntry ? Icons.login_rounded : Icons.logout_rounded,
-                    color: isEntry ? AppColors.primary : AppColors.secondary,
+                    color: isEntry ? AppColores.primary : AppColores.secondary,
                     size: 26,
                   ),
                 ),
-                AppSizes.gapH12,
+                AppTamanos.gapH12,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
-                        style: AppTextStyles.heading.copyWith(
+                        style: AppEstiloTexto.heading.copyWith(
                           fontSize: 23,
-                          color: AppColors.primary,
+                          color: AppColores.primary,
                         ),
                       ),
-                      AppSizes.gapV4,
+                      AppTamanos.gapV4,
                       Text(
                         isEntry
                             ? 'Valida tu ubicación para iniciar la jornada.'
                             : 'Valida tu ubicación para cerrar la jornada.',
-                        style: AppTextStyles.caption,
+                        style: AppEstiloTexto.caption,
                       ),
                     ],
                   ),
@@ -80,12 +80,12 @@ class RegistroAsistenciaBody extends StatelessWidget {
             ),
           ),
         ),
-        AppSizes.gapV16,
+        AppTamanos.gapV16,
 
         // 1. AsistenciaInfoTile pasando 'time' y 'date'
         AsistenciaInfoTile(time: currentTime, date: currentDate),
 
-        AppSizes.gapV16,
+        AppTamanos.gapV16,
         MapaPreview(
           latitude: latitude,
           longitude: longitude,
@@ -93,20 +93,20 @@ class RegistroAsistenciaBody extends StatelessWidget {
           isGpsActive: isGpsValid,
           statusLabel: isGpsValid ? 'GPS Activo' : 'GPS Fuera de rango',
         ),
-        AppSizes.gapV16,
+        AppTamanos.gapV16,
 
         // 2. UbicacionEstadoCard pasando 'isValid'
         if (locationAvailable) UbicacionEstadoCard(isValid: isGpsValid),
 
         if (validationMessage != null) ...[
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           Text(
             validationMessage!,
-            style: AppTextStyles.body.copyWith(color: AppColors.error),
+            style: AppEstiloTexto.body.copyWith(color: AppColores.error),
           ),
         ],
 
-        AppSizes.gapV16,
+        AppTamanos.gapV16,
         EmpresaCard(companyName: companyName),
       ],
     );

@@ -32,6 +32,9 @@ class SemestreModel {
     );
   }
 
+  factory SemestreModel.desdeJson(Map<String, dynamic> json) =>
+      SemestreModel.fromJson(json);
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -42,6 +45,8 @@ class SemestreModel {
       'estado': isActive,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
 
   SemestreModel copyWith({
     String? id,
@@ -60,6 +65,40 @@ class SemestreModel {
       isActive: isActive ?? this.isActive,
     );
   }
+
+  SemestreModel copiarCon({
+    String? nuevoId,
+    String? carreraId,
+    String? nombre,
+    int? nivel,
+    int? horasPracticas,
+    bool? estado,
+  }) {
+    return SemestreModel(
+      id: nuevoId ?? id,
+      careerId: carreraId ?? careerId,
+      name: nombre ?? name,
+      level: nivel ?? level,
+      hoursPracticas: horasPracticas ?? hoursPracticas,
+      isActive: estado ?? isActive,
+    );
+  }
 }
 
 typedef CicloModel = SemestreModel;
+
+typedef SemestreModelo = SemestreModel;
+
+extension SemestreModelEspanol on SemestreModel {
+  String get nombre => name;
+  String get carreraIdRelacionada => careerId;
+  int get nivelSemestre => level;
+  int get horasPracticasSemestre => hoursPracticas;
+  bool get estado => isActive;
+
+  SemestreModel conNombre(String nuevoNombre) => copyWith(name: nuevoNombre);
+  SemestreModel conNivel(int nuevoNivel) => copyWith(level: nuevoNivel);
+  SemestreModel conHorasPracticas(int nuevasHoras) =>
+      copyWith(hoursPracticas: nuevasHoras);
+  SemestreModel conEstado(bool nuevoEstado) => copyWith(isActive: nuevoEstado);
+}

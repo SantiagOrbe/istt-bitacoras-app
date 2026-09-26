@@ -46,7 +46,7 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final usuario = await repositorio.login(
+      final usuario = await repositorio.iniciarSesion(
         email: correo,
         password: contrasena,
       );

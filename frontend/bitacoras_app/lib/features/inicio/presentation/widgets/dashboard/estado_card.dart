@@ -1,9 +1,9 @@
 // lib/features/inicio/presentation/widgets/dashboard/estado_card.dart
 import 'package:flutter/material.dart';
-import 'package:bitacoras_app/config/constants/app_colors.dart';
-import 'package:bitacoras_app/config/constants/app_sizes.dart';
+import 'package:bitacoras_app/config/constants/app_colores.dart';
+import 'package:bitacoras_app/config/constants/app_tamanos.dart';
 import 'package:bitacoras_app/features/estudiantes/domain/models/registro_asistencia_model.dart';
-import 'package:bitacoras_app/shared/widgets/institutional_glow_card.dart';
+import 'package:bitacoras_app/shared/widgets/tarjeta_institucional.dart';
 
 class EstadoCard extends StatelessWidget {
   final RegistroAsistenciaModel? todayRecord;
@@ -19,10 +19,10 @@ class EstadoCard extends StatelessWidget {
     final checkInTime = todayRecord?.entryTime ?? 'hora no disponible';
 
     final statusColor = isCompleted
-      ? AppColors.success
+      ? AppColores.success
       : todayRecord == null
-        ? AppColors.warning
-        : AppColors.primary;
+        ? AppColores.warning
+        : AppColores.primary;
     final titleText = isLoading
       ? 'CONSULTANDO JORNADA'
       : isCompleted
@@ -57,7 +57,7 @@ class EstadoCard extends StatelessWidget {
     return InstitutionalGlowCard(
       accentColor: statusColor,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -76,21 +76,21 @@ class EstadoCard extends StatelessWidget {
               ),
             ],
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           Text(
             mainDescription,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: AppColores.textPrimary,
             ),
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           Text(
             detailText,
             style: const TextStyle(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: AppColores.textSecondary,
               height: 1.4,
             ),
           ),

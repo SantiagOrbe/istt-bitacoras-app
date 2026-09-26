@@ -24,8 +24,8 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBgColor = backgroundColor ?? AppColors.primary;
-    final effectiveTextColor = textColor ?? (isOutlined ? effectiveBgColor : AppColors.surface);
+    final effectiveBgColor = backgroundColor ?? AppColores.primary;
+    final effectiveTextColor = textColor ?? (isOutlined ? effectiveBgColor : AppColores.surface);
 
     Widget content;
 
@@ -44,7 +44,7 @@ class CustomButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 20, color: effectiveTextColor),
-          AppSizes.gapH8,
+          AppTamanos.gapH8,
           Text(
             text,
             style: TextStyle(
@@ -75,7 +75,7 @@ class CustomButton extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: effectiveBgColor, width: 1.5),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                 ),
               ),
               child: content,
@@ -85,7 +85,7 @@ class CustomButton extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: effectiveBgColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                 ),
               ),
               child: content,

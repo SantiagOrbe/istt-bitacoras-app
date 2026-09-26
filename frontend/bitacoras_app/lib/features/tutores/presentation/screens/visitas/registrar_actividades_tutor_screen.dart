@@ -1,3 +1,4 @@
+import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 import 'package:bitacoras_app/features/tutores/tutores.dart';
 
 class RegistrarActividadesTutorScreen extends StatefulWidget {
@@ -12,19 +13,12 @@ class RegistrarActividadesTutorScreen extends StatefulWidget {
 class _RegistrarActividadesTutorScreenState extends State<RegistrarActividadesTutorScreen> {
   final List<TextEditingController> _controllers = [TextEditingController()];
   EstadoVisitaTutorModel? _visit;
-  bool _isLoading = true;
-  bool _isSaving = false;
+  bool _isLoading = true, _isSaving = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadVisit();
-  }
-
-  @override
-  void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
+  @override void initState() { super.initState(); _loadVisit(); }
+  @override void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
     }
     super.dispose();
   }
@@ -35,123 +29,58 @@ class _RegistrarActividadesTutorScreenState extends State<RegistrarActividadesTu
       if (!mounted) return;
       setState(() {
         _visit = visit;
-        final savedActivities = visit.actividades
-            .split('\n')
-            .map((activity) => activity.trim())
-            .where((activity) => activity.isNotEmpty)
-            .toList();
-        for (final controller in _controllers) {
-          controller.dispose();
+        final actividades = visit.actividades.split('\n').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+        for (final c in _controllers) {
+          c.dispose();
         }
-        _controllers
-          ..clear()
-          ..addAll(savedActivities.isEmpty
-              ? [TextEditingController()]
-              : savedActivities.map(
-                  (activity) => TextEditingController(text: activity),
-                ));
+        _controllers..clear()..addAll(actividades.isEmpty ? [TextEditingController()] : actividades.map((a) => TextEditingController(text: a)));
         _isLoading = false;
       });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-    }
+    } catch (_) { if (mounted) setState(() => _isLoading = false); }
   }
 
   Future<void> _save() async {
     final visit = _visit;
-    final text = _controllers
-      .map((controller) => controller.text.trim())
-      .where((activity) => activity.isNotEmpty)
-      .join('\n');
+    final text = _controllers.map((c) => c.text.trim()).where((e) => e.isNotEmpty).join('\n');
     if (visit?.id == null || text.isEmpty) return;
-
     setState(() => _isSaving = true);
     try {
-      final updated = await context.read<ITutorRepository>().updateTutorActivities(
-        visitId: visit!.id!,
-        activities: text,
-      );
+      final updated = await context.read<ITutorRepository>().updateTutorActivities(visitId: visit!.id!, activities: text);
       if (!mounted) return;
       setState(() => _visit = updated);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Actividades guardadas correctamente.')),
-      );
-      context.go(AppRoutes.academicTutorRegisterDeparture);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Actividades guardadas correctamente.')));
+      context.go(AppRoutes.registrarSalidaTutor);
     } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudieron guardar las actividades.')),
-      );
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No se pudieron guardar las actividades.')));
+    } finally { if (mounted) setState(() => _isSaving = false); }
   }
 
   @override
   Widget build(BuildContext context) {
     final canEdit = _visit?.puedeRegistrarActividades ?? false;
-
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(user: widget.currentUser),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-          : SafeArea(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  const RegistroActividadHeader(),
-                  const SizedBox(height: 24),
-                  Text(
-                    _visit?.empresaNombre.isNotEmpty == true
-                        ? 'Visita en ${_visit!.empresaNombre}'
-                        : 'No hay una visita activa para hoy.',
-                    style: const TextStyle(color: AppColors.textSecondary),
-                  ),
-                  const SizedBox(height: 16),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _controllers.length,
-                    separatorBuilder: (_, index) => const SizedBox(height: 16),
-                    itemBuilder: (context, index) => ActividadInputCard(
-                      index: index,
-                      controller: _controllers[index],
-                      canRemove: _controllers.length > 1,
-                      onRemove: () {
-                        setState(() {
-                          _controllers[index].dispose();
-                          _controllers.removeAt(index);
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  CustomButton(
-                    isFullWidth: true,
-                    text: _isSaving ? 'Guardando...' : 'Guardar Actividad',
-                    icon: Icons.save_rounded,
-                    isLoading: _isSaving,
-                    onPressed: canEdit && !_isSaving ? _save : null,
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: canEdit && !_isSaving
-                          ? () => setState(() => _controllers.add(TextEditingController()))
-                          : null,
-                      icon: const Icon(Icons.add_circle_outline_rounded),
-                      label: const Text('Agregar otra actividad'),
-                    ),
-                  ),
-                  ],
-                ),
-              ),
-            ),
+      body: _isLoading ? const Center(child: CircularProgressIndicator(color: AppColores.primary)) : SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const RegistroActividadHeader(),
+              const SizedBox(height: 24),
+              Text(_visit?.empresaNombre.isNotEmpty == true ? 'Visita en ${_visit!.empresaNombre}' : 'No hay una visita activa para hoy.', style: const TextStyle(color: AppColores.textSecondary)),
+              const SizedBox(height: 16),
+              ListView.separated(shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), itemCount: _controllers.length, separatorBuilder: (_, index) => const SizedBox(height: 16), itemBuilder: (_, i) => ActividadInputCard(index: i, controller: _controllers[i], canRemove: _controllers.length > 1, onRemove: () => setState(() { _controllers[i].dispose(); _controllers.removeAt(i); }))),
+              const SizedBox(height: 16),
+              CustomButton(isFullWidth: true, text: _isSaving ? 'Guardando...' : 'Guardar Actividad', icon: Icons.save_rounded, isLoading: _isSaving, onPressed: canEdit && !_isSaving ? _save : null),
+              const SizedBox(height: 16),
+              Center(child: TextButton.icon(onPressed: canEdit && !_isSaving ? () => setState(() => _controllers.add(TextEditingController())) : null, icon: const Icon(Icons.add_circle_outline_rounded), label: const Text('Agregar otra actividad'))),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

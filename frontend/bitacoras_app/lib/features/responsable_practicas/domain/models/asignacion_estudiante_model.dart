@@ -32,34 +32,84 @@ class AsignacionEstudianteModel {
   });
 
   AsignacionEstudianteModel copyWith({
-    String? id,
-    String? studentId,
-    String? studentName,
-    String? studentIdentification,
-    String? career,
-    String? academicTutorId,
-    String? academicTutorName,
-    String? companyTutorId,
-    String? companyTutorName,
-    String? companyId,
-    String? companyName,
-    bool? isAssigned,
+    String? nuevoId,
+    String? nuevoStudentId,
+    String? nuevoStudentName,
+    String? nuevaStudentIdentification,
+    String? nuevaCareer,
+    String? nuevoAcademicTutorId,
+    String? nuevoAcademicTutorName,
+    String? nuevoCompanyTutorId,
+    String? nuevoCompanyTutorName,
+    String? nuevoCompanyId,
+    String? nuevoCompanyName,
+    bool? nuevoIsAssigned,
   }) {
     return AsignacionEstudianteModel(
-      id: id ?? this.id,
-      studentId: studentId ?? this.studentId,
-      studentName: studentName ?? this.studentName,
-      studentIdentification: studentIdentification ?? this.studentIdentification,
-      career: career ?? this.career,
-      academicTutorId: academicTutorId ?? this.academicTutorId,
-      academicTutorName: academicTutorName ?? this.academicTutorName,
-      companyTutorId: companyTutorId ?? this.companyTutorId,
-      companyTutorName: companyTutorName ?? this.companyTutorName,
-      companyId: companyId ?? this.companyId,
-      companyName: companyName ?? this.companyName,
-      isAssigned: isAssigned ?? this.isAssigned,
-      semesterId: semesterId ?? semesterId,
-      parallelId: parallelId ?? parallelId,
+      id: nuevoId ?? id,
+      studentId: nuevoStudentId ?? studentId,
+      studentName: nuevoStudentName ?? studentName,
+      studentIdentification: nuevaStudentIdentification ?? studentIdentification,
+      career: nuevaCareer ?? career,
+      academicTutorId: nuevoAcademicTutorId ?? academicTutorId,
+      academicTutorName: nuevoAcademicTutorName ?? academicTutorName,
+      companyTutorId: nuevoCompanyTutorId ?? companyTutorId,
+      companyTutorName: nuevoCompanyTutorName ?? companyTutorName,
+      companyId: nuevoCompanyId ?? companyId,
+      companyName: nuevoCompanyName ?? companyName,
+      isAssigned: nuevoIsAssigned ?? isAssigned,
+      semesterId: semesterId,
+      parallelId: parallelId,
     );
   }
+
+  /// Alias en español para la copia del modelo.
+  AsignacionEstudianteModel copiarCon({
+    String? nuevoId,
+    String? nuevoEstudianteId,
+    String? nuevoNombreEstudiante,
+    String? nuevaIdentificacionEstudiante,
+    String? nuevaCarrera,
+    String? nuevoTutorAcademicoId,
+    String? nuevoNombreTutorAcademico,
+    String? nuevoTutorEmpresarialId,
+    String? nuevoNombreTutorEmpresarial,
+    String? nuevaEmpresaId,
+    String? nuevoNombreEmpresa,
+    bool? nuevoEstaAsignado,
+  }) {
+    return AsignacionEstudianteModel(
+      id: nuevoId ?? id,
+      studentId: nuevoEstudianteId ?? studentId,
+      studentName: nuevoNombreEstudiante ?? studentName,
+      studentIdentification: nuevaIdentificacionEstudiante ?? studentIdentification,
+      career: nuevaCarrera ?? career,
+      academicTutorId: nuevoTutorAcademicoId ?? academicTutorId,
+      academicTutorName: nuevoNombreTutorAcademico ?? academicTutorName,
+      companyTutorId: nuevoTutorEmpresarialId ?? companyTutorId,
+      companyTutorName: nuevoNombreTutorEmpresarial ?? companyTutorName,
+      companyId: nuevaEmpresaId ?? companyId,
+      companyName: nuevoNombreEmpresa ?? companyName,
+      isAssigned: nuevoEstaAsignado ?? isAssigned,
+      semesterId: semesterId,
+      parallelId: parallelId,
+    );
+  }
+
+  /// Alias en español para propiedades de acceso.
+  String get estudianteId => studentId;
+  String get nombreEstudiante => studentName;
+  String get identificacionEstudiante => studentIdentification;
+  String get carrera => career;
+  String? get tutorAcademicoId => academicTutorId;
+  String? get nombreTutorAcademico => academicTutorName;
+  String? get tutorEmpresarialId => companyTutorId;
+  String? get nombreTutorEmpresarial => companyTutorName;
+  String? get empresaId => companyId;
+  String? get nombreEmpresa => companyName;
+  bool get estaAsignado => isAssigned;
+  String? get semestreId => semesterId;
+  String? get paraleloId => parallelId;
 }
+
+typedef AsignacionEstudiante = AsignacionEstudianteModel;

@@ -1,6 +1,4 @@
 import 'package:bitacoras_app/app/apps.dart';
-import 'package:bitacoras_app/features/auth/domain/repositories/i_auth_repository.dart';
-import 'package:provider/provider.dart';
 
 class InicioDrawer extends StatelessWidget {
   final UsuarioModel user;
@@ -11,28 +9,28 @@ class InicioDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       child: Column(
         children: [
           // Header con el azul principal (0xFF0F52BA) y acentos en verde hoja
           UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(color: AppColors.primary),
+            decoration: const BoxDecoration(color: AppColores.primary),
             currentAccountPicture: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.success,
+                  color: AppColores.success,
                   width: 2.5,
                 ), // Toque verde
               ),
               child: CircleAvatar(
-                backgroundColor: AppColors.surface,
+                backgroundColor: AppColores.surface,
                 child: Text(
                   user.initials,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: AppColores.primary,
                   ),
                 ),
               ),
@@ -45,7 +43,7 @@ class InicioDrawer extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: AppColors.surface,
+                      color: AppColores.surface,
                     ),
                   ),
                 ),
@@ -57,7 +55,7 @@ class InicioDrawer extends StatelessWidget {
                   ),
                   margin: const EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
-                    color: AppColors.success,
+                    color: AppColores.success,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -74,7 +72,7 @@ class InicioDrawer extends StatelessWidget {
             accountEmail: Text(
               user.email,
               style: TextStyle(
-                color: AppColors.surface.withValues(alpha: 0.85),
+                color: AppColores.surface.withValues(alpha: 0.85),
                 fontSize: 13,
               ),
             ),
@@ -86,7 +84,7 @@ class InicioDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: sections.length,
               separatorBuilder: (context, index) => const Divider(
-                color: AppColors.divider,
+                color: AppColores.divider,
                 indent: 16,
                 endIndent: 16,
               ),
@@ -107,7 +105,7 @@ class InicioDrawer extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textSecondary,
+                            color: AppColores.textSecondary,
                             letterSpacing: 0.8,
                           ),
                         ),
@@ -117,13 +115,13 @@ class InicioDrawer extends StatelessWidget {
                         leading: Icon(
                           item.icon,
                           color: item.enabled
-                              ? AppColors.primary
-                              : AppColors.disabled,
+                              ? AppColores.primary
+                              : AppColores.disabled,
                         ),
                         title: Text(
                           item.title,
                           style: const TextStyle(
-                            color: AppColors.textPrimary,
+                            color: AppColores.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -143,15 +141,15 @@ class InicioDrawer extends StatelessWidget {
             ),
           ),
 
-          const Divider(color: AppColors.divider, height: 1),
+          const Divider(color: AppColores.divider, height: 1),
 
           // Mi Perfil
           ListTile(
-            leading: const Icon(Icons.person_outline, color: AppColors.primary),
+            leading: const Icon(Icons.person_outline, color: AppColores.primary),
             title: const Text(
               'Mi Perfil',
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: AppColores.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -159,17 +157,17 @@ class InicioDrawer extends StatelessWidget {
             horizontalTitleGap: 0,
             onTap: () {
               Navigator.pop(context);
-              context.push(AppRoutes.perfil);
+              context.push(AppRoutes.perfilUsuario);
             },
           ),
 
           // Cerrar Sesión
           ListTile(
-            leading: const Icon(Icons.logout_rounded, color: AppColors.error),
+            leading: const Icon(Icons.logout_rounded, color: AppColores.error),
             title: const Text(
               'Cerrar Sesión',
               style: TextStyle(
-                color: AppColors.error,
+                color: AppColores.error,
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
@@ -178,8 +176,8 @@ class InicioDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               context.read<AuthSession>().clear();
-              context.read<IAuthRepository>().logout();
-              context.go(AppRoutes.login);
+              context.read<IAuthRepository>().cerrarSesion();
+              context.go(AppRoutes.inicioSesion);
             },
           ),
           const SizedBox(height: 12),

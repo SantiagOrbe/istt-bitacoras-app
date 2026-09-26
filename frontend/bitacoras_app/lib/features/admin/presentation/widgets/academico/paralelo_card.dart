@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
 class ParaleloCard extends StatelessWidget {
   final ParaleloModel parallel;
   final String cycleName;
@@ -22,19 +21,19 @@ class ParaleloCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+      color: AppColores.surface,
+      borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
         child: Container(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            border: Border.all(color: AppColors.outline),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
+            border: Border.all(color: AppColores.outline),
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow,
+                color: AppColores.shadow,
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -47,60 +46,62 @@ class ParaleloCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  color: AppColores.secondary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   border: Border.all(
-                    color: AppColors.secondary.withValues(alpha: 0.22),
+                    color: AppColores.secondary.withValues(alpha: 0.22),
                   ),
                 ),
                 child: const Icon(
                   Icons.groups_rounded,
-                  color: AppColors.secondary,
+                  color: AppColores.secondary,
                 ),
               ),
-              AppSizes.gapH12,
+              AppTamanos.gapH12,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Paralelo ${parallel.name}',
-                      style: AppTextStyles.bodyBold.copyWith(fontSize: 15),
+                      style: AppEstiloTexto.bodyBold.copyWith(fontSize: 15),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       '$cycleName • ${parallel.jornada}',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       parallel.isActive
                           ? 'Gestión habilitada'
                           : 'Gestión suspendida',
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         color: parallel.isActive
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
+                            ? AppColores.primary
+                            : AppColores.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    AppSizes.gapV8,
-                    AdminStatusChip(isActive: parallel.isActive),
+                    AppTamanos.gapV8,
+                    ChipEstadoAdmin(isActive: parallel.isActive),
                   ],
                 ),
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Switch.adaptive(
                     value: parallel.isActive,
                     onChanged: (_) => onToggleStatus(),
-                    activeThumbColor: AppColors.primary,
-                    activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
+                    activeThumbColor: AppColores.primary,
+                    activeTrackColor: AppColores.primary.withValues(
+                      alpha: 0.35,
+                    ),
                   ),
                   IconButton(
                     tooltip: 'Agregar estudiantes',
@@ -110,12 +111,12 @@ class ParaleloCard extends StatelessWidget {
                   IconButton(
                     tooltip: 'Retirar todos los estudiantes',
                     icon: const Icon(Icons.person_remove_outlined),
-                    color: AppColors.error,
+                    color: AppColores.error,
                     onPressed: onRemoveStudents,
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.textSecondary,
+                    color: AppColores.textSecondary,
                   ),
                 ],
               ),

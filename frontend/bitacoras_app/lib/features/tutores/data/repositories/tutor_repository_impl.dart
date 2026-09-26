@@ -10,9 +10,19 @@ class TutorRepositoryImpl implements ITutorRepository {
   Future<List<EstudianteAsignadoModel>> getAssignedStudents(
     String tutorId, {
     required bool isAcademic,
+  }) {
+    return obtenerEstudiantesAsignados(
+      tutorId,
+      esAcademico: isAcademic,
+    );
+  }
+
+  Future<List<EstudianteAsignadoModel>> obtenerEstudiantesAsignados(
+    String tutorId, {
+    required bool esAcademico,
   }) async {
-    final response = await remoteDataSource.getAssignedStudents(
-      isAcademic: isAcademic,
+    final response = await remoteDataSource.obtenerEstudiantesAsignados(
+      esAcademico: esAcademico,
     );
     final students = _extractList(response, 'estudiantes');
     return students
@@ -25,9 +35,19 @@ class TutorRepositoryImpl implements ITutorRepository {
   Future<List<RegistroPracticaModel>> getStudentLogs(
     String studentId, {
     bool isAcademic = true,
+  }) {
+    return obtenerRegistrosEstudiante(
+      studentId,
+      esAcademico: isAcademic,
+    );
+  }
+
+  Future<List<RegistroPracticaModel>> obtenerRegistrosEstudiante(
+    String studentId, {
+    bool esAcademico = true,
   }) async {
-    final response = await remoteDataSource.getStudentLogs(
-      isAcademic: isAcademic,
+    final response = await remoteDataSource.obtenerRegistrosEstudiante(
+      esAcademico: esAcademico,
     );
     final logs = _extractList(response, 'registros');
     return logs
@@ -41,8 +61,12 @@ class TutorRepositoryImpl implements ITutorRepository {
   }
 
   @override
-  Future<EstadoVisitaTutorModel> getTodayVisitStatus() async {
-    final response = await remoteDataSource.getTodayVisitStatus();
+  Future<EstadoVisitaTutorModel> getTodayVisitStatus() {
+    return obtenerEstadoVisitaDeHoy();
+  }
+
+  Future<EstadoVisitaTutorModel> obtenerEstadoVisitaDeHoy() async {
+    final response = await remoteDataSource.obtenerEstadoVisitaDeHoy();
     return EstadoVisitaTutorModel.fromJson(response);
   }
 
@@ -50,8 +74,18 @@ class TutorRepositoryImpl implements ITutorRepository {
   Future<EstadoVisitaTutorModel> registerTutorEntry({
     required double latitude,
     required double longitude,
+  }) {
+    return registrarEntradaTutor(
+      latitude: latitude,
+      longitude: longitude,
+    );
+  }
+
+  Future<EstadoVisitaTutorModel> registrarEntradaTutor({
+    required double latitude,
+    required double longitude,
   }) async {
-    final response = await remoteDataSource.registerTutorEntry(
+    final response = await remoteDataSource.registrarEntradaTutor(
       latitude: latitude,
       longitude: longitude,
     );
@@ -62,8 +96,18 @@ class TutorRepositoryImpl implements ITutorRepository {
   Future<EstadoVisitaTutorModel> registerTutorExit({
     required double latitude,
     required double longitude,
+  }) {
+    return registrarSalidaTutor(
+      latitude: latitude,
+      longitude: longitude,
+    );
+  }
+
+  Future<EstadoVisitaTutorModel> registrarSalidaTutor({
+    required double latitude,
+    required double longitude,
   }) async {
-    final response = await remoteDataSource.registerTutorExit(
+    final response = await remoteDataSource.registrarSalidaTutor(
       latitude: latitude,
       longitude: longitude,
     );
@@ -74,17 +118,31 @@ class TutorRepositoryImpl implements ITutorRepository {
   Future<EstadoVisitaTutorModel> updateTutorActivities({
     required String visitId,
     required String activities,
+  }) {
+    return actualizarActividadesTutor(
+      visitaId: visitId,
+      actividades: activities,
+    );
+  }
+
+  Future<EstadoVisitaTutorModel> actualizarActividadesTutor({
+    required String visitaId,
+    required String actividades,
   }) async {
-    final response = await remoteDataSource.updateTutorActivities(
-      visitId: visitId,
-      activities: activities,
+    final response = await remoteDataSource.actualizarActividadesTutor(
+      visitaId: visitaId,
+      actividades: actividades,
     );
     return EstadoVisitaTutorModel.fromJson(response);
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getTutorVisitHistory() async {
-    final response = await remoteDataSource.getTutorVisitHistory();
+  Future<List<Map<String, dynamic>>> getTutorVisitHistory() {
+    return obtenerHistorialVisitasTutor();
+  }
+
+  Future<List<Map<String, dynamic>>> obtenerHistorialVisitasTutor() async {
+    final response = await remoteDataSource.obtenerHistorialVisitasTutor();
     final records = response is List
         ? response
         : response is Map<String, dynamic>
@@ -98,7 +156,11 @@ class TutorRepositoryImpl implements ITutorRepository {
 
   @override
   Future<Uint8List> downloadTutorReportPdf() {
-    return remoteDataSource.downloadTutorReportPdf();
+    return descargarReportePdfTutor();
+  }
+
+  Future<Uint8List> descargarReportePdfTutor() {
+    return remoteDataSource.descargarReportePdfTutor();
   }
 
   @override
@@ -106,11 +168,23 @@ class TutorRepositoryImpl implements ITutorRepository {
     required String logId,
     String? activityDescription,
     bool? isActive,
+  }) {
+    return actualizarRegistro(
+      registroId: logId,
+      descripcionActividad: activityDescription,
+      activo: isActive,
+    );
+  }
+
+  Future<RegistroPracticaModel> actualizarRegistro({
+    required String registroId,
+    String? descripcionActividad,
+    bool? activo,
   }) async {
-    final response = await remoteDataSource.updateLog(
-      logId: logId,
-      activityDescription: activityDescription,
-      isActive: isActive,
+    final response = await remoteDataSource.actualizarRegistro(
+      registroId: registroId,
+      descripcionActividad: descripcionActividad,
+      activo: activo,
     );
     return RegistroPracticaModel.fromJson(response);
   }

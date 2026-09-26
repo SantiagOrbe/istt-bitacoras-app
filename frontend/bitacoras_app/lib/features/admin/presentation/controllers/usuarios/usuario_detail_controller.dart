@@ -48,25 +48,29 @@ class UsuarioDetailController extends ChangeNotifier {
 
   void _normalizeSelectionValues() {
     final activeCompanyIds = companies.map((company) => company.id).toSet();
-    if (selectedCompanyId != null && !activeCompanyIds.contains(selectedCompanyId)) {
+    if (selectedCompanyId != null &&
+        !activeCompanyIds.contains(selectedCompanyId)) {
       selectedCompanyId = null;
     }
 
     final activeCareerIds = careers.map((career) => career.id).toSet();
-    if (selectedCareerId != null && !activeCareerIds.contains(selectedCareerId)) {
+    if (selectedCareerId != null &&
+        !activeCareerIds.contains(selectedCareerId)) {
       selectedCareerId = null;
     }
   }
 
   Future<void> _loadOptions() async {
     try {
-      final allCompanies = await repository.getCompanies();
+      final allCompanies = await repository.obtenerEmpresas();
       final seenCompanyIds = <String>{};
       companies = allCompanies
-          .where((company) => company.isActive && seenCompanyIds.add(company.id))
+          .where(
+            (company) => company.isActive && seenCompanyIds.add(company.id),
+          )
           .toList();
 
-      final allCareers = await repository.getCareers();
+      final allCareers = await repository.obtenerCarreras();
       final seenCareerIds = <String>{};
       careers = allCareers
           .where((career) => career.isActive && seenCareerIds.add(career.id))
@@ -82,9 +86,9 @@ class UsuarioDetailController extends ChangeNotifier {
   void setRole(RolUsuarioModel role) {
     selectedRole = role;
     if (role != RolUsuarioModel.student &&
-      role != RolUsuarioModel.coordinator &&
-      role != RolUsuarioModel.academicTutor &&
-      role != RolUsuarioModel.practiceManager) {
+        role != RolUsuarioModel.coordinator &&
+        role != RolUsuarioModel.academicTutor &&
+        role != RolUsuarioModel.practiceManager) {
       selectedCareerId = null;
     }
     if (role != RolUsuarioModel.student &&
@@ -127,7 +131,10 @@ class UsuarioDetailController extends ChangeNotifier {
 
     try {
       final nextStatus = !user.isActive;
-      final success = await repository.setUserActive(user.id, nextStatus);
+      final success = await repository.cambiarEstadoUsuario(
+        user.id,
+        nextStatus,
+      );
 
       if (success) {
         user = user.copyWith(isActive: nextStatus);
@@ -137,8 +144,8 @@ class UsuarioDetailController extends ChangeNotifier {
       } else {
         errorMessage = 'No se pudo cambiar el estado del usuario.';
       }
-    } catch (e) {
-      errorMessage = 'Error al cambiar estado: ${e.toString()}';
+    } catch (_) {
+      errorMessage = 'No se pudo cambiar el estado del usuario.';
     } finally {
       isLoading = false;
       notifyListeners();
@@ -153,13 +160,13 @@ class UsuarioDetailController extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-    final emailError = AdminValidators.email(emailController.text);
+    final emailError = ValidadoresAdmin.email(emailController.text);
     if (emailError != null) {
       errorMessage = emailError;
       notifyListeners();
       return false;
     }
-    final phoneError = AdminValidators.ecuadorianPhone(
+    final phoneError = ValidadoresAdmin.ecuadorianPhone(
       phoneController.text,
       required: false,
     );
@@ -177,9 +184,19 @@ class UsuarioDetailController extends ChangeNotifier {
     final cedula = cedulaController.text.trim();
     final cedulaError = cedula.isEmpty
         ? null
-        : AdminValidators.ecuadorianId(cedula);
+        : ValidadoresAdmin.ecuadorianId(cedula);
     if (cedulaError != null) {
       errorMessage = cedulaError;
+      notifyListeners();
+      return false;
+    }
+
+    final duplicateMessage = await _validateUniqueFields(
+      phone: phoneController.text.trim(),
+      cedula: cedula,
+    );
+    if (duplicateMessage != null) {
+      errorMessage = duplicateMessage;
       notifyListeners();
       return false;
     }
@@ -208,7 +225,7 @@ class UsuarioDetailController extends ChangeNotifier {
             : passwordController.text.trim(),
       );
 
-      final success = await repository.updateUser(updatedUser);
+      final success = await repository.actualizarUsuario(updatedUser);
 
       if (success) {
         user = updatedUser;
@@ -217,8 +234,8 @@ class UsuarioDetailController extends ChangeNotifier {
       } else {
         errorMessage = 'No se pudieron guardar los cambios.';
       }
-    } catch (e) {
-      errorMessage = 'Error al guardar: ${e.toString()}';
+    } catch (_) {
+      errorMessage = 'No se pudieron guardar los cambios. Inténtalo de nuevo.';
     } finally {
       isLoading = false;
       notifyListeners();
@@ -227,12 +244,45 @@ class UsuarioDetailController extends ChangeNotifier {
     return !isEditing;
   }
 
+  Future<String?> _validateUniqueFields({
+    required String phone,
+    required String cedula,
+  }) async {
+    try {
+      final users = await repository.obtenerUsuarios();
+      final normalizedPhone = phone.trim();
+      final normalizedCedula = cedula.trim();
+
+      if (normalizedPhone.isNotEmpty &&
+          users.any(
+            (usuario) =>
+                usuario.id != user.id &&
+                (usuario.phone ?? '').trim() == normalizedPhone,
+          )) {
+        return 'El número de teléfono ya está registrado por otro usuario.';
+      }
+
+      if (normalizedCedula.isNotEmpty &&
+          users.any(
+            (usuario) =>
+                usuario.id != user.id &&
+                (usuario.cedula ?? '').trim() == normalizedCedula,
+          )) {
+        return 'La cédula ya está registrada por otro usuario.';
+      }
+    } catch (_) {
+      return 'No se pudo verificar si los datos ya existen. Revisa el formulario e inténtalo nuevamente.';
+    }
+
+    return null;
+  }
+
   Future<bool> deleteUser() async {
     isLoading = true;
     clearMessages();
 
     try {
-      final success = await repository.deleteUser(user.id);
+      final success = await repository.eliminarUsuario(user.id);
       if (success) {
         user = user.copyWith(isActive: false);
         successMessage = 'Usuario desactivado correctamente';
@@ -240,9 +290,9 @@ class UsuarioDetailController extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       return success;
-    } catch (e) {
+    } catch (_) {
       isLoading = false;
-      errorMessage = 'Error al eliminar usuario: ${e.toString()}';
+      errorMessage = 'No se pudo eliminar el usuario. Inténtalo de nuevo.';
       notifyListeners();
       return false;
     }

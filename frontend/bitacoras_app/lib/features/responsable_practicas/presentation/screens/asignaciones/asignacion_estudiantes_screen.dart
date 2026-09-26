@@ -25,7 +25,7 @@ class _AsignacionEstudiantesScreenState extends State<AsignacionEstudiantesScree
       animation: _controller,
       builder: (context, child) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(
             user: context.read<AuthSession>().currentUser!,
             showBackButton: true,

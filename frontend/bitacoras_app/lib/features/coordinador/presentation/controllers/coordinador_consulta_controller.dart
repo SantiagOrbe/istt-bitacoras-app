@@ -14,14 +14,14 @@ class CoordinadorConsultaController extends ChangeNotifier {
 
   Future<void> cargarEstudiantes() async {
     await _ejecutarConsulta(() async {
-      datosCarrera = await repository.getDatosCarrera();
+      datosCarrera = await repository.obtenerDatosCarrera();
       estudiantes = datosCarrera?.estudiantes ?? const [];
     });
   }
 
   Future<void> cargarCarreras() async {
     await _ejecutarConsulta(() async {
-      datosCarrera = await repository.getDatosCarrera();
+      datosCarrera = await repository.obtenerDatosCarrera();
       final nombreCarrera = datosCarrera?.carrera.trim() ?? '';
 
       carreras = nombreCarrera.isEmpty
@@ -41,7 +41,7 @@ class CoordinadorConsultaController extends ChangeNotifier {
 
   Future<void> cargarTutores() async {
     await _ejecutarConsulta(() async {
-      datosCarrera = await repository.getDatosCarrera();
+      datosCarrera = await repository.obtenerDatosCarrera();
       tutores = datosCarrera?.tutores ?? const [];
     });
   }

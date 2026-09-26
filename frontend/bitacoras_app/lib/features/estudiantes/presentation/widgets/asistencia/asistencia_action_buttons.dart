@@ -29,12 +29,12 @@ class AsistenciaActionButtons extends StatelessWidget {
           height: 50,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: effectiveEnabled ? AppColors.primary : AppColors.disabled,
-              foregroundColor: AppColors.surface,
+              backgroundColor: effectiveEnabled ? AppColores.primary : AppColores.disabled,
+              foregroundColor: AppColores.surface,
               elevation: effectiveEnabled ? 4 : 0,
-              shadowColor: AppColors.primary.withValues(alpha: 0.28),
+              shadowColor: AppColores.primary.withValues(alpha: 0.28),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
               ),
             ),
             onPressed: effectiveEnabled ? onConfirm : null,
@@ -43,32 +43,32 @@ class AsistenciaActionButtons extends StatelessWidget {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                      color: AppColors.surface,
+                      color: AppColores.surface,
                       strokeWidth: 2,
                     ),
                   )
                 : Icon(buttonIcon),
             label: Text(
               isLoading ? 'Procesando...' : buttonText,
-              style: AppTextStyles.bodyBold.copyWith(color: AppColors.surface),
+              style: AppEstiloTexto.bodyBold.copyWith(color: AppColores.surface),
             ),
           ),
         ),
-        AppSizes.gapV12,
+        AppTamanos.gapV12,
         SizedBox(
           width: double.infinity,
           height: 50,
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.outline),
+              side: const BorderSide(color: AppColores.outline),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
               ),
             ),
             onPressed: onCancel,
             child: Text(
               'Cancelar',
-              style: AppTextStyles.bodyBold.copyWith(color: AppColors.primary),
+              style: AppEstiloTexto.bodyBold.copyWith(color: AppColores.primary),
             ),
           ),
         ),

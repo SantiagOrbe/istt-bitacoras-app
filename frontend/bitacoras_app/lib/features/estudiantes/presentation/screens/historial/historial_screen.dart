@@ -2,7 +2,7 @@ import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class AvancePracticasScreen extends StatefulWidget {
   final UsuarioModel currentUser;
-  final IAsistenciaRepository attendanceRepository;
+  final IAsistenciaRepositorio attendanceRepository;
   final VoidCallback? onRegisterExit;
 
   const AvancePracticasScreen({
@@ -44,7 +44,7 @@ class _AvancePracticasScreenState extends State<AvancePracticasScreen> {
 
   Future<void> _loadPracticeProgress() async {
     try {
-      final progress = await widget.attendanceRepository.getStudentPracticeProgress();
+      final progress = await widget.attendanceRepository.obtenerProgresoPracticasEstudiante();
       if (!mounted) return;
       setState(() {
         _practiceProgress = progress;
@@ -103,7 +103,7 @@ class _AvancePracticasScreenState extends State<AvancePracticasScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(user: widget.currentUser),
           body: SafeArea(
             child: _controller.isLoading || _isProgressLoading

@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
 class CarreraConfigCard extends StatelessWidget {
   final CarreraModel career;
   final Set<int> activeSemesters;
@@ -18,21 +17,21 @@ class CarreraConfigCard extends StatelessWidget {
     final isDisabled = !career.isActive;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSizes.md),
-      padding: const EdgeInsets.all(AppSizes.md),
+      margin: const EdgeInsets.only(bottom: AppTamanos.md),
+      padding: const EdgeInsets.all(AppTamanos.md),
       decoration: BoxDecoration(
-        color: isDisabled ? AppColors.disabledSurface : AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        color: isDisabled ? AppColores.disabledSurface : AppColores.surface,
+        borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
         border: Border.all(
           color: isDisabled
-              ? AppColors.outline
-              : AppColors.secondary.withValues(alpha: 0.35),
+              ? AppColores.outline
+              : AppColores.secondary.withValues(alpha: 0.35),
         ),
         boxShadow: isDisabled
             ? null
             : [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColores.shadow,
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -48,27 +47,27 @@ class CarreraConfigCard extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: isDisabled
-                      ? AppColors.outline
-                      : AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      ? AppColores.outline
+                      : AppColores.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                 ),
                 child: Icon(
                   Icons.school_outlined,
                   color: isDisabled
-                      ? AppColors.textSecondary
-                      : AppColors.primary,
+                      ? AppColores.textSecondary
+                      : AppColores.primary,
                   size: 21,
                 ),
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Expanded(
                 child: Text(
                   career.name,
-                  style: AppTextStyles.bodyBold.copyWith(
+                  style: AppEstiloTexto.bodyBold.copyWith(
                     fontSize: 16,
                     color: isDisabled
-                        ? AppColors.textSecondary
-                        : AppColors.textPrimary,
+                        ? AppColores.textSecondary
+                        : AppColores.textPrimary,
                   ),
                 ),
               ),
@@ -76,21 +75,21 @@ class CarreraConfigCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: isDisabled
-                      ? AppColors.disabledSurface
-                      : AppColors.successSoft,
+                      ? AppColores.disabledSurface
+                      : AppColores.successSoft,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
                     color: isDisabled
-                        ? AppColors.outline
-                        : AppColors.success.withValues(alpha: 0.3),
+                        ? AppColores.outline
+                        : AppColores.success.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Text(
                   isDisabled ? 'Inactiva' : 'Activa',
-                  style: AppTextStyles.caption.copyWith(
+                  style: AppEstiloTexto.caption.copyWith(
                     color: isDisabled
-                        ? AppColors.textSecondary
-                        : AppColors.primary,
+                        ? AppColores.textSecondary
+                        : AppColores.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -98,58 +97,58 @@ class CarreraConfigCard extends StatelessWidget {
             ],
           ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
-            child: Divider(color: AppColors.divider, height: 1),
+            padding: EdgeInsets.symmetric(vertical: AppTamanos.sm),
+            child: Divider(color: AppColores.divider, height: 1),
           ),
           Text(
             isDisabled
                 ? 'Esta carrera está inactiva y no puede seleccionar semestres para prácticas.'
                 : 'Semestres habilitados para prácticas:',
-            style: AppTextStyles.small.copyWith(
+            style: AppEstiloTexto.small.copyWith(
               color: isDisabled
-                  ? AppColors.textSecondary
-                  : AppColors.textPrimary,
+                  ? AppColores.textSecondary
+                  : AppColores.textPrimary,
             ),
           ),
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
           if (!isDisabled)
             Text(
               '${activeSemesters.length} de ${career.totalSemesters} semestres habilitados',
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.primary,
+              style: AppEstiloTexto.caption.copyWith(
+                color: AppColores.primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
-          if (!isDisabled) AppSizes.gapV8,
+          if (!isDisabled) AppTamanos.gapV8,
           Wrap(
-            spacing: AppSizes.sm,
-            runSpacing: AppSizes.sm,
+            spacing: AppTamanos.sm,
+            runSpacing: AppTamanos.sm,
             children: List.generate(career.totalSemesters, (i) {
               final semester = i + 1;
               final isSelected = activeSemesters.contains(semester);
 
               return InkWell(
-                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                 onTap: isDisabled ? null : () => onToggleSemester(semester),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSizes.md,
-                    vertical: AppSizes.sm,
+                    horizontal: AppTamanos.md,
+                    vertical: AppTamanos.sm,
                   ),
                   decoration: BoxDecoration(
                     color: isDisabled
-                        ? AppColors.disabledSurface
+                        ? AppColores.disabledSurface
                         : (isSelected
-                              ? AppColors.secondary.withValues(alpha: 0.1)
-                              : AppColors.background),
-                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                              ? AppColores.secondary.withValues(alpha: 0.1)
+                              : AppColores.background),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                     border: Border.all(
                       color: isDisabled
-                          ? AppColors.outline
+                          ? AppColores.outline
                           : (isSelected
-                                ? AppColors.primary
-                                : AppColors.outline),
+                                ? AppColores.primary
+                                : AppColores.outline),
                       width: isSelected && !isDisabled ? 1.5 : 1.0,
                     ),
                   ),
@@ -159,22 +158,22 @@ class CarreraConfigCard extends StatelessWidget {
                       if (isSelected && !isDisabled) ...[
                         const Icon(
                           Icons.check_circle_rounded,
-                          color: AppColors.primary,
+                          color: AppColores.primary,
                           size: 16,
                         ),
-                        AppSizes.gapH4,
+                        AppTamanos.gapH4,
                       ],
                       Text(
                         '$semester° Semestre',
                         style: (isSelected && !isDisabled)
-                            ? AppTextStyles.bodyBold.copyWith(
-                                color: AppColors.primary,
+                            ? AppEstiloTexto.bodyBold.copyWith(
+                                color: AppColores.primary,
                                 fontSize: 13,
                               )
-                            : AppTextStyles.body.copyWith(
+                            : AppEstiloTexto.body.copyWith(
                                 fontSize: 13,
                                 color: isDisabled
-                                    ? AppColors.textSecondary
+                                    ? AppColores.textSecondary
                                     : null,
                               ),
                       ),

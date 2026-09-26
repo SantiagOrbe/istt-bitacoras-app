@@ -13,16 +13,16 @@ class CarreraPeriodoController extends ChangeNotifier {
   String selectedPeriodId = '';
   final Map<String, Set<int>> configs = {};
 
-  Future<void> loadData() async {
+  Future<void> loadData({String? initialPeriodId}) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
-      periods = await repository.getPeriods();
-      careers = await repository.getCareers();
+      periods = await repository.obtenerPeriodos();
+      careers = await repository.obtenerCarreras();
       final configsList = await repository
-          .getConfiguracionPeriodoCarreraModels();
+          .obtenerConfiguracionesPeriodoCarrera();
 
       configs.clear();
       for (final config in configsList) {
@@ -34,11 +34,14 @@ class CarreraPeriodoController extends ChangeNotifier {
       }
 
       final activePeriods = periods.where((period) => period.isActive).toList();
-      if (activePeriods.isNotEmpty) {
-        selectedPeriodId = activePeriods.first.id;
-      } else {
-        selectedPeriodId = '';
-      }
+      final requestedPeriod = activePeriods.where(
+        (period) => period.id == initialPeriodId,
+      );
+      selectedPeriodId = requestedPeriod.isNotEmpty
+          ? requestedPeriod.first.id
+          : activePeriods.isNotEmpty
+          ? activePeriods.first.id
+          : '';
     } catch (_) {
       errorMessage = 'No se pudieron cargar las carreras y periodos.';
     }
@@ -108,20 +111,21 @@ class CarreraPeriodoController extends ChangeNotifier {
     }
 
     try {
-      for (final career in careers) {
-        if (!career.isActive) continue;
-
+      final activeCareers = careers.where((career) => career.isActive);
+      final configurations = activeCareers.map((career) {
         final key = getConfigKey(career.id);
-        final activeSemesters = configs[key]?.toList() ?? [];
-
-        await repository.saveConfiguracionPeriodoCarreraModel(
-          ConfiguracionPeriodoCarreraModel(
-            careerId: career.id,
-            periodId: selectedPeriodId,
-            activeSemestersForPractices: activeSemesters,
-          ),
+        final activeSemesters = (configs[key]?.toList() ?? [])..sort();
+        return ConfiguracionPeriodoCarreraModel(
+          careerId: career.id,
+          periodId: selectedPeriodId,
+          activeSemestersForPractices: activeSemesters,
         );
-      }
+      }).toList();
+
+      await repository.guardarConfiguracionesCarrerasPeriodo(
+        selectedPeriodId,
+        configurations,
+      );
       return true;
     } catch (error) {
       errorMessage = error is ApiException

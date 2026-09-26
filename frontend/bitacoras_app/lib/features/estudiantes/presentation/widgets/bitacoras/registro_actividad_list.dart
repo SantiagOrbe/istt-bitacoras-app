@@ -16,7 +16,7 @@ class RegistroActividadList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: controllers.length,
-      separatorBuilder: (context, index) => AppSizes.gapV16,
+      separatorBuilder: (context, index) => AppTamanos.gapV16,
       itemBuilder: (context, index) {
         return ActividadInputCard(
           index: index,

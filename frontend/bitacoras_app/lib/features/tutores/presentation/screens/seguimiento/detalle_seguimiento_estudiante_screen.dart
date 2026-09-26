@@ -44,11 +44,13 @@ class _DetalleSeguimientoEstudianteScreenState
       _isLoading = true;
       _errorMessage = null;
     });
+
     try {
       final logs = await context.read<ITutorRepository>().getStudentLogs(
         widget.assignedStudent.student.id,
         isAcademic: widget.isAcademic,
       );
+
       if (!mounted) return;
       setState(() {
         _logs = logs;
@@ -70,7 +72,9 @@ class _DetalleSeguimientoEstudianteScreenState
         logId: log.id,
         isActive: !log.isActive,
       );
+
       if (!mounted) return;
+
       final index = _logs.indexWhere((item) => item.id == log.id);
       if (index != -1) {
         setState(() => _logs = [..._logs]..[index] = updated);
@@ -103,6 +107,7 @@ class _DetalleSeguimientoEstudianteScreenState
         ],
       ),
     );
+
     controller.dispose();
     if (value == null || value.isEmpty || !mounted) return;
 
@@ -111,7 +116,9 @@ class _DetalleSeguimientoEstudianteScreenState
         logId: log.id,
         activityDescription: value,
       );
+
       if (!mounted) return;
+
       final index = _logs.indexWhere((item) => item.id == log.id);
       if (index != -1) {
         setState(() => _logs = [..._logs]..[index] = updated);
@@ -123,7 +130,9 @@ class _DetalleSeguimientoEstudianteScreenState
 
   void _showMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -132,260 +141,59 @@ class _DetalleSeguimientoEstudianteScreenState
     final student = item.student;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(user: student),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           child: Column(
             children: [
-              if (!widget.recordsOnly) InstitutionalGlowCard(
-                accentColor: AppColors.primary,
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSizes.lg),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(student.name, style: AppTextStyles.heading),
-                      AppSizes.gapV4,
-                      Text(
-                        student.company ?? 'Empresa no registrada',
-                        style: AppTextStyles.body.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      AppSizes.gapV12,
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _StatPill(
-                              label: 'Horas',
-                              value:
-                                  '${item.totalHoursCompletedLabel} / ${item.totalHoursRequiredLabel} h',
-                            ),
-                          ),
-                          AppSizes.gapH12,
-                          Expanded(
-                            child: _StatPill(
-                              label: 'Estado',
-                              value: item.status,
-                            ),
-                          ),
-                        ],
-                      ),
-                      AppSizes.gapV12,
-                      LinearProgressIndicator(
-                        value: item.progressPercentage,
-                        minHeight: 9,
-                        backgroundColor: AppColors.divider,
-                        color: AppColors.primary,
-                      ),
+              if (!widget.recordsOnly)
+                EncabezadoSeguimientoEstudiante(item: item),
+              if (!widget.recordsOnly) AppTamanos.gapV12,
+              if (!widget.recordsOnly)
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColores.surface,
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+                    border: Border.all(color: AppColores.outline),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorColor: AppColores.primary,
+                    labelColor: AppColores.primary,
+                    unselectedLabelColor: AppColores.textSecondary,
+                    tabs: const [
+                      Tab(text: 'Resumen'),
+                      Tab(text: 'Registros'),
                     ],
                   ),
                 ),
-              ),
-              if (!widget.recordsOnly) AppSizes.gapV12,
-              if (!widget.recordsOnly) Container(
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                  border: Border.all(color: AppColors.outline),
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  indicatorColor: AppColors.primary,
-                  labelColor: AppColors.primary,
-                  unselectedLabelColor: AppColors.textSecondary,
-                  tabs: const [
-                    Tab(text: 'Resumen'),
-                    Tab(text: 'Registros'),
-                  ],
-                ),
-              ),
-              if (!widget.recordsOnly) AppSizes.gapV12,
+              if (!widget.recordsOnly) AppTamanos.gapV12,
               Expanded(
                 child: widget.recordsOnly
-                    ? _buildLogs()
+                    ? ListaRegistrosSeguimiento(
+                        isLoading: _isLoading,
+                        errorMessage: _errorMessage,
+                        logs: _logs,
+                        onRefresh: _fetchLogs,
+                        onToggleStatus: _toggleLogStatus,
+                        onEdit: _editLog,
+                      )
                     : TabBarView(
                         controller: _tabController,
-                        children: [_buildSummary(item), _buildLogs()],
+                        children: [
+                          InformacionEstudianteSeguimiento(item: item),
+                          ListaRegistrosSeguimiento(
+                            isLoading: _isLoading,
+                            errorMessage: _errorMessage,
+                            logs: _logs,
+                            onRefresh: _fetchLogs,
+                            onToggleStatus: _toggleLogStatus,
+                            onEdit: _editLog,
+                          ),
+                        ],
                       ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummary(EstudianteAsignadoModel item) {
-    final student = item.student;
-    return ListView(
-      children: [
-        _InfoTile(
-          icon: Icons.business_outlined,
-          title: 'Empresa',
-          value: student.company ?? 'Sin empresa',
-        ),
-        _InfoTile(
-          icon: Icons.badge_outlined,
-          title: 'Cédula',
-          value: student.cedula ?? 'Sin registro',
-        ),
-        _InfoTile(
-          icon: Icons.email_outlined,
-          title: 'Correo electrónico',
-          value: student.email,
-        ),
-        _InfoTile(
-          icon: Icons.phone_outlined,
-          title: 'Teléfono',
-          value: student.phone ?? 'Sin registro',
-        ),
-        _InfoTile(
-          icon: Icons.school_outlined,
-          title: 'Carrera',
-          value: student.careerName ?? 'Sin carrera',
-        ),
-        _InfoTile(
-          icon: Icons.class_outlined,
-          title: 'Semestre',
-          value: student.semestreNombre ?? 'Sin semestre',
-        ),
-        _InfoTile(
-          icon: Icons.person_outline,
-          title: 'Tutor empresarial',
-          value:
-              '${item.companyTutorName} ${item.companyTutorPhone.isNotEmpty ? '(${item.companyTutorPhone})' : ''}',
-        ),
-        _InfoTile(
-          icon: Icons.edit_note_outlined,
-          title: 'Última actividad',
-          value: item.lastActivityDescription ?? 'Sin actividad registrada',
-        ),
-        _InfoTile(
-          icon: Icons.calendar_today_outlined,
-          title: 'Última fecha',
-          value: item.lastActivityDate ?? 'Sin registro',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLogs() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      );
-    }
-    if (_errorMessage != null) {
-      return Center(
-        child: OutlinedButton.icon(
-          onPressed: _fetchLogs,
-          icon: const Icon(Icons.refresh_rounded),
-          label: Text(_errorMessage!),
-        ),
-      );
-    }
-    if (_logs.isEmpty) {
-      return Center(
-        child: Text('Sin registros de práctica.', style: AppTextStyles.body),
-      );
-    }
-    return ListView.builder(
-      itemCount: _logs.length,
-      itemBuilder: (context, index) {
-        final log = _logs[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSizes.sm),
-          child: InstitutionalGlowCard(
-            accentColor: log.isActive
-                ? AppColors.primary
-                : AppColors.textSecondary,
-            child: ListTile(
-              title: Text(
-                '${log.date} - ${log.entryTimeLabel}',
-                style: AppTextStyles.bodyBold,
-              ),
-              subtitle: Text(
-                log.activityDescription,
-                style: AppTextStyles.caption,
-              ),
-              trailing: PopupMenuButton<String>(
-                onSelected: (value) {
-                  if (value == 'edit') _editLog(log);
-                  if (value == 'toggle') _toggleLogStatus(log);
-                },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(value: 'edit', child: Text('Editar')),
-                  PopupMenuItem(
-                    value: 'toggle',
-                    child: Text(log.isActive ? 'Desactivar' : 'Activar'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _StatPill extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _StatPill({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.infoSoft,
-        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: AppTextStyles.caption),
-          AppSizes.gapV4,
-          Text(value, style: AppTextStyles.bodyBold),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String value;
-
-  const _InfoTile({required this.icon, required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSizes.sm),
-      child: InstitutionalGlowCard(
-        accentColor: AppColors.secondary,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSizes.md),
-          child: Row(
-            children: [
-              Icon(icon, color: AppColors.primary, size: 22),
-              AppSizes.gapH12,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: AppTextStyles.caption),
-                    AppSizes.gapV4,
-                    Text(value, style: AppTextStyles.body),
-                  ],
-                ),
               ),
             ],
           ),

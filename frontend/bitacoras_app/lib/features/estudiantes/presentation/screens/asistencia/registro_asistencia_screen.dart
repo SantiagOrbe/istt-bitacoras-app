@@ -6,8 +6,8 @@ class RegistroAsistenciaScreen extends StatefulWidget {
   final String? timeLabel;
   final String? dateLabel;
   final UsuarioModel currentUser;
-  final IAsistenciaRepository attendanceRepository;
-  final BitacoraRepositoryImpl bitacoraRepository;
+  final IAsistenciaRepositorio attendanceRepository;
+  final BitacoraRepositorioImpl bitacoraRepository;
 
   const RegistroAsistenciaScreen({
     super.key,
@@ -56,15 +56,15 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
             widget.isEntry
                 ? '¡Entrada registrada con éxito!'
                 : '¡Salida registrada con éxito!',
-            style: AppTextStyles.body.copyWith(color: AppColors.surface),
+            style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
           ),
-          backgroundColor: AppColors.success,
+          backgroundColor: AppColores.success,
           behavior: SnackBarBehavior.floating,
         ),
       );
 
       if (widget.isEntry) {
-        context.go(AppRoutes.studentHome);
+        context.go(AppRoutes.inicioEstudiante);
       } else {
         Navigator.pop(context);
       }
@@ -73,9 +73,9 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
 
   Widget _buildWarningCard(String title, String message) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.error,
+      accentColor: AppColores.error,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,25 +83,25 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
             children: [
               const Icon(
                 Icons.location_off_rounded,
-                color: AppColors.error,
+                color: AppColores.error,
                 size: 28,
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Expanded(
                 child: Text(
                   title,
-                  style: AppTextStyles.bodyBold.copyWith(
-                    color: AppColors.textPrimary,
+                  style: AppEstiloTexto.bodyBold.copyWith(
+                    color: AppColores.textPrimary,
                     fontSize: 16,
                   ),
                 ),
               ),
             ],
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           Text(
             message,
-            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+            style: AppEstiloTexto.body.copyWith(color: AppColores.textSecondary),
           ),
         ],
         ),
@@ -126,12 +126,12 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
             !_controller.canRegister;
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(user: widget.currentUser),
           body: SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: const EdgeInsets.all(AppTamanos.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -153,7 +153,7 @@ class _RegistroAsistenciaScreenState extends State<RegistroAsistenciaScreen> {
                     allowedRadiusMeters:
                         _controller.companyLocation?.allowedRadiusMeters,
                   ),
-                  AppSizes.gapV24,
+                  AppTamanos.gapV24,
                   AsistenciaActionButtons(
                     isEntry: widget.isEntry,
                     isLoading: _controller.isLoading,

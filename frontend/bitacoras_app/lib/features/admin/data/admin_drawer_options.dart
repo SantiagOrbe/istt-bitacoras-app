@@ -8,32 +8,32 @@ List<SeccionMenuModel> getAdminDrawerSections() {
         ItemMenuModel(
           icon: Icons.dashboard_outlined,
           title: 'Inicio Administrador',
-          route: AppRoutes.adminHome,
+          route: AppRoutes.inicioAdmin,
         ),
         ItemMenuModel(
           icon: Icons.people_outline,
           title: 'Gestión de Usuarios',
-          route: AppRoutes.userManagement,
+          route: AppRoutes.gestionUsuarios,
         ),
         ItemMenuModel(
           icon: Icons.school_outlined,
           title: 'Gestión de Carreras',
-          route: AppRoutes.careerManagement,
+          route: AppRoutes.gestionCarreras,
         ),
         ItemMenuModel(
           icon: Icons.calendar_month_outlined,
           title: 'Periodos Lectivos',
-          route: AppRoutes.periodManagement,
+          route: AppRoutes.gestionPeriodos,
         ),
         ItemMenuModel(
           icon: Icons.business_outlined,
           title: 'Gestión de instituciones',
-          route: AppRoutes.companyManagement,
+          route: AppRoutes.gestionEmpresasAdmin,
         ),
         ItemMenuModel(
           icon: Icons.settings_suggest_outlined,
           title: 'Carreras y periodos',
-          route: AppRoutes.careerPeriod,
+          route: AppRoutes.periodoAcademico,
         ),
       ],
     ),

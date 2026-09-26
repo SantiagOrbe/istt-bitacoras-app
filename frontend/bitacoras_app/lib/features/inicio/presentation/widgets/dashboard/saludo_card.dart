@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bitacoras_app/config/constants/app_colors.dart';
-import 'package:bitacoras_app/config/constants/app_sizes.dart';
-import 'package:bitacoras_app/config/theme/app_text_styles.dart';
-import 'package:bitacoras_app/shared/widgets/institutional_glow_card.dart';
+import 'package:bitacoras_app/config/constants/app_colores.dart';
+import 'package:bitacoras_app/config/constants/app_tamanos.dart';
+import 'package:bitacoras_app/config/theme/app_estilo_texto.dart';
+import 'package:bitacoras_app/shared/widgets/tarjeta_institucional.dart';
 import 'package:bitacoras_app/shared/widgets/waving_hand.dart';
 import '../../../domain/models/rol_usuario_model.dart'; // Importamos el enum de roles para las condiciones
 
@@ -36,8 +36,6 @@ class _SaludoCardState extends State<SaludoCard> {
         return "Coordinación y control general de prácticas";
       case RolUsuarioModel.practiceManager:
         return "Gestión de vinculación y responsables de prácticas";
-      case RolUsuarioModel.teacher:
-        return "Módulo de docentes y evaluaciones";
       case RolUsuarioModel.admin:
         return "Consola de administración del sistema";
     }
@@ -53,31 +51,31 @@ class _SaludoCardState extends State<SaludoCard> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSizes.lg),
+      padding: const EdgeInsets.all(AppTamanos.lg),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primary,
-            AppColors.primary.withValues(alpha: 0.90),
-            AppColors.primary.withValues(alpha: 0.78),
+            AppColores.primary,
+            AppColores.primary.withValues(alpha: 0.90),
+            AppColores.primary.withValues(alpha: 0.78),
           ],
         ),
         border: Border.all(
-          color: AppColors.secondary.withValues(alpha: 0.34),
+          color: AppColores.secondary.withValues(alpha: 0.34),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.20),
+            color: AppColores.primary.withValues(alpha: 0.20),
             blurRadius: 24,
             spreadRadius: 1,
             offset: const Offset(0, 10),
           ),
           BoxShadow(
-            color: AppColors.secondary.withValues(alpha: 0.08),
+            color: AppColores.secondary.withValues(alpha: 0.08),
             blurRadius: 14,
             offset: const Offset(0, 3),
           ),
@@ -87,10 +85,10 @@ class _SaludoCardState extends State<SaludoCard> {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: AppColors.surface.withValues(alpha: 0.14),
-            child: const WavingHand(color: AppColors.surface, size: 28),
+            backgroundColor: AppColores.surface.withValues(alpha: 0.14),
+            child: const WavingHand(color: AppColores.surface, size: 28),
           ),
-          const SizedBox(width: AppSizes.md),
+          const SizedBox(width: AppTamanos.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +98,7 @@ class _SaludoCardState extends State<SaludoCard> {
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.surface,
+                    color: AppColores.surface,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -108,7 +106,7 @@ class _SaludoCardState extends State<SaludoCard> {
                   _getSubtitleByRole(),
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.surface.withValues(alpha: 0.80),
+                    color: AppColores.surface.withValues(alpha: 0.80),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -122,40 +120,40 @@ class _SaludoCardState extends State<SaludoCard> {
 
   Widget _buildLightCard(String firstName) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.secondary,
+      accentColor: AppColores.secondary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.lg),
+        padding: const EdgeInsets.all(AppTamanos.lg),
         child: Row(
           children: [
                 Container(
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.secondary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                    color: AppColores.secondary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   ),
                   child: const WavingHand(
-                    color: AppColors.primary,
+                    color: AppColores.primary,
                     size: 28,
                   ),
                 ),
-                AppSizes.gapH12,
+                AppTamanos.gapH12,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Hola, $firstName',
-                        style: AppTextStyles.heading.copyWith(
+                        style: AppEstiloTexto.heading.copyWith(
                           fontSize: 23,
-                          color: AppColors.textPrimary,
+                          color: AppColores.textPrimary,
                         ),
                       ),
-                      AppSizes.gapV4,
+                      AppTamanos.gapV4,
                       Text(
                         _getSubtitleByRole(),
-                        style: AppTextStyles.body.copyWith(
-                          color: AppColors.textSecondary,
+                        style: AppEstiloTexto.body.copyWith(
+                          color: AppColores.textSecondary,
                         ),
                       ),
                     ],

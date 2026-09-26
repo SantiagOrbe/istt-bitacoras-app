@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:ui' as ui;
-import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
@@ -41,8 +39,8 @@ class _MapaEmpresaSelectorState extends State<MapaEmpresaSelector> {
   @override
   void initState() {
     super.initState();
-    _latitude = kNapoDefaultLatitude;
-    _longitude = kNapoDefaultLongitude;
+    _latitude = widget.initialLatitude;
+    _longitude = widget.initialLongitude;
     _radius = widget.initialRadius;
 
     _radiusController = TextEditingController(text: _radius.toStringAsFixed(0));
@@ -74,108 +72,18 @@ class _MapaEmpresaSelectorState extends State<MapaEmpresaSelector> {
     widget.onRadiusChanged(radius);
   }
 
-  bool _isAllowedNapoLocation(double lat, double lng) {
-    const minLat = -1.8;
-    const maxLat = -0.4;
-    const minLng = -78.3;
-    const maxLng = -77.0;
-
-    return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
-  }
-
   Future<void> _openFullMapPicker() async {
     final result = await showDialog<Map<String, double>>(
       context: context,
       barrierDismissible: true,
       builder: (dialogContext) {
         final dialogController = MapController();
-        final dialogSearchController = TextEditingController();
-        var dialogLat = kNapoDefaultLatitude;
-        var dialogLng = kNapoDefaultLongitude;
+        var dialogLat = _latitude;
+        var dialogLng = _longitude;
         var dialogMapFailed = false;
-        var dialogIsSearching = false;
 
         return StatefulBuilder(
           builder: (context, setState) {
-            Future<void> searchInDialog(String rawQuery) async {
-              final query = rawQuery.trim();
-              if (query.isEmpty) return;
-
-              final messenger = ScaffoldMessenger.maybeOf(context);
-              final navigator = Navigator.of(context);
-
-              setState(() => dialogIsSearching = true);
-
-              try {
-                final uri = Uri.https(
-                  'nominatim.openstreetmap.org',
-                  '/search',
-                  {
-                    'q': query,
-                    'format': 'jsonv2',
-                    'limit': '5',
-                    'addressdetails': '1',
-                    'countrycodes': 'ec',
-                    'viewbox': '-78.3,-0.4,-77.0,-1.8',
-                    'bounded': '1',
-                  },
-                );
-
-                final response = await http.get(
-                  uri,
-                  headers: {
-                    'Accept-Language': 'es',
-                    'User-Agent': 'BitacorasApp/1.0',
-                  },
-                );
-
-                if (response.statusCode != 200) {
-                  setState(() => dialogIsSearching = false);
-                  messenger?.showSnackBar(
-                    const SnackBar(
-                      content: Text('No se pudo buscar el lugar indicado.'),
-                    ),
-                  );
-                  return;
-                }
-
-                final data = jsonDecode(response.body) as List<dynamic>;
-                final filtered = data.whereType<Map<String, dynamic>>().where((item) {
-                  final lat = double.tryParse(item['lat']?.toString() ?? '') ?? double.nan;
-                  final lng = double.tryParse(item['lon']?.toString() ?? '') ?? double.nan;
-
-                  if (lat.isNaN || lng.isNaN) return false;
-
-                  final address = item['address'];
-                  final countryCode = (address is Map ? address['country_code'] : '')?.toString().toLowerCase() ?? '';
-                  return countryCode == 'ec' && _isAllowedNapoLocation(lat, lng);
-                }).toList();
-
-                if (filtered.isEmpty) {
-                  setState(() => dialogIsSearching = false);
-                  messenger?.showSnackBar(
-                    const SnackBar(
-                      content: Text('Solo se permiten ubicaciones en Ecuador y provincia de Napo.'),
-                    ),
-                  );
-                  return;
-                }
-
-                final item = filtered.first;
-                final foundLat = double.tryParse(item['lat']?.toString() ?? '') ?? dialogLat;
-                final foundLng = double.tryParse(item['lon']?.toString() ?? '') ?? dialogLng;
-
-                setState(() => dialogIsSearching = false);
-                dialogController.move(LatLng(foundLat, foundLng), 15);
-                navigator.pop({'lat': foundLat, 'lng': foundLng});
-              } catch (_) {
-                setState(() => dialogIsSearching = false);
-                messenger?.showSnackBar(
-                  const SnackBar(content: Text('La búsqueda no está disponible ahora.')),
-                );
-              }
-            }
-
             return Dialog.fullscreen(
               child: Scaffold(
                 floatingActionButton: FloatingActionButton.extended(
@@ -205,33 +113,6 @@ class _MapaEmpresaSelectorState extends State<MapaEmpresaSelector> {
                 ),
                 body: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: TextField(
-                        controller: dialogSearchController,
-                        decoration: InputDecoration(
-                          hintText: 'Buscar lugar o dirección',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          suffixIcon: dialogIsSearching
-                              ? const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  ),
-                                )
-                              : IconButton(
-                                  icon: const Icon(Icons.search),
-                                  onPressed: () => searchInDialog(dialogSearchController.text),
-                                ),
-                        ),
-                        onSubmitted: searchInDialog,
-                      ),
-                    ),
                     Expanded(
                       child: dialogMapFailed
                           ? const Center(
@@ -414,14 +295,17 @@ class _MapaEmpresaSelectorState extends State<MapaEmpresaSelector> {
                   child: Text(
                     'Ubicación y radio permitido',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    overflow: TextOverflow.visible,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
                 const SizedBox(width: 8),
-                TextButton.icon(
-                  onPressed: _openFullMapPicker,
-                  icon: const Icon(Icons.map_outlined),
-                  label: const Text('Mapa completo'),
+                Flexible(
+                  child: TextButton.icon(
+                    onPressed: _openFullMapPicker,
+                    icon: const Icon(Icons.map_outlined),
+                    label: const Text('Mapa completo'),
+                  ),
                 ),
               ],
             ),

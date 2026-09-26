@@ -1,7 +1,6 @@
 import 'package:bitacoras_app/features/responsable_practicas/responsable_practicas.dart';
 
-
-List<SeccionMenuModel> getResponsablePracticasDrawerSections() {
+List<SeccionMenuModel> obtenerSeccionesMenuResponsablePracticas() {
   return [
     const SeccionMenuModel(
       title: 'Gestión Administrativa',
@@ -9,14 +8,18 @@ List<SeccionMenuModel> getResponsablePracticasDrawerSections() {
         ItemMenuModel(
           icon: Icons.person_add_alt_1_outlined,
           title: 'Asignación de Estudiantes',
-          route: AppRoutes.responsablePracticasAssignStudents,
+          route: AppRoutes.asignacionesResponsable,
         ),
         ItemMenuModel(
           icon: Icons.business_outlined,
           title: 'Gestión de Empresas',
-          route: AppRoutes.responsablePracticasCompanies,
+          route: AppRoutes.empresasResponsable,
         ),
       ],
     ),
   ];
 }
+
+/// Alias de compatibilidad con la nomenclatura anterior.
+List<SeccionMenuModel> getResponsablePracticasDrawerSections() =>
+    obtenerSeccionesMenuResponsablePracticas();

@@ -9,11 +9,11 @@ class LoginHeader extends StatelessWidget {
       children: [
         const AppLogo(size: 120),
         const SizedBox(height: 20),
-        Text('Bitácoras IST Tena', style: AppTextStyles.heading),
+        Text('Bitácoras IST Tena', style: AppEstiloTexto.heading),
         const SizedBox(height: 8),
         Text(
           'Inicia sesión para continuar',
-          style: AppTextStyles.subtitle,
+          style: AppEstiloTexto.subtitle,
           textAlign: TextAlign.center,
         ),
       ],

@@ -58,10 +58,10 @@ class _FormularioAsignacionEstudianteBodyState extends State<FormularioAsignacio
         children: [
           Card(
             elevation: 0,
-            color: AppColors.surface,
+            color: AppColores.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: AppColors.outline),
+              side: const BorderSide(color: AppColores.outline),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -70,10 +70,10 @@ class _FormularioAsignacionEstudianteBodyState extends State<FormularioAsignacio
                 children: [
                   Text(
                     isEditing ? 'Reasignar Tutores' : 'Asignar Tutores',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColores.textPrimary),
                   ),
                   const SizedBox(height: 4),
-                  Text('Estudiante: ${widget.assignment.studentName}', style: const TextStyle(color: AppColors.textSecondary)),
+                  Text('Estudiante: ${widget.assignment.studentName}', style: const TextStyle(color: AppColores.textSecondary)),
                 ],
               ),
             ),
@@ -101,10 +101,10 @@ class _FormularioAsignacionEstudianteBodyState extends State<FormularioAsignacio
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: _isSaving ? null : _submit,
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 14)),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColores.primary, padding: const EdgeInsets.symmetric(vertical: 14)),
             child: _isSaving
-                ? const CircularProgressIndicator(color: AppColors.surface)
-                : Text(isEditing ? 'Guardar Reasignación' : 'Confirmar Asignación', style: const TextStyle(color: AppColors.surface)),
+                ? const CircularProgressIndicator(color: AppColores.surface)
+                : Text(isEditing ? 'Guardar Reasignación' : 'Confirmar Asignación', style: const TextStyle(color: AppColores.surface)),
           ),
         ],
       ),

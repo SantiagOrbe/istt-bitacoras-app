@@ -2,6 +2,7 @@ class EmpresaModel {
   final String id;
   final String name;
   final String ruc;
+  final String canton;
   final String address;
   final String phone;
   final String email;
@@ -16,6 +17,7 @@ class EmpresaModel {
     required this.id,
     required this.name,
     required this.ruc,
+    this.canton = '',
     required this.address,
     required this.phone,
     required this.email,
@@ -32,6 +34,7 @@ class EmpresaModel {
       id: json['id']?.toString() ?? '',
       name: json['nombre'] as String? ?? '',
       ruc: json['ruc'] as String? ?? '',
+      canton: json['canton'] as String? ?? '',
       address: json['direccion'] as String? ?? '',
       phone: json['telefono'] as String? ?? '',
       email: json['correo'] as String? ?? '',
@@ -44,9 +47,13 @@ class EmpresaModel {
     );
   }
 
+  factory EmpresaModel.desdeJson(Map<String, dynamic> json) =>
+      EmpresaModel.fromJson(json);
+
   Map<String, dynamic> toJson() => {
     'nombre': name,
     'ruc': ruc,
+    'canton': canton,
     'direccion': address,
     'telefono': phone,
     'correo': email,
@@ -58,33 +65,83 @@ class EmpresaModel {
     'estado': isActive,
   };
 
+  Map<String, dynamic> aJson() => toJson();
+
   EmpresaModel copyWith({
-    String? id,
-    String? name,
-    String? ruc,
-    String? address,
-    String? phone,
-    String? email,
-    String? legalRepresentative,
-    String? agreementNumber,
-    double? latitude,
-    double? longitude,
-    double? allowedRadius,
-    bool? isActive,
+    String? nuevoId,
+    String? nuevoName,
+    String? nuevoRuc,
+    String? nuevoCanton,
+    String? nuevaAddress,
+    String? nuevoPhone,
+    String? nuevoEmail,
+    String? nuevoLegalRepresentative,
+    String? nuevoAgreementNumber,
+    double? nuevaLatitude,
+    double? nuevaLongitude,
+    double? nuevoAllowedRadius,
+    bool? nuevoIsActive,
   }) {
     return EmpresaModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      ruc: ruc ?? this.ruc,
-      address: address ?? this.address,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-      legalRepresentative: legalRepresentative ?? this.legalRepresentative,
-      agreementNumber: agreementNumber ?? this.agreementNumber,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      allowedRadius: allowedRadius ?? this.allowedRadius,
-      isActive: isActive ?? this.isActive,
+      id: nuevoId ?? id,
+      name: nuevoName ?? name,
+      ruc: nuevoRuc ?? ruc,
+      canton: nuevoCanton ?? canton,
+      address: nuevaAddress ?? address,
+      phone: nuevoPhone ?? phone,
+      email: nuevoEmail ?? email,
+      legalRepresentative: nuevoLegalRepresentative ?? legalRepresentative,
+      agreementNumber: nuevoAgreementNumber ?? agreementNumber,
+      latitude: nuevaLatitude ?? latitude,
+      longitude: nuevaLongitude ?? longitude,
+      allowedRadius: nuevoAllowedRadius ?? allowedRadius,
+      isActive: nuevoIsActive ?? isActive,
     );
   }
+
+  /// Alias en español para la copia del modelo.
+  EmpresaModel copiarCon({
+    String? nuevoId,
+    String? nuevoNombre,
+    String? nuevoRuc,
+    String? nuevaDireccion,
+    String? nuevoTelefono,
+    String? nuevoCorreo,
+    String? nuevoRepresentanteLegal,
+    String? nuevoNumeroConvenio,
+    double? nuevaLatitud,
+    double? nuevaLongitud,
+    double? nuevoRadioPermitido,
+    bool? nuevoEstado,
+  }) {
+    return EmpresaModel(
+      id: nuevoId ?? id,
+      name: nuevoNombre ?? name,
+      ruc: nuevoRuc ?? ruc,
+      address: nuevaDireccion ?? address,
+      phone: nuevoTelefono ?? phone,
+      email: nuevoCorreo ?? email,
+      legalRepresentative: nuevoRepresentanteLegal ?? legalRepresentative,
+      agreementNumber: nuevoNumeroConvenio ?? agreementNumber,
+      latitude: nuevaLatitud ?? latitude,
+      longitude: nuevaLongitud ?? longitude,
+      allowedRadius: nuevoRadioPermitido ?? allowedRadius,
+      isActive: nuevoEstado ?? isActive,
+    );
+  }
+
+  /// Alias en español para propiedades de acceso.
+  String get nombre => name;
+  String get documentoRuc => ruc;
+  String get direccion => address;
+  String get telefonoEmpresa => phone;
+  String get correoEmpresa => email;
+  String get representanteLegal => legalRepresentative;
+  String get numeroConvenio => agreementNumber;
+  double get latitud => latitude;
+  double get longitud => longitude;
+  double get radioPermitido => allowedRadius;
+  bool get estaActivo => isActive;
 }
+
+typedef Empresa = EmpresaModel;

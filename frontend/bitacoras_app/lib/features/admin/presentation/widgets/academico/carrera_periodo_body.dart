@@ -27,19 +27,19 @@ class CarreraPeriodoBody extends StatelessWidget {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(
-            AppSizes.md,
-            AppSizes.sm,
-            AppSizes.md,
+            AppTamanos.md,
+            AppTamanos.sm,
+            AppTamanos.md,
             0,
           ),
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-            border: Border.all(color: AppColors.outline),
+            color: AppColores.surface,
+            borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+            border: Border.all(color: AppColores.outline),
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow,
+                color: AppColores.shadow,
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -52,22 +52,25 @@ class CarreraPeriodoBody extends StatelessWidget {
                 height: 42,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [AppColors.secondary, AppColors.warning],
+                    colors: [AppColores.secondary, AppColores.warning],
                   ),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                 ),
-                child: const Icon(Icons.tune_rounded, color: AppColors.surface),
+                child: const Icon(
+                  Icons.tune_rounded,
+                  color: AppColores.surface,
+                ),
               ),
-              AppSizes.gapH12,
+              AppTamanos.gapH12,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Carreras y períodos', style: AppTextStyles.title),
+                    Text('Carreras y períodos', style: AppEstiloTexto.title),
                     Text(
                       'Habilita semestres para prácticas preprofesionales.',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                       ),
                     ),
                   ],
@@ -84,7 +87,7 @@ class CarreraPeriodoBody extends StatelessWidget {
         Expanded(
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(AppSizes.md),
+            padding: const EdgeInsets.all(AppTamanos.md),
             itemCount: careers.length,
             itemBuilder: (context, index) {
               final career = careers[index];

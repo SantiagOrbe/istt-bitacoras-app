@@ -21,6 +21,10 @@ class ConfiguracionPeriodoCarreraModel {
     );
   }
 
+  factory ConfiguracionPeriodoCarreraModel.desdeJson(
+    Map<String, dynamic> json,
+  ) => ConfiguracionPeriodoCarreraModel.fromJson(json);
+
   Map<String, dynamic> toJson() {
     return {
       'carrera': careerId,
@@ -28,4 +32,51 @@ class ConfiguracionPeriodoCarreraModel {
       'active_semesters': activeSemestersForPractices,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
+
+  ConfiguracionPeriodoCarreraModel copyWith({
+    String? careerId,
+    String? periodId,
+    List<int>? activeSemestersForPractices,
+  }) {
+    return ConfiguracionPeriodoCarreraModel(
+      careerId: careerId ?? this.careerId,
+      periodId: periodId ?? this.periodId,
+      activeSemestersForPractices:
+          activeSemestersForPractices ?? this.activeSemestersForPractices,
+    );
+  }
+
+  ConfiguracionPeriodoCarreraModel copiarCon({
+    String? nuevaCareerId,
+    String? nuevoPeriodId,
+    List<int>? semestresActivosPracticas,
+  }) {
+    return ConfiguracionPeriodoCarreraModel(
+      careerId: nuevaCareerId ?? careerId,
+      periodId: nuevoPeriodId ?? periodId,
+      activeSemestersForPractices:
+          semestresActivosPracticas ?? activeSemestersForPractices,
+    );
+  }
+}
+
+typedef ConfiguracionPeriodoCarreraModelo = ConfiguracionPeriodoCarreraModel;
+
+extension ConfiguracionPeriodoCarreraModelEspanol
+    on ConfiguracionPeriodoCarreraModel {
+  String get carreraId => careerId;
+  String get periodoId => periodId;
+  List<int> get semestresActivosPracticas => activeSemestersForPractices;
+
+  ConfiguracionPeriodoCarreraModel conCarreraId(String nuevaCarreraId) =>
+      copyWith(careerId: nuevaCarreraId);
+
+  ConfiguracionPeriodoCarreraModel conPeriodoId(String nuevoPeriodoId) =>
+      copyWith(periodId: nuevoPeriodoId);
+
+  ConfiguracionPeriodoCarreraModel conSemestresActivosPracticas(
+    List<int> nuevosSemestres,
+  ) => copyWith(activeSemestersForPractices: nuevosSemestres);
 }

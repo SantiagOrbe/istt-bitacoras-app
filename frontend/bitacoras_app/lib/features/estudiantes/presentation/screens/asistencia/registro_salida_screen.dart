@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 class RegistroSalidaScreen extends StatefulWidget {
   final UsuarioModel currentUser;
-  final IAsistenciaRepository attendanceRepository;
+  final IAsistenciaRepositorio attendanceRepository;
 
   const RegistroSalidaScreen({
     super.key,
@@ -36,7 +36,7 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
 
   Future<void> _handleConfirmExit() async {
     final success = await _controller.confirmExit();
-    if (success && mounted) context.go(AppRoutes.studentHome);
+    if (success && mounted) context.go(AppRoutes.inicioEstudiante);
   }
 
   @override
@@ -51,14 +51,14 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
         final time = DateFormat('hh:mm a').format(DateTime.now());
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(user: widget.currentUser),
           body: _controller.isLoading
               ? const Center(child: CircularProgressIndicator())
               : SafeArea(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.all(AppSizes.lg),
+                    padding: const EdgeInsets.all(AppTamanos.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -76,7 +76,7 @@ class _RegistroSalidaScreenState extends State<RegistroSalidaScreen> {
                               _controller.company?.allowedRadiusMeters,
                           validationMessage: _controller.validationMessage,
                         ),
-                        AppSizes.gapV24,
+                        AppTamanos.gapV24,
 
                         // Botones reutilizados parametrizados para Salida
                         AsistenciaActionButtons(

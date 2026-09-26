@@ -60,9 +60,9 @@ class _AsignacionEstudiantesDialogState
 
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       ),
       title: Row(
         children: [
@@ -70,19 +70,19 @@ class _AsignacionEstudiantesDialogState
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.secondary.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              color: AppColores.secondary.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
             ),
             child: const Icon(
               Icons.person_add_alt_1_outlined,
-              color: AppColors.secondary,
+              color: AppColores.secondary,
             ),
           ),
-          AppSizes.gapH12,
+          AppTamanos.gapH12,
           Expanded(
             child: Text(
               'Asignar estudiantes\nParalelo ${widget.nombreParalelo}',
-              style: AppTextStyles.title.copyWith(fontSize: 18),
+              style: AppEstiloTexto.title.copyWith(fontSize: 18),
             ),
           ),
         ],
@@ -98,17 +98,17 @@ class _AsignacionEstudiantesDialogState
               textoSugerido: 'Nombre, correo o cédula',
               alCambiar: (_) => setState(() {}),
             ),
-            AppSizes.gapV12,
+            AppTamanos.gapV12,
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 '${_seleccionados.length} seleccionados de ${widget.estudiantes.length}',
-                style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textSecondary,
+                style: AppEstiloTexto.caption.copyWith(
+                  color: AppColores.textSecondary,
                 ),
               ),
             ),
-            AppSizes.gapV8,
+            AppTamanos.gapV8,
             Expanded(
               child: visibles.isEmpty
                   ? const Center(child: Text('No hay estudiantes disponibles.'))
@@ -201,16 +201,16 @@ class _EncabezadoAsignacion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: AppSizes.sm, bottom: AppSizes.xs),
+      padding: const EdgeInsets.only(top: AppTamanos.sm, bottom: AppTamanos.xs),
       child: Row(
         children: [
-          Icon(icono, size: 18, color: AppColors.primary),
-          AppSizes.gapH8,
+          Icon(icono, size: 18, color: AppColores.primary),
+          AppTamanos.gapH8,
           Expanded(
             child: Text(
               '$titulo ($cantidad)',
-              style: AppTextStyles.bodyBold.copyWith(
-                color: AppColors.textPrimary,
+              style: AppEstiloTexto.bodyBold.copyWith(
+                color: AppColores.textPrimary,
               ),
             ),
           ),
@@ -228,10 +228,10 @@ class _MensajeAsignacion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
+      padding: const EdgeInsets.symmetric(vertical: AppTamanos.sm),
       child: Text(
         texto,
-        style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+        style: AppEstiloTexto.caption.copyWith(color: AppColores.textSecondary),
       ),
     );
   }

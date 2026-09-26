@@ -2,8 +2,8 @@ import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 
 class RegistroActividadController extends ChangeNotifier {
-  final IAsistenciaRepository repository;
-  final BitacoraRepositoryImpl bitacoraRepository;
+  final IAsistenciaRepositorio repository;
+  final BitacoraRepositorioImpl bitacoraRepository;
 
   RegistroActividadController({
     required this.repository,
@@ -21,7 +21,7 @@ class RegistroActividadController extends ChangeNotifier {
 
   Future<bool> validateLocation() async {
     try {
-      final company = await repository.getAssignedCompanyLocation();
+      final company = await repository.obtenerUbicacionEmpresaAsignada();
       if (!await Geolocator.isLocationServiceEnabled()) {
         validationMessage = 'Active el GPS para registrar sus actividades.';
         canRegister = false;
@@ -88,7 +88,7 @@ class RegistroActividadController extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    final currentRecord = await repository.getCurrentRecord();
+    final currentRecord = await repository.obtenerRegistroActual();
     if (currentRecord == null) {
       isLoading = false;
       notifyListeners();
@@ -99,7 +99,7 @@ class RegistroActividadController extends ChangeNotifier {
       for (final controller in controllers) {
         final description = controller.text.trim();
         if (description.isEmpty) continue;
-        await bitacoraRepository.createActivity({
+        await bitacoraRepository.crearActividad({
           'descripcion': description,
           'registro_practica': currentRecord.id,
         });

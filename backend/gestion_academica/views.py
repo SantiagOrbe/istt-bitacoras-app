@@ -14,6 +14,7 @@ from .models import (
 )
 from .serializers import (
     CarreraPeriodoSerializer,
+    ConfiguracionMasivaCarrerasPeriodoSerializer,
     CarreraSerializer,
     SemestreSerializer,
     ParaleloSerializer,
@@ -37,6 +38,24 @@ class PeriodoViewSet(SoftDeleteViewSet):
     queryset = Periodo.objects.all().order_by('-estado', '-fecha_inicio', '-id')
     serializer_class = PeriodoSerializer
     permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        next_state = serializer.validated_data.get('estado', True)
+        if next_state:
+            Periodo.objects.filter(estado=True).update(estado=False)
+        serializer.save()
+
+    @transaction.atomic
+    def perform_update(self, serializer):
+        current_period = serializer.instance
+        next_state = serializer.validated_data.get('estado', current_period.estado)
+        other_active_periods = Periodo.objects.exclude(
+            pk=current_period.pk
+        ).filter(estado=True)
+        if next_state:
+            other_active_periods.update(estado=False)
+        serializer.save()
 
     @staticmethod
     def _parse_estado(value):
@@ -112,11 +131,12 @@ class CarreraViewSet(SoftDeleteViewSet):
 
     def _sync_semestres_y_relaciones(self, carrera, estado):
         Semestre.objects.filter(carrera=carrera).update(estado=estado)
+        Paralelo.objects.filter(semestre__carrera=carrera).update(estado=estado)
         CarreraPeriodo.objects.filter(carrera=carrera).update(estado=estado)
 
     def _check_desactivacion_confirmada(self, carrera, request):
         estado_nuevo = self._parse_estado(request.data.get('estado'))
-        if estado_nuevo is not False:
+        if estado_nuevo is not False or not carrera.estado:
             return None
         if request.data.get('confirm_desactivate') in {True, 'true', '1', 1}:
             return None
@@ -188,6 +208,51 @@ class CarreraPeriodoViewSet(SoftDeleteViewSet):
     serializer_class = CarreraPeriodoSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['post'], url_path='configurar-periodo')
+    @transaction.atomic
+    def configurar_periodo(self, request):
+        serializer = ConfiguracionMasivaCarrerasPeriodoSerializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+
+        periodo = serializer.validated_data['periodo']
+        for configuracion in serializer.validated_data['carreras']:
+            carrera = configuracion['carrera']
+            niveles_activos = configuracion['active_semesters']
+            CarreraPeriodo.objects.filter(
+                carrera=carrera,
+                periodo=periodo,
+            ).update(estado=False)
+
+            semestres = Semestre.objects.filter(
+                carrera=carrera,
+                estado=True,
+                nivel__in=niveles_activos,
+            )
+            for semestre in semestres:
+                config = CarreraPeriodo.objects.filter(
+                    carrera=carrera,
+                    periodo=periodo,
+                    semestre=semestre,
+                    paralelo__isnull=True,
+                ).first()
+                if config is None:
+                    CarreraPeriodo.objects.create(
+                        carrera=carrera,
+                        periodo=periodo,
+                        semestre=semestre,
+                        estado=True,
+                    )
+                elif not config.estado:
+                    config.estado = True
+                    config.save(update_fields=['estado'])
+
+        return Response(
+            {'detail': 'Configuración del período guardada correctamente.'},
+            status=status.HTTP_200_OK,
+        )
+
 
 class SemestreViewSet(SoftDeleteViewSet):
     queryset = Semestre.objects.all()
@@ -208,6 +273,7 @@ class SemestreViewSet(SoftDeleteViewSet):
         return None
 
     def _sync_carrera_periodos(self, semestre, estado):
+        Paralelo.objects.filter(semestre=semestre).update(estado=estado)
         CarreraPeriodo.objects.filter(semestre=semestre).update(estado=estado)
 
     def update(self, request, *args, **kwargs):
@@ -260,7 +326,9 @@ class ParaleloViewSet(SoftDeleteViewSet):
         return None
 
     def get_queryset(self):
-        queryset = Paralelo.objects.all()
+        queryset = Paralelo.objects.select_related(
+            'semestre', 'semestre__carrera'
+        )
         semestre_id = self.request.query_params.get('semestre')
         carrera_id = self.request.query_params.get('carrera')
         if semestre_id:

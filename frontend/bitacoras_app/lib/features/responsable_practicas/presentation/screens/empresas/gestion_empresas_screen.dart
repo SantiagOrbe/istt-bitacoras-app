@@ -26,7 +26,7 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
       animation: _controller,
       builder: (context, child) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(
             user: context.read<AuthSession>().currentUser!,
             showBackButton: true,
@@ -37,39 +37,39 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  AppSizes.md,
-                  AppSizes.md,
-                  AppSizes.md,
-                  AppSizes.sm,
+                  AppTamanos.md,
+                  AppTamanos.md,
+                  AppTamanos.md,
+                  AppTamanos.sm,
                 ),
                 child: InstitutionalGlowCard(
-                  accentColor: AppColors.primary,
+                  accentColor: AppColores.primary,
                   child: Padding(
-                    padding: const EdgeInsets.all(AppSizes.md),
+                    padding: const EdgeInsets.all(AppTamanos.md),
                     child: Row(
                       children: [
                         Container(
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.10),
-                            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                            color: AppColores.primary.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                           ),
                           child: const Icon(
                             Icons.business_rounded,
-                            color: AppColors.primary,
+                            color: AppColores.primary,
                           ),
                         ),
-                        AppSizes.gapH12,
+                        AppTamanos.gapH12,
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Empresas e instituciones', style: AppTextStyles.title),
-                              AppSizes.gapV4,
+                              Text('Empresas e instituciones', style: AppEstiloTexto.title),
+                              AppTamanos.gapV4,
                               Text(
                                 '${_controller.companies.length} registros disponibles',
-                                style: AppTextStyles.caption,
+                                style: AppEstiloTexto.caption,
                               ),
                             ],
                           ),
@@ -80,25 +80,25 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.sm, AppSizes.md, AppSizes.md),
+                padding: const EdgeInsets.fromLTRB(AppTamanos.md, AppTamanos.sm, AppTamanos.md, AppTamanos.md),
                 child: TextField(
                   onChanged: _controller.searchCompanies,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: const TextStyle(color: AppColores.textPrimary),
                   decoration: InputDecoration(
                     hintText: 'Buscar por nombre o dirección...',
-                    hintStyle: const TextStyle(color: AppColors.textHint),
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textSecondary),
+                    hintStyle: const TextStyle(color: AppColores.textHint),
+                    prefixIcon: const Icon(Icons.search_rounded, color: AppColores.textSecondary),
                     filled: true,
-                    fillColor: AppColors.surface,
-                    prefixIconColor: AppColors.primary,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd), borderSide: const BorderSide(color: AppColors.outline)),
+                    fillColor: AppColores.surface,
+                    prefixIconColor: AppColores.primary,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTamanos.radiusMd), borderSide: const BorderSide(color: AppColores.outline)),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                      borderSide: const BorderSide(color: AppColors.outline),
+                      borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+                      borderSide: const BorderSide(color: AppColores.outline),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                      borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+                      borderSide: const BorderSide(color: AppColores.primary, width: 1.5),
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
@@ -106,12 +106,12 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
               ),
               Expanded(
                 child: _controller.isLoading
-                    ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                    ? const Center(child: CircularProgressIndicator(color: AppColores.primary))
                     : _controller.companies.isEmpty
                         ? const Center(
                             child: Text(
                               'No se encontraron empresas registradas.',
-                              style: TextStyle(color: AppColors.textSecondary),
+                              style: TextStyle(color: AppColores.textSecondary),
                             ),
                           )
                         : ListView.builder(
@@ -121,7 +121,7 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
                               return EmpresaCard(
                                 company: company,
                                 onTap: () => context.push(
-                                  AppRoutes.responsablePracticasCompanyDetail,
+                                  AppRoutes.detalleEmpresaResponsable,
                                   extra: company,
                                 ),
                               );

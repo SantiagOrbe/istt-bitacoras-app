@@ -1,18 +1,18 @@
 import '../../auth.dart';
 
 abstract class IAuthRepository {
-  Future<UsuarioModel?> login({
+  Future<UsuarioModel?> iniciarSesion({
     required String email,
     required String password,
   });
 
-  Future<void> register({
+  Future<void> registrarUsuario({
     required String email,
     required String password,
     required String confirmPassword,
   });
 
-  Future<void> logout();
+  Future<void> cerrarSesion();
 
-  Future<UsuarioModel?> getCurrentUser();
+  Future<UsuarioModel?> obtenerUsuarioActual();
 }

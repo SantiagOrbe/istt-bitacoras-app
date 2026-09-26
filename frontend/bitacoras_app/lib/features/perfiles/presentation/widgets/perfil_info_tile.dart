@@ -15,39 +15,39 @@ class PerfilInfoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.primary,
+      accentColor: AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                color: AppColores.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
               ),
               child: Icon(
                 icon,
-                color: AppColors.primary,
+                color: AppColores.primary,
                 size: 22,
               ),
             ),
-            const SizedBox(width: AppSizes.md),
+            const SizedBox(width: AppTamanos.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     value.isNotEmpty ? value : 'Sin especificar',
-                    style: AppTextStyles.bodyBold.copyWith(
-                      color: AppColors.textPrimary,
+                    style: AppEstiloTexto.bodyBold.copyWith(
+                      color: AppColores.textPrimary,
                     ),
                   ),
                 ],

@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
 class PeriodoCard extends StatelessWidget {
   final PeriodoModel period;
   final VoidCallback onTap;
@@ -16,19 +15,19 @@ class PeriodoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+      color: AppColores.surface,
+      borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
         child: Container(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            border: Border.all(color: AppColors.outline),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
+            border: Border.all(color: AppColores.outline),
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow,
+                color: AppColores.shadow,
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -41,56 +40,58 @@ class PeriodoCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  color: AppColores.secondary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   border: Border.all(
-                    color: AppColors.secondary.withValues(alpha: 0.22),
+                    color: AppColores.secondary.withValues(alpha: 0.22),
                   ),
                 ),
                 child: const Icon(
                   Icons.calendar_month_rounded,
-                  color: AppColors.secondary,
+                  color: AppColores.secondary,
                 ),
               ),
-              AppSizes.gapH12,
+              AppTamanos.gapH12,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       period.name,
-                      style: AppTextStyles.bodyBold.copyWith(fontSize: 15),
+                      style: AppEstiloTexto.bodyBold.copyWith(fontSize: 15),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       '${_formatDate(period.startDate)} - ${_formatDate(period.endDate)}',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                       ),
                     ),
-                    AppSizes.gapV8,
+                    AppTamanos.gapV8,
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppSizes.sm,
-                        vertical: AppSizes.xs,
+                        horizontal: AppTamanos.sm,
+                        vertical: AppTamanos.xs,
                       ),
                       decoration: BoxDecoration(
                         color: period.isActive
-                          ? AppColors.successSoft
-                          : AppColors.errorSoft,
-                        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                            ? AppColores.successSoft
+                            : AppColores.errorSoft,
+                        borderRadius: BorderRadius.circular(
+                          AppTamanos.radiusSm,
+                        ),
                         border: Border.all(
                           color: period.isActive
-                            ? AppColors.success.withValues(alpha: 0.35)
-                            : AppColors.error.withValues(alpha: 0.35),
+                              ? AppColores.success.withValues(alpha: 0.35)
+                              : AppColores.error.withValues(alpha: 0.35),
                         ),
                       ),
                       child: Text(
                         period.isActive ? 'Activo' : 'Inactivo',
-                        style: AppTextStyles.caption.copyWith(
+                        style: AppEstiloTexto.caption.copyWith(
                           color: period.isActive
-                              ? AppColors.success
-                              : AppColors.error,
+                              ? AppColores.success
+                              : AppColores.error,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -98,19 +99,21 @@ class PeriodoCard extends StatelessWidget {
                   ],
                 ),
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Switch.adaptive(
                     value: period.isActive,
                     onChanged: (_) => onToggleStatus(),
-                    activeThumbColor: AppColors.primary,
-                    activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
+                    activeThumbColor: AppColores.primary,
+                    activeTrackColor: AppColores.primary.withValues(
+                      alpha: 0.35,
+                    ),
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.textSecondary,
+                    color: AppColores.textSecondary,
                   ),
                 ],
               ),

@@ -1,171 +1,188 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
 class AdminRepositoryImpl implements IAdminRepository {
   final AdminRemoteDataSource remoteDataSource;
 
   AdminRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<UsuarioModel>> getUsers({
+  Future<List<UsuarioModel>> obtenerUsuarios({
     bool? isActive,
     String? role,
     String? search,
-  }) async => (await remoteDataSource.getUsers(
+  }) async => (await remoteDataSource.obtenerUsuarios(
     isActive: isActive,
     role: role,
     search: search,
   )).map(UsuarioModel.fromJson).toList();
 
   @override
-  Future<bool> createUser(UsuarioModel user) async {
-    await remoteDataSource.createUser(user.toJson());
+  Future<bool> crearUsuario(UsuarioModel usuario) async {
+    await remoteDataSource.crearUsuario(usuario.toJson());
     return true;
   }
 
   @override
-  Future<bool> updateUser(UsuarioModel user) async {
-    await remoteDataSource.updateUser(user.id, user.toJson());
+  Future<bool> actualizarUsuario(UsuarioModel usuario) async {
+    await remoteDataSource.actualizarUsuario(usuario.id, usuario.toJson());
     return true;
   }
 
   @override
-  Future<bool> setUserActive(String userId, bool isActive) async {
-    await remoteDataSource.setUserActive(userId, isActive);
+  Future<bool> cambiarEstadoUsuario(String userId, bool isActive) async {
+    await remoteDataSource.cambiarEstadoUsuario(userId, isActive);
     return true;
   }
 
   @override
-  Future<bool> deleteUser(String userId) async {
-    await remoteDataSource.deleteUser(userId);
+  Future<bool> eliminarUsuario(String userId) async {
+    await remoteDataSource.eliminarUsuario(userId);
     return true;
   }
 
   @override
-  Future<List<EmpresaModel>> getCompanies() async =>
-      (await remoteDataSource.getCompanies())
+  Future<List<EmpresaModel>> obtenerEmpresas() async =>
+      (await remoteDataSource.obtenerEmpresas())
           .map(EmpresaModel.fromJson)
           .toList();
 
   @override
-  Future<bool> createCompany(EmpresaModel company) async {
-    await remoteDataSource.createCompany(company.toJson());
+  Future<bool> crearEmpresa(EmpresaModel empresa) async {
+    await remoteDataSource.crearEmpresa(empresa.toJson());
     return true;
   }
 
   @override
-  Future<bool> updateCompany(EmpresaModel company) async {
-    await remoteDataSource.updateCompany(company.id, company.toJson());
+  Future<bool> actualizarEmpresa(EmpresaModel empresa) async {
+    await remoteDataSource.actualizarEmpresa(empresa.id, empresa.toJson());
     return true;
   }
 
   @override
-  Future<bool> deactivateCompany(String companyId, {bool unlinkStudents = false}) async {
-    await remoteDataSource.deactivateCompany(companyId, unlinkStudents: unlinkStudents);
+  Future<bool> desactivarEmpresa(
+    String companyId, {
+    bool unlinkStudents = false,
+  }) async {
+    await remoteDataSource.desactivarEmpresa(
+      companyId,
+      unlinkStudents: unlinkStudents,
+    );
     return true;
   }
 
   @override
-  Future<List<Map<String, String>>> getCompanyLinkedStudents(String companyId) async {
-    return await remoteDataSource.getCompanyLinkedStudents(companyId);
+  Future<List<Map<String, String>>> obtenerEstudiantesVinculadosEmpresa(
+    String companyId,
+  ) async {
+    return await remoteDataSource.obtenerEstudiantesVinculadosEmpresa(
+      companyId,
+    );
   }
 
   @override
-  Future<List<CicloModel>> getCycles({String? careerId}) async =>
-      (await remoteDataSource.getCycles(
+  Future<List<CicloModel>> obtenerCiclos({String? careerId}) async =>
+      (await remoteDataSource.obtenerCiclos(
         careerId: careerId,
       )).map(CicloModel.fromJson).toList();
 
   @override
-  Future<bool> createCycle(CicloModel cycle) async {
-    await remoteDataSource.createCycle(cycle.toJson());
+  Future<bool> crearCiclo(CicloModel ciclo) async {
+    await remoteDataSource.crearCiclo(ciclo.toJson());
     return true;
   }
 
   @override
-  Future<bool> updateCycle(CicloModel cycle) async {
-    await remoteDataSource.updateCycle(cycle.id, cycle.toJson());
+  Future<bool> actualizarCiclo(CicloModel ciclo) async {
+    await remoteDataSource.actualizarCiclo(ciclo.id, ciclo.toJson());
     return true;
   }
 
   @override
-  Future<List<ParaleloModel>> getParallels({
+  Future<List<ParaleloModel>> obtenerParalelos({
     String? careerId,
     String? semesterId,
-  }) async => (await remoteDataSource.getParallels(
+  }) async => (await remoteDataSource.obtenerParalelos(
     careerId: careerId,
     semesterId: semesterId,
   )).map(ParaleloModel.fromJson).toList();
 
   @override
-  Future<bool> createParallel(ParaleloModel parallel) async {
-    await remoteDataSource.createParallel(parallel.toJson());
+  Future<bool> crearParalelo(ParaleloModel paralelo) async {
+    await remoteDataSource.crearParalelo(paralelo.toJson());
     return true;
   }
 
   @override
-  Future<bool> updateParallel(ParaleloModel parallel) async {
-    await remoteDataSource.updateParallel(parallel.id, parallel.toJson());
+  Future<bool> actualizarParalelo(ParaleloModel paralelo) async {
+    await remoteDataSource.actualizarParalelo(paralelo.id, paralelo.toJson());
     return true;
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getParallelStudents(String parallelId) =>
-      remoteDataSource.getParallelStudents(parallelId);
+  Future<List<Map<String, dynamic>>> obtenerEstudiantesParalelo(
+    String parallelId,
+  ) => remoteDataSource.obtenerEstudiantesParalelo(parallelId);
 
   @override
-  Future<bool> assignParallelStudents(
+  Future<bool> asignarEstudiantesParalelo(
     String parallelId,
     List<int> studentIds,
   ) async {
-    await remoteDataSource.assignParallelStudents(parallelId, studentIds);
+    await remoteDataSource.asignarEstudiantesParalelo(parallelId, studentIds);
     return true;
   }
 
   @override
-  Future<bool> removeParallelStudents(String parallelId) async {
-    await remoteDataSource.removeParallelStudents(parallelId);
+  Future<bool> eliminarEstudiantesParalelo(String parallelId) async {
+    await remoteDataSource.eliminarEstudiantesParalelo(parallelId);
     return true;
   }
 
   @override
-  Future<List<CarreraModel>> getCareers() async =>
-      (await remoteDataSource.getCareers()).map(CarreraModel.fromJson).toList();
+  Future<List<CarreraModel>> obtenerCarreras() async =>
+      (await remoteDataSource.obtenerCarreras())
+          .map(CarreraModel.fromJson)
+          .toList();
 
   @override
-  Future<bool> createCareer(CarreraModel career) async {
-    await remoteDataSource.createCareer(career.toJson());
+  Future<bool> crearCarrera(CarreraModel carrera) async {
+    await remoteDataSource.crearCarrera(carrera.toJson());
     return true;
   }
 
   @override
-  Future<bool> updateCareer(CarreraModel career, {bool confirmDesactivate = false}) async {
-    await remoteDataSource.updateCareer(
-      career.id,
-      career.toJson(),
+  Future<bool> actualizarCarrera(
+    CarreraModel carrera, {
+    bool confirmDesactivate = false,
+  }) async {
+    await remoteDataSource.actualizarCarrera(
+      carrera.id,
+      carrera.toJson(),
       confirmDesactivate: confirmDesactivate,
     );
     return true;
   }
 
   @override
-  Future<List<PeriodoModel>> getPeriods() async =>
-      (await remoteDataSource.getPeriods()).map(PeriodoModel.fromJson).toList();
+  Future<List<PeriodoModel>> obtenerPeriodos() async =>
+      (await remoteDataSource.obtenerPeriodos())
+          .map(PeriodoModel.fromJson)
+          .toList();
 
   @override
-  Future<bool> createPeriod(PeriodoModel period) async {
-    await remoteDataSource.createPeriod(period.toJson());
+  Future<bool> crearPeriodo(PeriodoModel periodo) async {
+    await remoteDataSource.crearPeriodo(periodo.toJson());
     return true;
   }
 
   @override
-  Future<bool> updatePeriod(
-    PeriodoModel period, {
+  Future<bool> actualizarPeriodo(
+    PeriodoModel periodo, {
     bool confirmDesactivate = false,
   }) async {
-    await remoteDataSource.updatePeriod(
-      period.id,
-      period.toJson(),
+    await remoteDataSource.actualizarPeriodo(
+      periodo.id,
+      periodo.toJson(),
       confirmDesactivate: confirmDesactivate,
     );
     return true;
@@ -173,22 +190,37 @@ class AdminRepositoryImpl implements IAdminRepository {
 
   @override
   Future<List<ConfiguracionPeriodoCarreraModel>>
-  getConfiguracionPeriodoCarreraModels() async =>
-      (await remoteDataSource.getCareerPeriodConfigurations())
+  obtenerConfiguracionesPeriodoCarrera() async =>
+      (await remoteDataSource.obtenerConfiguracionesPeriodoCarrera())
           .map(ConfiguracionPeriodoCarreraModel.fromJson)
           .toList();
 
   @override
-  Future<bool> saveConfiguracionPeriodoCarreraModel(
+  Future<bool> guardarConfiguracionPeriodoCarrera(
     ConfiguracionPeriodoCarreraModel config,
   ) async {
-    await remoteDataSource.saveCareerPeriodConfiguration(config.toJson());
+    await remoteDataSource.guardarConfiguracionPeriodoCarrera(config.toJson());
     return true;
   }
 
   @override
-  Future<List<RegistroPracticaModel>> getPracticeLogs() async =>
-      (await remoteDataSource.getPracticeLogs())
+  Future<bool> guardarConfiguracionesCarrerasPeriodo(
+    String periodId,
+    List<ConfiguracionPeriodoCarreraModel> configs,
+  ) async {
+    await remoteDataSource.guardarConfiguracionesCarrerasPeriodo(
+      periodId,
+      configs.map((config) => {
+        'carrera': config.careerId,
+        'active_semesters': config.activeSemestersForPractices,
+      }).toList(),
+    );
+    return true;
+  }
+
+  @override
+  Future<List<RegistroPracticaModel>> obtenerRegistrosPractica() async =>
+      (await remoteDataSource.obtenerRegistrosPractica())
           .map(RegistroPracticaModel.fromJson)
           .toList();
 }

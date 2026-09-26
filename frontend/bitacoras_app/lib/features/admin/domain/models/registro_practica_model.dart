@@ -133,6 +133,32 @@ class RegistroPracticaModel {
     );
   }
 
+  RegistroPracticaModel copiarCon({
+    String? nuevoId,
+    String? estudianteId,
+    String? nombreEstudiante,
+    String? nombreEmpresa,
+    String? fecha,
+    String? horaEntrada,
+    String? horaSalida,
+    String? descripcionActividad,
+    String? estado,
+    bool? activo,
+  }) {
+    return RegistroPracticaModel(
+      id: nuevoId ?? id,
+      studentId: estudianteId ?? studentId,
+      studentName: nombreEstudiante ?? studentName,
+      companyName: nombreEmpresa ?? companyName,
+      date: fecha ?? date,
+      entryTime: horaEntrada ?? entryTime,
+      exitTime: horaSalida ?? exitTime,
+      activityDescription: descripcionActividad ?? activityDescription,
+      status: estado ?? status,
+      isActive: activo ?? isActive,
+    );
+  }
+
   factory RegistroPracticaModel.fromJson(Map<String, dynamic> json) {
     final normalizedStatus = normalizeStatus(json['estado'] ?? json['status']);
     final activeValue = json['is_active'] ?? json['estado'];
@@ -147,9 +173,15 @@ class RegistroPracticaModel {
       exitTime: json['hora_salida'] as String?,
       activityDescription: json['actividad_descripcion'] as String? ?? '',
       status: normalizedStatus,
-      isActive: normalizeIsActive(activeValue, fallback: normalizedStatus != 'Desactivado'),
+      isActive: normalizeIsActive(
+        activeValue,
+        fallback: normalizedStatus != 'Desactivado',
+      ),
     );
   }
+
+  factory RegistroPracticaModel.desdeJson(Map<String, dynamic> json) =>
+      RegistroPracticaModel.fromJson(json);
 
   Map<String, dynamic> toJson() {
     return {
@@ -165,4 +197,32 @@ class RegistroPracticaModel {
       'is_active': isActive,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
+}
+
+typedef RegistroPracticaModelo = RegistroPracticaModel;
+
+extension RegistroPracticaModelEspanol on RegistroPracticaModel {
+  String get estudianteId => studentId;
+  String get nombreEstudiante => studentName;
+  String get nombreEmpresa => companyName;
+  String get fecha => date;
+  String get horaEntrada => entryTime;
+  String? get horaSalida => exitTime;
+  String get descripcionActividad => activityDescription;
+  String get estadoRegistro => status;
+  bool get activo => isActive;
+
+  String get horaEntradaEtiqueta => entryTimeLabel;
+  String get horaSalidaEtiqueta => exitTimeLabel;
+
+  RegistroPracticaModel conNombreEstudiante(String nuevoNombre) =>
+      copyWith(studentName: nuevoNombre);
+  RegistroPracticaModel conEmpresa(String nuevaEmpresa) =>
+      copyWith(companyName: nuevaEmpresa);
+  RegistroPracticaModel conEstado(String nuevoEstado) =>
+      copyWith(status: nuevoEstado);
+  RegistroPracticaModel conActivo(bool nuevoActivo) =>
+      copyWith(isActive: nuevoActivo);
 }

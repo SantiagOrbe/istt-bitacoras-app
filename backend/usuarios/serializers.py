@@ -156,6 +156,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
                         profile.semestre.horas_practicas if profile.semestre else 0
                     ),
                     'horas_acumuladas': profile.recalcular_horas_acumuladas(),
+                    'puede_registrar_practicas': profile.puede_registrar_practicas,
                 })
                 data['career_name'] = (
                     profile.carrera.nombre if profile.carrera else None

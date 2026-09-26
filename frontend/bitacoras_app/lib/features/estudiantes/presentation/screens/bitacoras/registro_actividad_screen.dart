@@ -2,8 +2,8 @@ import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 class RegistroActividadScreen extends StatefulWidget {
   final UsuarioModel currentUser;
-  final IAsistenciaRepository attendanceRepository;
-  final BitacoraRepositoryImpl bitacoraRepository;
+  final IAsistenciaRepositorio attendanceRepository;
+  final BitacoraRepositorioImpl bitacoraRepository;
 
   const RegistroActividadScreen({
     super.key,
@@ -47,9 +47,9 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
           content: Text(
             _controller.validationMessage ??
               'Por favor, ingrese al menos una actividad.',
-            style: AppTextStyles.body.copyWith(color: AppColors.surface),
+            style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
           ),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -60,14 +60,14 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
       SnackBar(
         content: Text(
           '¡Actividades guardadas con éxito!',
-          style: AppTextStyles.body.copyWith(color: AppColors.surface),
+          style: AppEstiloTexto.body.copyWith(color: AppColores.surface),
         ),
-        backgroundColor: AppColors.success,
+        backgroundColor: AppColores.success,
         behavior: SnackBarBehavior.floating,
       ),
     );
 
-    context.go(AppRoutes.registerExitAttendance);
+    context.go(AppRoutes.registrarSalidaAsistencia);
   }
 
   @override
@@ -76,17 +76,17 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(user: widget.currentUser),
           body: SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: const EdgeInsets.all(AppTamanos.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const RegistroActividadHeader(),
-                  AppSizes.gapV24,
+                  AppTamanos.gapV24,
                   if (!_controller.isLoading && !_controller.canRegister)
                     UbicacionEstadoCard(
                       isValid: false,
@@ -94,12 +94,12 @@ class _RegistroActividadScreenState extends State<RegistroActividadScreen> {
                           'No se puede registrar la actividad en este momento.',
                     ),
                   if (!_controller.isLoading && !_controller.canRegister)
-                    AppSizes.gapV16,
+                    AppTamanos.gapV16,
                   RegistroActividadList(
                     controllers: _controller.controllers,
                     onRemove: _controller.removeActivityField,
                   ),
-                  AppSizes.gapV16,
+                  AppTamanos.gapV16,
                   RegistroActividadActionButtons(
                     isLoading: _controller.isLoading,
                     enabled: _controller.canRegister,

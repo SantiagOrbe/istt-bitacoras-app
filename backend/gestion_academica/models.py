@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class Periodo(models.Model):
@@ -12,6 +13,11 @@ class Periodo(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['nombre'], name='unique_periodo_nombre'
+            ),
+            models.UniqueConstraint(
+                fields=['estado'],
+                condition=Q(estado=True),
+                name='unique_active_periodo',
             ),
         ]
 

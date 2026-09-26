@@ -30,190 +30,211 @@ class GestionUsuarioBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.sm, AppSizes.md, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(
-              AppSizes.md,
-              AppSizes.md,
-              AppSizes.md,
-              AppSizes.sm,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-              border: Border.all(color: AppColors.outline),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.shadow,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.fromLTRB(
+            AppTamanos.md,
+            AppTamanos.md,
+            AppTamanos.md,
+            AppTamanos.sm,
+          ),
+          decoration: BoxDecoration(
+            color: AppColores.surface,
+            borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
+            border: Border.all(color: AppColores.outline),
+            boxShadow: [
+              BoxShadow(
+                color: AppColores.shadow,
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: AppColores.secondary.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(
+                        AppTamanos.radiusSm,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.manage_accounts_outlined,
+                      color: AppColores.secondary,
+                    ),
+                  ),
+                  AppTamanos.gapH12,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Gestión de usuarios',
+                          style: AppEstiloTexto.title,
+                        ),
+                        Text(
+                          'Directorio y permisos institucionales',
+                          style: AppEstiloTexto.caption,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '$totalUsers registros',
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              AppTamanos.gapV16,
+              UsuarioSearchBar(onChanged: onSearchChanged),
+              AppTamanos.gapV12,
+
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
-                    Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                      ),
-                      child: const Icon(
-                        Icons.manage_accounts_outlined,
-                        color: AppColors.secondary,
-                      ),
+                    _FilterChip(
+                      label: 'Todos',
+                      selected: activeFilter == null,
+                      onSelected: (_) => onActiveChanged(null),
                     ),
-                    AppSizes.gapH12,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Gestión de usuarios', style: AppTextStyles.title),
-                          Text(
-                            'Directorio y permisos institucionales',
-                            style: AppTextStyles.caption,
-                          ),
-                        ],
-                      ),
+                    _FilterChip(
+                      label: 'Activos',
+                      selected: activeFilter == true,
+                      onSelected: (_) => onActiveChanged(true),
                     ),
-                    Text(
-                      '$totalUsers registros',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    _FilterChip(
+                      label: 'Inactivos',
+                      selected: activeFilter == false,
+                      onSelected: (_) => onActiveChanged(false),
                     ),
                   ],
                 ),
-                AppSizes.gapV16,
-                UsuarioSearchBar(onChanged: onSearchChanged),
-                AppSizes.gapV12,
-
-                SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _FilterChip(
-                  label: 'Todos',
-                  selected: activeFilter == null,
-                  onSelected: (_) => onActiveChanged(null),
-                ),
-                _FilterChip(
-                  label: 'Activos',
-                  selected: activeFilter == true,
-                  onSelected: (_) => onActiveChanged(true),
-                ),
-                _FilterChip(
-                  label: 'Inactivos',
-                  selected: activeFilter == false,
-                  onSelected: (_) => onActiveChanged(false),
-                ),
-              ],
-            ),
-                ),
-
-                AppSizes.gapV8,
-
-                DropdownButtonFormField<String?>(
-            initialValue: roleFilter,
-                  isExpanded: true,
-            decoration: const InputDecoration(
-              labelText: 'Filtrar por rol',
-              prefixIcon: Icon(Icons.badge_outlined),
-            ),
-            items: const [
-              DropdownMenuItem<String?>(
-                value: null,
-                child: Text('Todos los roles'),
               ),
-              DropdownMenuItem(value: 'estudiante', child: Text('Estudiantes')),
-              DropdownMenuItem(value: 'docente', child: Text('Docentes')),
-              DropdownMenuItem(
-                value: 'tutor_academico',
-                child: Text('Tutores académicos'),
-              ),
-              DropdownMenuItem(
-                value: 'tutor_empresarial',
-                child: Text('Tutores empresariales'),
-              ),
-              DropdownMenuItem(
-                value: 'coordinador',
-                child: Text('Coordinadores'),
-              ),
-              DropdownMenuItem(
-                value: 'responsable_practicas',
-                child: Text('Responsables de prácticas'),
-              ),
-              DropdownMenuItem(value: 'admin', child: Text('Administradores')),
-            ],
-            onChanged: onRoleChanged,
+
+              AppTamanos.gapV8,
+
+              DropdownButtonFormField<String?>(
+                initialValue: roleFilter,
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  labelText: 'Filtrar por rol',
+                  prefixIcon: Icon(Icons.badge_outlined),
                 ),
-              ],
-            ),
-          ),
-
-          AppSizes.gapV16,
-
-          UsuarioMetricasHeader(
-            totalUsers: totalUsers,
-            totalStudents: totalStudents,
-            totalTutors: totalTutors,
-            totalActive: totalActive,
-          ),
-
-          AppSizes.gapV16,
-
-          Expanded(
-            child: users.isEmpty
-                ? Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(AppSizes.lg),
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                        border: Border.all(color: AppColors.outline),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.people_outline_rounded,
-                            size: 36,
-                            color: AppColors.textDisabled,
-                          ),
-                          AppSizes.gapV8,
-                          Text(
-                            'No se encontraron usuarios',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: users.length,
-                    separatorBuilder: (context, index) => AppSizes.gapV8,
-                    itemBuilder: (context, index) {
-                      final user = users[index];
-                      return UsuarioListTile(
-                        user: user,
-                        onTap: () => onUserTap(user),
-                      );
-                    },
+                items: const [
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text('Todos los roles'),
                   ),
+                  DropdownMenuItem(
+                    value: 'estudiante',
+                    child: Text('Estudiantes'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'tutor_academico',
+                    child: Text('Tutores académicos'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'tutor_empresarial',
+                    child: Text('Tutores empresariales'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'coordinador',
+                    child: Text('Coordinadores'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'responsable_practicas',
+                    child: Text('Responsables de prácticas'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'admin',
+                    child: Text('Administradores'),
+                  ),
+                ],
+                onChanged: onRoleChanged,
+              ),
+            ],
           ),
-        ],
+        ),
+
+        AppTamanos.gapV16,
+
+        CabeceraMetricasUsuario(
+          totalUsers: totalUsers,
+          totalStudents: totalStudents,
+          totalTutors: totalTutors,
+          totalActive: totalActive,
+        ),
+
+        AppTamanos.gapV16,
+
+        users.isEmpty
+            ? Center(
+                child: Container(
+                  padding: const EdgeInsets.all(AppTamanos.lg),
+                  decoration: BoxDecoration(
+                    color: AppColores.surface,
+                    borderRadius: BorderRadius.circular(
+                      AppTamanos.radiusMd,
+                    ),
+                    border: Border.all(color: AppColores.outline),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.people_outline_rounded,
+                        size: 36,
+                        color: AppColores.textDisabled,
+                      ),
+                      AppTamanos.gapV8,
+                      Text(
+                        'No se encontraron usuarios',
+                        style: AppEstiloTexto.bodyMedium.copyWith(
+                          color: AppColores.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: users.length,
+                separatorBuilder: (context, index) => AppTamanos.gapV8,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return TarjetaUsuarioLista(
+                    user: user,
+                    onTap: () => onUserTap(user),
+                  );
+                },
+              ),
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTamanos.md,
+        AppTamanos.sm,
+        AppTamanos.md,
+        0,
+      ),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: content,
       ),
     );
   }
@@ -233,19 +254,19 @@ class _FilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: AppSizes.sm),
+      padding: const EdgeInsets.only(right: AppTamanos.sm),
       child: FilterChip(
         label: Text(label),
         selected: selected,
         onSelected: onSelected,
-        selectedColor: AppColors.secondary.withValues(alpha: 0.16),
-        backgroundColor: AppColors.background,
+        selectedColor: AppColores.secondary.withValues(alpha: 0.16),
+        backgroundColor: AppColores.background,
         side: BorderSide(
-          color: selected ? AppColors.secondary : AppColors.outline,
+          color: selected ? AppColores.secondary : AppColores.outline,
         ),
-        checkmarkColor: AppColors.primary,
-        labelStyle: AppTextStyles.caption.copyWith(
-          color: selected ? AppColors.primary : AppColors.textSecondary,
+        checkmarkColor: AppColores.primary,
+        labelStyle: AppEstiloTexto.caption.copyWith(
+          color: selected ? AppColores.primary : AppColores.textSecondary,
           fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
         ),
       ),

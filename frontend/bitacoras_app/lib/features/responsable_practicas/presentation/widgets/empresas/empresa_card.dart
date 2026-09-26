@@ -20,12 +20,12 @@ class EmpresaCard extends StatelessWidget {
     final isActive = company.isActive;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm, horizontal: AppSizes.md),
+      padding: const EdgeInsets.symmetric(vertical: AppTamanos.sm, horizontal: AppTamanos.md),
       child: InstitutionalGlowCard(
-        accentColor: isActive ? AppColors.secondary : AppColors.textSecondary,
+        accentColor: isActive ? AppColores.secondary : AppColores.textSecondary,
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -36,12 +36,12 @@ class EmpresaCard extends StatelessWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      color: AppColores.primary.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                     ),
                     child: const Icon(
                       Icons.business_rounded,
-                      color: AppColors.primary,
+                      color: AppColores.primary,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -54,7 +54,7 @@ class EmpresaCard extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: AppColors.textPrimary,
+                            color: AppColores.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -66,7 +66,7 @@ class EmpresaCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 13,
-                            color: AppColors.textSecondary,
+                            color: AppColores.textSecondary,
                           ),
                         ),
                       ],
@@ -75,10 +75,10 @@ class EmpresaCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isActive ? AppColors.successSoft : AppColors.errorSoft,
+                      color: isActive ? AppColores.successSoft : AppColores.errorSoft,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isActive ? AppColors.success : AppColors.error,
+                        color: isActive ? AppColores.success : AppColores.error,
                       ),
                     ),
                     child: Text(
@@ -86,13 +86,20 @@ class EmpresaCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: isActive ? AppColors.success : AppColors.error,
+                        color: isActive ? AppColores.success : AppColores.error,
                       ),
                     ),
                   ),
                 ],
               ),
-              const Divider(color: AppColors.divider, height: 24),
+              const Divider(color: AppColores.divider, height: 24),
+              if (company.canton.isNotEmpty) ...[
+                _CompanyDataRow(
+                  icon: Icons.location_city_outlined,
+                  value: 'Cantón: ${company.canton}',
+                ),
+                const SizedBox(height: 6),
+              ],
               _CompanyDataRow(
                 icon: Icons.phone_outlined,
                 value: company.phone.isEmpty ? 'Teléfono no registrado' : company.phone,
@@ -114,10 +121,10 @@ class EmpresaCard extends StatelessWidget {
                   if (onEdit != null)
                     OutlinedButton.icon(
                       onPressed: onEdit,
-                      icon: const Icon(Icons.edit_outlined, size: 16, color: AppColors.primary),
-                      label: const Text('Editar', style: TextStyle(color: AppColors.primary)),
+                      icon: const Icon(Icons.edit_outlined, size: 16, color: AppColores.primary),
+                      label: const Text('Editar', style: TextStyle(color: AppColores.primary)),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppColors.primary),
+                        side: const BorderSide(color: AppColores.primary),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     ),
@@ -128,17 +135,17 @@ class EmpresaCard extends StatelessWidget {
                       icon: Icon(
                         isActive ? Icons.block_outlined : Icons.check_circle_outline,
                         size: 16,
-                        color: isActive ? AppColors.error : AppColors.success,
+                        color: isActive ? AppColores.error : AppColores.success,
                       ),
                       label: Text(
                         isActive ? 'Desactivar' : 'Activar',
                         style: TextStyle(
-                          color: isActive ? AppColors.error : AppColors.success,
+                          color: isActive ? AppColores.error : AppColores.success,
                         ),
                       ),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
-                          color: isActive ? AppColors.error : AppColors.success,
+                          color: isActive ? AppColores.error : AppColores.success,
                         ),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
@@ -163,14 +170,14 @@ class _CompanyDataRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 17, color: AppColors.primary),
+        Icon(icon, size: 17, color: AppColores.primary),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+            style: const TextStyle(fontSize: 13, color: AppColores.textPrimary),
           ),
         ),
       ],

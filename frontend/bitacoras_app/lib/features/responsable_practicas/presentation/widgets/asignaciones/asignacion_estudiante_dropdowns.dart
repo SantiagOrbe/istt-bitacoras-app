@@ -37,10 +37,10 @@ class AsignacionEstudianteDropdowns extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: AppColors.surface,
+      color: AppColores.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.outline),
+        side: const BorderSide(color: AppColores.outline),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,9 +69,9 @@ class AsignacionEstudianteDropdowns extends StatelessWidget {
       initialValue: value,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: AppColors.primary),
+        prefixIcon: Icon(icon, color: AppColores.primary),
         filled: true,
-        fillColor: AppColors.background,
+        fillColor: AppColores.background,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
       items: items

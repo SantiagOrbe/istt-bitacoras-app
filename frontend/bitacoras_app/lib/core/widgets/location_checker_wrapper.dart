@@ -57,22 +57,22 @@ class _LocationCheckerWrapperState extends State<LocationCheckerWrapper> {
           canPop: false,
           child: AlertDialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+              borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
             ),
             title: Row(
               children: [
                 const Icon(
                   Icons.location_off_rounded,
-                  color: AppColors.error,
+                  color: AppColores.error,
                   size: 28,
                 ),
-                AppSizes.gapH8,
+                AppTamanos.gapH8,
                 Text(
                   'GPS Desactivado',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AppColores.textPrimary,
                   ),
                 ),
               ],
@@ -81,15 +81,15 @@ class _LocationCheckerWrapperState extends State<LocationCheckerWrapper> {
               'Es necesario mantener el GPS activo para validar tus asistencias e historial de prácticas.',
               style: TextStyle(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: AppColores.textSecondary,
               ),
             ),
             actions: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColores.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                   ),
                 ),
                 onPressed: () async {
@@ -97,7 +97,7 @@ class _LocationCheckerWrapperState extends State<LocationCheckerWrapper> {
                 },
                 child: const Text(
                   'Activar Ubicación',
-                  style: TextStyle(color: AppColors.surface),
+                  style: TextStyle(color: AppColores.surface),
                 ),
               ),
             ],

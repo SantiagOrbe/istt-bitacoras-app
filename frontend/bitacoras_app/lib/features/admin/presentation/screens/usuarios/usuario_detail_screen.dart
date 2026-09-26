@@ -16,6 +16,7 @@ class UsuarioDetailScreen extends StatefulWidget {
 
 class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
   late final UsuarioDetailController _controller;
+  late final AccionesDetalleUsuario _actions;
 
   @override
   void initState() {
@@ -23,6 +24,10 @@ class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
     _controller = UsuarioDetailController(
       repository: widget.adminRepository,
       initialUser: widget.user,
+    );
+    _actions = AccionesDetalleUsuario(
+      context: context,
+      controller: _controller,
     );
     _controller.addListener(_onControllerChange);
   }
@@ -34,7 +39,7 @@ class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_controller.errorMessage!),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -44,50 +49,10 @@ class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_controller.successMessage!),
-          backgroundColor: AppColors.success,
+          backgroundColor: AppColores.success,
           behavior: SnackBarBehavior.floating,
         ),
       );
-    }
-  }
-
-  Future<void> _confirmToggleStatus() async {
-    final isActive = _controller.user.isActive;
-    final action = isActive ? 'desactivar' : 'activar';
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: Text(
-          '${isActive ? 'Desactivar' : 'Activar'} Usuario',
-          style: const TextStyle(color: AppColors.textPrimary),
-        ),
-        content: Text(
-          '¿Está seguro de $action a ${_controller.user.name}?',
-          style: const TextStyle(color: AppColors.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text(
-              'Cancelar',
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isActive ? AppColors.error : AppColors.success,
-              foregroundColor: AppColors.surface,
-            ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(isActive ? 'Desactivar' : 'Activar'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true && mounted) {
-      await _controller.toggleUserStatus();
     }
   }
 
@@ -109,39 +74,17 @@ class _UsuarioDetailScreenState extends State<UsuarioDetailScreen> {
             showBackButton: true,
             onBackPressed: () => context.pop(_controller.user),
           ),
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           body: _controller.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(color: AppColores.primary),
                 )
-              : SafeArea(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: 12),
-                        UsuarioDetailHeader(
-                          user: _controller.user,
-                          onToggleStatus: _confirmToggleStatus,
-                          isLoading: _controller.isLoading,
-                        ),
-                        const SizedBox(height: 16),
-                        UsuarioInfoCard(controller: _controller),
-                        const SizedBox(height: 24),
-                        UsuarioDetailActionButtons(
-                          isEditing: _controller.isEditing,
-                          isActive: _controller.user.isActive,
-                          onSave: _controller.saveChanges,
-                          onToggleStatus: _confirmToggleStatus,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
-                  ),
+              : CuerpoDetalleUsuario(
+                  user: _controller.user,
+                  isLoading: _controller.isLoading,
+                  controller: _controller,
+                  onSave: _controller.saveChanges,
+                  onToggleStatus: _actions.confirmToggleStatus,
                 ),
         );
       },

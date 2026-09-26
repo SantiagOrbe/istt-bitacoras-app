@@ -8,7 +8,7 @@ class LoginFooter extends StatelessWidget {
     return Text(
       'Instituto Superior Tecnológico Tena\nVersión 1.0.0',
       textAlign: TextAlign.center,
-      style: AppTextStyles.caption,
+      style: AppEstiloTexto.caption,
     );
   }
 }

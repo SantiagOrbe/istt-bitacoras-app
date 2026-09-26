@@ -34,5 +34,15 @@ export 'package:bitacoras_app/features/tutores/presentation/screens/reportes/rep
 
 // --- Widgets ---
 export 'package:bitacoras_app/features/tutores/presentation/widgets/estudiantes_asignados/estudiante_tutorizado_card.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/estudiantes_asignados/encabezado_estudiantes_asignados.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/estudiantes_asignados/error_estudiantes_asignados.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/estudiantes_asignados/grupo_estudiantes_asignados.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/inicio/tutor_dashboard.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/encabezado_seguimiento_estudiante.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/encabezado_seguimiento_estudiantes.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/informacion_estudiante_seguimiento.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/lista_registros_seguimiento.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/lista_tutoriados_seguimiento.dart';
+export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/registro_seguimiento_card.dart';
 export 'package:bitacoras_app/features/tutores/presentation/widgets/seguimiento/seguimiento_estudiante_card.dart';
 export 'package:bitacoras_app/features/tutores/presentation/widgets/visitas/ubicacion_no_asignada_card.dart';

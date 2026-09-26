@@ -2,57 +2,74 @@ import 'package:bitacoras_app/features/admin/admin.dart';
 
 abstract class IAdminRepository {
   // --- Gestión de Usuarios ---
-  Future<List<UsuarioModel>> getUsers({
+  Future<List<UsuarioModel>> obtenerUsuarios({
     bool? isActive,
     String? role,
     String? search,
   });
-  Future<bool> createUser(UsuarioModel user);
-  Future<bool> updateUser(UsuarioModel user);
-  Future<bool> setUserActive(String userId, bool isActive);
-  Future<bool> deleteUser(String userId);
+  Future<bool> crearUsuario(UsuarioModel usuario);
+  Future<bool> actualizarUsuario(UsuarioModel usuario);
+  Future<bool> cambiarEstadoUsuario(String userId, bool isActive);
+  Future<bool> eliminarUsuario(String userId);
 
-  Future<List<EmpresaModel>> getCompanies();
-  Future<bool> createCompany(EmpresaModel company);
-  Future<bool> updateCompany(EmpresaModel company);
-  Future<bool> deactivateCompany(String companyId, {bool unlinkStudents = false});
-  Future<List<Map<String, String>>> getCompanyLinkedStudents(String companyId);
+  Future<List<EmpresaModel>> obtenerEmpresas();
+  Future<bool> crearEmpresa(EmpresaModel empresa);
+  Future<bool> actualizarEmpresa(EmpresaModel empresa);
+  Future<bool> desactivarEmpresa(
+    String companyId, {
+    bool unlinkStudents = false,
+  });
+  Future<List<Map<String, String>>> obtenerEstudiantesVinculadosEmpresa(
+    String companyId,
+  );
 
   // --- Gestión de Cursos / Ciclos ---
-  Future<List<CicloModel>> getCycles({String? careerId});
-  Future<bool> createCycle(CicloModel cycle);
-  Future<bool> updateCycle(CicloModel cycle);
+  Future<List<CicloModel>> obtenerCiclos({String? careerId});
+  Future<bool> crearCiclo(CicloModel ciclo);
+  Future<bool> actualizarCiclo(CicloModel ciclo);
 
   // --- Gestión de Paralelos ---
-  Future<List<ParaleloModel>> getParallels({
+  Future<List<ParaleloModel>> obtenerParalelos({
     String? careerId,
     String? semesterId,
   });
-  Future<bool> createParallel(ParaleloModel parallel);
-  Future<bool> updateParallel(ParaleloModel parallel);
-  Future<List<Map<String, dynamic>>> getParallelStudents(String parallelId);
-  Future<bool> assignParallelStudents(String parallelId, List<int> studentIds);
-  Future<bool> removeParallelStudents(String parallelId);
+  Future<bool> crearParalelo(ParaleloModel paralelo);
+  Future<bool> actualizarParalelo(ParaleloModel paralelo);
+  Future<List<Map<String, dynamic>>> obtenerEstudiantesParalelo(
+    String parallelId,
+  );
+  Future<bool> asignarEstudiantesParalelo(
+    String parallelId,
+    List<int> studentIds,
+  );
+  Future<bool> eliminarEstudiantesParalelo(String parallelId);
 
   // --- Gestión de Carreras ---
-  Future<List<CarreraModel>> getCareers();
-  Future<bool> createCareer(CarreraModel career);
-  Future<bool> updateCareer(CarreraModel career, {bool confirmDesactivate = false});
+  Future<List<CarreraModel>> obtenerCarreras();
+  Future<bool> crearCarrera(CarreraModel carrera);
+  Future<bool> actualizarCarrera(
+    CarreraModel carrera, {
+    bool confirmDesactivate = false,
+  });
 
   // --- Gestión de Periodos Lectivos ---
-  Future<List<PeriodoModel>> getPeriods();
-  Future<bool> createPeriod(PeriodoModel period);
-  Future<bool> updatePeriod(
-    PeriodoModel period, {
+  Future<List<PeriodoModel>> obtenerPeriodos();
+  Future<bool> crearPeriodo(PeriodoModel periodo);
+  Future<bool> actualizarPeriodo(
+    PeriodoModel periodo, {
     bool confirmDesactivate = false,
   });
 
   // --- Configuración Carrera / Periodo ---
   Future<List<ConfiguracionPeriodoCarreraModel>>
-  getConfiguracionPeriodoCarreraModels();
-  Future<bool> saveConfiguracionPeriodoCarreraModel(
+  obtenerConfiguracionesPeriodoCarrera();
+  Future<bool> guardarConfiguracionPeriodoCarrera(
     ConfiguracionPeriodoCarreraModel config,
   );
+  Future<bool> guardarConfiguracionesCarrerasPeriodo(
+    String periodId,
+    List<ConfiguracionPeriodoCarreraModel> configs,
+  );
 
-  Future<List<RegistroPracticaModel>> getPracticeLogs();
+  Future<List<RegistroPracticaModel>> obtenerRegistrosPractica();
 }

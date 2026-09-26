@@ -8,41 +8,41 @@ class EmpresaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.secondary,
+      accentColor: AppColores.secondary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Row(
           children: [
             Container(
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: AppColors.secondary.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                color: AppColores.secondary.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
               ),
               child: const Icon(
                 Icons.business_rounded,
-                color: AppColors.primary,
+                color: AppColores.primary,
                 size: 20,
               ),
             ),
-            AppSizes.gapH12,
+            AppTamanos.gapH12,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Empresa asignada',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.textSecondary,
                     ),
                   ),
-                  AppSizes.gapV4,
+                  AppTamanos.gapV4,
                   Text(
                     companyName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.bodyBold,
+                    style: AppEstiloTexto.bodyBold,
                   ),
                 ],
               ),

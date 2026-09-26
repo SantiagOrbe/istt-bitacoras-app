@@ -5,7 +5,7 @@ class AdminRemoteDataSource {
 
   AdminRemoteDataSource({required this.apiClient});
 
-  Future<List<Map<String, dynamic>>> getUsers({
+  Future<List<Map<String, dynamic>>> obtenerUsuarios({
     bool? isActive,
     String? role,
     String? search,
@@ -17,62 +17,77 @@ class AdminRemoteDataSource {
       if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
     },
   );
-  Future<Map<String, dynamic>> createUser(Map<String, dynamic> data) =>
+
+  Future<Map<String, dynamic>> crearUsuario(Map<String, dynamic> data) =>
       _map(apiClient.post('usuarios/', body: data));
-  Future<Map<String, dynamic>> updateUser(
+
+  Future<Map<String, dynamic>> actualizarUsuario(
     String id,
     Map<String, dynamic> data,
   ) => _map(apiClient.put('usuarios/$id/', body: data));
-  Future<void> setUserActive(String id, bool isActive) => apiClient.patch(
-    'usuarios/$id/',
-    body: {'estado': isActive, 'is_active': isActive},
-  ).then((_) {});
-  Future<void> deleteUser(String id) => apiClient
+
+  Future<void> cambiarEstadoUsuario(String id, bool isActive) => apiClient
+      .patch('usuarios/$id/', body: {'estado': isActive, 'is_active': isActive})
+      .then((_) {});
+
+  Future<void> eliminarUsuario(String id) => apiClient
       .patch('usuarios/$id/', body: {'estado': false, 'is_active': false})
       .then((_) {});
 
-  Future<List<Map<String, dynamic>>> getCompanies() =>
+  Future<List<Map<String, dynamic>>> obtenerEmpresas() =>
       _list('empresas/empresas/');
-  Future<Map<String, dynamic>> createCompany(Map<String, dynamic> data) =>
+
+  Future<Map<String, dynamic>> crearEmpresa(Map<String, dynamic> data) =>
       _map(apiClient.post('empresas/empresas/', body: data));
-  Future<Map<String, dynamic>> updateCompany(
+
+  Future<Map<String, dynamic>> actualizarEmpresa(
     String id,
     Map<String, dynamic> data,
   ) => _map(apiClient.put('empresas/empresas/$id/', body: data));
-  Future<void> deactivateCompany(String id, {bool unlinkStudents = false}) => apiClient
-      .patch(
-        'empresas/empresas/$id/',
-        body: {'estado': false, 'unlink_students': unlinkStudents},
-      )
-      .then((_) {});
 
-  Future<List<Map<String, String>>> getCompanyLinkedStudents(String id) async {
-    final response = await apiClient.get('empresas/empresas/$id/estudiantes-vinculados/');
+  Future<void> desactivarEmpresa(String id, {bool unlinkStudents = false}) =>
+      apiClient
+          .patch(
+            'empresas/empresas/$id/',
+            body: {'estado': false, 'unlink_students': unlinkStudents},
+          )
+          .then((_) {});
+
+  Future<List<Map<String, String>>> obtenerEstudiantesVinculadosEmpresa(
+    String id,
+  ) async {
+    final response = await apiClient.get(
+      'empresas/empresas/$id/estudiantes-vinculados/',
+    );
     if (response is! List) return const [];
     return response
         .whereType<Map<String, dynamic>>()
-        .map((item) => {
-              'id': item['id']?.toString() ?? '',
-              'nombre': item['nombre']?.toString() ?? '',
-              'email': item['email']?.toString() ?? '',
-            })
+        .map(
+          (item) => {
+            'id': item['id']?.toString() ?? '',
+            'nombre': item['nombre']?.toString() ?? '',
+            'email': item['email']?.toString() ?? '',
+          },
+        )
         .toList();
   }
 
-  Future<List<Map<String, dynamic>>> getCycles({String? careerId}) => _list(
+  Future<List<Map<String, dynamic>>> obtenerCiclos({String? careerId}) => _list(
     'academica/semestres/',
     queryParameters: {
       if (careerId != null && careerId.isNotEmpty) 'carrera': careerId,
     },
   );
-  Future<Map<String, dynamic>> createCycle(Map<String, dynamic> data) =>
+
+  Future<Map<String, dynamic>> crearCiclo(Map<String, dynamic> data) =>
       _map(apiClient.post('academica/semestres/', body: data));
-  Future<Map<String, dynamic>> updateCycle(
+
+  Future<Map<String, dynamic>> actualizarCiclo(
     String id,
     Map<String, dynamic> data,
   ) => _map(apiClient.put('academica/semestres/$id/', body: data));
 
-  Future<List<Map<String, dynamic>>> getParallels({
+  Future<List<Map<String, dynamic>>> obtenerParalelos({
     String? careerId,
     String? semesterId,
   }) => _list(
@@ -82,67 +97,84 @@ class AdminRemoteDataSource {
       if (semesterId != null && semesterId.isNotEmpty) 'semestre': semesterId,
     },
   );
-  Future<Map<String, dynamic>> createParallel(Map<String, dynamic> data) =>
+
+  Future<Map<String, dynamic>> crearParalelo(Map<String, dynamic> data) =>
       _map(apiClient.post('academica/paralelos/', body: data));
-  Future<Map<String, dynamic>> updateParallel(
+
+  Future<Map<String, dynamic>> actualizarParalelo(
     String id,
     Map<String, dynamic> data,
   ) => _map(apiClient.put('academica/paralelos/$id/', body: data));
-  Future<List<Map<String, dynamic>>> getParallelStudents(String parallelId) =>
-      _list('academica/paralelos/$parallelId/estudiantes/');
-  Future<Map<String, dynamic>> assignParallelStudents(
+
+  Future<List<Map<String, dynamic>>> obtenerEstudiantesParalelo(
+    String parallelId,
+  ) => _list('academica/paralelos/$parallelId/estudiantes/');
+
+  Future<Map<String, dynamic>> asignarEstudiantesParalelo(
     String parallelId,
     List<int> studentIds,
-  ) => _map(apiClient.post(
-    'academica/paralelos/$parallelId/estudiantes/',
-    body: {'estudiante_ids': studentIds},
-  ));
-  Future<Map<String, dynamic>> removeParallelStudents(String parallelId) =>
+  ) => _map(
+    apiClient.post(
+      'academica/paralelos/$parallelId/estudiantes/',
+      body: {'estudiante_ids': studentIds},
+    ),
+  );
+
+  Future<Map<String, dynamic>> eliminarEstudiantesParalelo(String parallelId) =>
       _map(apiClient.delete('academica/paralelos/$parallelId/estudiantes/'));
 
-  Future<List<Map<String, dynamic>>> getCareers() =>
+  Future<List<Map<String, dynamic>>> obtenerCarreras() =>
       _list('academica/carreras/');
-  Future<Map<String, dynamic>> createCareer(Map<String, dynamic> data) =>
+
+  Future<Map<String, dynamic>> crearCarrera(Map<String, dynamic> data) =>
       _map(apiClient.post('academica/carreras/', body: data));
-  Future<Map<String, dynamic>> updateCareer(
+
+  Future<Map<String, dynamic>> actualizarCarrera(
     String id,
     Map<String, dynamic> data, {
     bool confirmDesactivate = false,
   }) => _map(
     apiClient.put(
       'academica/carreras/$id/',
-      body: {
-        ...data,
-        if (confirmDesactivate) 'confirm_desactivate': true,
-      },
+      body: {...data, if (confirmDesactivate) 'confirm_desactivate': true},
     ),
   );
 
-  Future<List<Map<String, dynamic>>> getPeriods() =>
+  Future<List<Map<String, dynamic>>> obtenerPeriodos() =>
       _list('academica/periodos/');
-  Future<Map<String, dynamic>> createPeriod(Map<String, dynamic> data) =>
+
+  Future<Map<String, dynamic>> crearPeriodo(Map<String, dynamic> data) =>
       _map(apiClient.post('academica/periodos/', body: data));
-  Future<Map<String, dynamic>> updatePeriod(
+
+  Future<Map<String, dynamic>> actualizarPeriodo(
     String id,
     Map<String, dynamic> data, {
     bool confirmDesactivate = false,
   }) => _map(
     apiClient.put(
       'academica/periodos/$id/',
-      body: {
-        ...data,
-        if (confirmDesactivate) 'confirm_desactivate': true,
-      },
+      body: {...data, if (confirmDesactivate) 'confirm_desactivate': true},
     ),
   );
 
-  Future<List<Map<String, dynamic>>> getCareerPeriodConfigurations() =>
+  Future<List<Map<String, dynamic>>> obtenerConfiguracionesPeriodoCarrera() =>
       _list('academica/carreras-periodos/');
-  Future<Map<String, dynamic>> saveCareerPeriodConfiguration(
+
+  Future<Map<String, dynamic>> guardarConfiguracionPeriodoCarrera(
     Map<String, dynamic> data,
   ) => _map(apiClient.post('academica/carreras-periodos/', body: data));
 
-  Future<List<Map<String, dynamic>>> getPracticeLogs() =>
+  Future<Map<String, dynamic>> guardarConfiguracionesCarrerasPeriodo(
+    String periodId,
+    List<Map<String, dynamic>> careers,
+  ) => _map(
+    apiClient.post(
+      'academica/carreras-periodos/configurar-periodo/',
+      body: {'periodo': periodId, 'carreras': careers},
+    ),
+  );
+
+  Future<List<Map<String, dynamic>>> obtenerRegistrosPractica() =>
       _list('bitacoras/registros/');
 
   Future<List<Map<String, dynamic>>> _list(

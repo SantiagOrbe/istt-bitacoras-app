@@ -13,13 +13,13 @@ class SesionActivaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Usamos el amarillo institucional (warning) para dar contexto de "En Proceso"
-    final warningAccent = AppColors.warning;
+    final warningAccent = AppColores.warning;
 
     return Container(
-      padding: const EdgeInsets.all(AppSizes.md),
+      padding: const EdgeInsets.all(AppTamanos.md),
       decoration: BoxDecoration(
         color: warningAccent.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
         border: Border.all(
           color: warningAccent.withValues(alpha: 0.4),
           width: 1.5,
@@ -35,21 +35,21 @@ class SesionActivaCard extends StatelessWidget {
                 children: [
                   const Icon(
                     Icons.calendar_today_rounded,
-                    color: AppColors.textPrimary,
+                    color: AppColores.textPrimary,
                     size: 18,
                   ),
-                  AppSizes.gapH8,
-                  Text(record.date, style: AppTextStyles.bodyBold),
+                  AppTamanos.gapH8,
+                  Text(record.date, style: AppEstiloTexto.bodyBold),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.sm,
-                  vertical: AppSizes.xs,
+                  horizontal: AppTamanos.sm,
+                  vertical: AppTamanos.xs,
                 ),
                 decoration: BoxDecoration(
                   color: warningAccent.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -57,14 +57,14 @@ class SesionActivaCard extends StatelessWidget {
                     const Icon(
                       Icons.sync_rounded,
                       size: 14,
-                      color: AppColors.textPrimary,
+                      color: AppColores.textPrimary,
                     ),
-                    AppSizes.gapH4,
+                    AppTamanos.gapH4,
                     Text(
                       record.status,
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AppColores.textPrimary,
                       ),
                     ),
                   ],
@@ -74,8 +74,8 @@ class SesionActivaCard extends StatelessWidget {
           ),
 
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
-            child: Divider(color: AppColors.divider),
+            padding: EdgeInsets.symmetric(vertical: AppTamanos.sm),
+            child: Divider(color: AppColores.divider),
           ),
 
           // Horarios de Entrada y Salida
@@ -87,12 +87,12 @@ class SesionActivaCard extends StatelessWidget {
                 children: [
                   Text(
                     'Entrada',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.textSecondary,
                     ),
                   ),
-                  AppSizes.gapV4,
-                  Text(record.entryTimeLabel, style: AppTextStyles.bodyBold),
+                  AppTamanos.gapV4,
+                  Text(record.entryTimeLabel, style: AppEstiloTexto.bodyBold),
                 ],
               ),
               Column(
@@ -100,20 +100,20 @@ class SesionActivaCard extends StatelessWidget {
                 children: [
                   Text(
                     'Salida',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: AppEstiloTexto.caption.copyWith(
+                      color: AppColores.textSecondary,
                     ),
                   ),
-                  AppSizes.gapV4,
+                  AppTamanos.gapV4,
                   Text(
                     record.exitTime != null ? record.exitTimeLabel : 'Esperando marcación...',
-                    style: AppTextStyles.caption.copyWith(
+                    style: AppEstiloTexto.caption.copyWith(
                       fontStyle: record.exitTime == null
                           ? FontStyle.italic
                           : FontStyle.normal,
                       color: record.exitTime == null
-                          ? AppTextStyles.caption.color
-                          : AppColors.textPrimary,
+                          ? AppEstiloTexto.caption.color
+                          : AppColores.textPrimary,
                       fontSize: 14,
                     ),
                   ),
@@ -122,7 +122,7 @@ class SesionActivaCard extends StatelessWidget {
             ],
           ),
 
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
 
           // Botón de Marcación de Salida
           Align(

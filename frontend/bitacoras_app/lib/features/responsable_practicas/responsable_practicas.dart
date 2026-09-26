@@ -33,6 +33,10 @@ export 'package:bitacoras_app/features/responsable_practicas/presentation/screen
 export 'package:bitacoras_app/features/responsable_practicas/presentation/screens/empresas/detalle_empresa_responsable_screen.dart';
 
 // --- Widgets ---
+export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/inicio/error_panel_responsable_practicas.dart';
+export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/inicio/panel_responsable_practicas_contenido.dart';
+export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/inicio/panel_responsable_practicas_hero.dart';
+export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/inicio/tarjeta_modulo_responsable_practicas.dart';
 export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/asignaciones/asignacion_estudiantes_body.dart';
 export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/asignaciones/asignacion_estudiante_card.dart';
 export 'package:bitacoras_app/features/responsable_practicas/presentation/widgets/asignaciones/asignacion_estudiante_dropdowns.dart';

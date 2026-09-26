@@ -8,21 +8,21 @@ class FormularioEmpresaHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InstitutionalGlowCard(
-      accentColor: AppColors.primary,
+      accentColor: AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Row(
           children: [
             Container(
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                color: AppColores.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
               ),
               child: Icon(
                 isEditing ? Icons.edit_note_rounded : Icons.domain_add_rounded,
-                color: AppColors.primary,
+                color: AppColores.primary,
               ),
             ),
             const SizedBox(width: 12),
@@ -32,7 +32,7 @@ class FormularioEmpresaHeader extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+                  color: AppColores.primary,
                 ),
               ),
             ),

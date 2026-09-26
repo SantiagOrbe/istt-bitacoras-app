@@ -5,16 +5,16 @@ class CoordinadorRemoteDataSource {
 
   CoordinadorRemoteDataSource({required this.apiClient});
 
-  Future<List<Map<String, dynamic>>> getEstudiantes() =>
+  Future<List<Map<String, dynamic>>> obtenerEstudiantes() =>
       _list('usuarios/estudiantes/');
 
-  Future<List<Map<String, dynamic>>> getCarreras() =>
+  Future<List<Map<String, dynamic>>> obtenerCarreras() =>
       _list('academica/carreras/');
 
-  Future<List<Map<String, dynamic>>> getTutores() =>
+  Future<List<Map<String, dynamic>>> obtenerTutores() =>
       _list('usuarios/tutores/');
 
-  Future<Map<String, dynamic>> getDatosCarrera() async {
+  Future<Map<String, dynamic>> obtenerDatosCarrera() async {
     final response = await apiClient.get('usuarios/coordinador/datos/');
     if (response is! Map<String, dynamic>) {
       throw const FormatException('La respuesta del coordinador no es válida.');

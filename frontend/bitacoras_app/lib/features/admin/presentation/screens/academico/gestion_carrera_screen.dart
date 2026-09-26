@@ -38,7 +38,7 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) =>
-          CarreraFormSheet(existingCareers: _controller.careers),
+          HojaFormularioCarrera(existingCareers: _controller.careers),
     );
 
     if (newCareer == null || !mounted) {
@@ -50,7 +50,7 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_controller.errorMessage!),
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -63,7 +63,7 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(
             user: widget.currentUser,
             showBackButton: true,
@@ -71,65 +71,30 @@ class _GestionCarreraScreenState extends State<GestionCarreraScreen> {
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: _openCareerForm,
-            backgroundColor: AppColors.primary,
-            icon: const Icon(Icons.add_rounded, color: AppColors.surface),
+            backgroundColor: AppColores.primary,
+            icon: const Icon(Icons.add_rounded, color: AppColores.surface),
             label: Text(
               'Nueva carrera',
-              style: AppTextStyles.bodyBold.copyWith(color: AppColors.surface),
+              style: AppEstiloTexto.bodyBold.copyWith(
+                color: AppColores.surface,
+              ),
             ),
           ),
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppSizes.gapV12,
-                  Text(
-                    'Gestión de Carreras',
-                    style: AppTextStyles.heading.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  AppSizes.gapV12,
-                  CarreraSearchBar(onChanged: _controller.setSearchQuery),
-                  AppSizes.gapV12,
-                  Text(
-                    '${_controller.filteredCareers.length} carreras registradas',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  AppSizes.gapV12,
-                  Expanded(
-                    child: _controller.filteredCareers.isEmpty
-                        ? CarreraEmptyState(
-                            hasSearchQuery: _controller.searchQuery.isNotEmpty,
-                          )
-                        : ListView.separated(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: _controller.filteredCareers.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: AppSizes.sm),
-                            itemBuilder: (context, index) {
-                              final career = _controller.filteredCareers[index];
-                              return CarreraCard(
-                                career: career,
-                                onTap: () async {
-                                  final updated = await context.push<CarreraModel>(
-                                    AppRoutes.careerDetail,
-                                    extra: career,
-                                  );
-                                  if (updated != null) {
-                                    await _controller.loadCareers();
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
+            child: GestionCarreraBody(
+              careers: _controller.filteredCareers,
+              totalCareers: _controller.filteredCareers.length,
+              searchQuery: _controller.searchQuery,
+              onSearchChanged: _controller.setSearchQuery,
+              onCareerTap: (career) async {
+                final updated = await context.push<CarreraModel>(
+                  AppRoutes.detalleCarrera,
+                  extra: career,
+                );
+                if (updated != null) {
+                  await _controller.loadCareers();
+                }
+              },
             ),
           ),
         );

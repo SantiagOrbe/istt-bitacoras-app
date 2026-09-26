@@ -39,7 +39,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => CicloFormSheet(
+      builder: (context) => HojaFormularioCiclo(
         cycle: cycle,
         careers: widget.careerId == null
             ? _controller.careers
@@ -72,7 +72,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: success ? AppColors.success : AppColors.error,
+          backgroundColor: success ? AppColores.success : AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -91,7 +91,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: success ? AppColors.success : AppColors.error,
+          backgroundColor: success ? AppColores.success : AppColores.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -104,7 +104,7 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColores.background,
           appBar: InicioAppBar(
             user: widget.currentUser,
             showBackButton: true,
@@ -112,221 +112,47 @@ class _GestionCicloScreenState extends State<GestionCicloScreen> {
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () => _openCycleForm(),
-            backgroundColor: AppColors.primary,
-            icon: const Icon(Icons.add_rounded, color: AppColors.surface),
+            backgroundColor: AppColores.primary,
+            icon: const Icon(Icons.add_rounded, color: AppColores.surface),
             label: Text(
               'Nuevo semestre',
-              style: AppTextStyles.bodyBold.copyWith(color: AppColors.surface),
+              style: AppEstiloTexto.bodyBold.copyWith(
+                color: AppColores.surface,
+              ),
             ),
           ),
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSizes.md,
-                AppSizes.sm,
-                AppSizes.md,
-                0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSizes.md,
-                      AppSizes.md,
-                      AppSizes.md,
-                      AppSizes.sm,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                      border: Border.all(color: AppColors.outline),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.shadow,
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 42,
-                              height: 42,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    AppColors.secondary,
-                                    AppColors.warning,
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  AppSizes.radiusSm,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.school_rounded,
-                                color: AppColors.surface,
-                              ),
-                            ),
-                            AppSizes.gapH12,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Semestres de la carrera',
-                                    style: AppTextStyles.title,
-                                  ),
-                                  Text(
-                                    _controller.careerName,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.caption.copyWith(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '${_controller.filteredCycles.length}',
-                              style: AppTextStyles.heading.copyWith(
-                                color: AppColors.primary,
-                                fontSize: 22,
-                              ),
-                            ),
-                          ],
-                        ),
-                        AppSizes.gapV16,
-                        CarreraSearchBar(
-                          onChanged: _controller.setSearchQuery,
-                          hintText: 'Buscar semestre o nivel...',
-                        ),
-                        AppSizes.gapV12,
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _FilterChip(
-                                label: 'Todos',
-                                selected: _controller.statusFilter == 'all',
-                                onSelected: (_) =>
-                                    _controller.setStatusFilter('all'),
-                              ),
-                              _FilterChip(
-                                label: 'Activos',
-                                selected:
-                                    _controller.statusFilter == 'active',
-                                onSelected: (_) =>
-                                    _controller.setStatusFilter('active'),
-                              ),
-                              _FilterChip(
-                                label: 'Inactivos',
-                                selected:
-                                    _controller.statusFilter == 'inactive',
-                                onSelected: (_) =>
-                                    _controller.setStatusFilter('inactive'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AppSizes.gapV16,
-                  Expanded(
-                    child: _controller.isLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primary,
-                            ),
-                          )
-                        : _controller.filteredCycles.isEmpty
-                        ? AdminEmptyState(
-                            title: _controller.searchQuery.isNotEmpty
-                                ? 'No se encontraron semestres'
-                                : 'Aún no hay semestres registrados',
-                            subtitle: _controller.searchQuery.isNotEmpty
-                                ? 'Prueba con otro criterio de búsqueda.'
-                                : 'Crea el primer semestre para comenzar.',
-                            icon: Icons.school_rounded,
-                            accentColor: AppColors.primary,
-                          )
-                        : ListView.separated(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: _controller.filteredCycles.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: AppSizes.sm),
-                            itemBuilder: (context, index) {
-                              final cycle = _controller.filteredCycles[index];
-                              return CicloCard(
-                                cycle: cycle,
-                                onTap: () {
-                                  if (widget.careerId != null) {
-                                    context.push(
-                                      AppRoutes.nestedParallelManagement
-                                          .replaceFirst(
-                                            ':carreraId',
-                                            widget.careerId!,
-                                          )
-                                          .replaceFirst(
-                                            ':semestreId',
-                                            cycle.id,
-                                          ),
-                                    );
-                                  } else {
-                                    _openCycleForm(cycle: cycle);
-                                  }
-                                },
-                                onEdit: () => _openCycleForm(cycle: cycle),
-                                onToggleStatus: () => _toggleStatus(cycle),
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
+            child: GestionCicloBody(
+              isLoading: _controller.isLoading,
+              careerName: _controller.careerName,
+              searchQuery: _controller.searchQuery,
+              statusFilter: _controller.statusFilter,
+              isAscendingOrder: _controller.isAscendingSort,
+              cycles: _controller.filteredCycles,
+              onSearchChanged: _controller.setSearchQuery,
+              onStatusChanged: _controller.setStatusFilter,
+              onSortOrderChanged: _controller.toggleSortOrder,
+              onCycleTap: (cycle) {
+                final careerId = widget.careerId?.isNotEmpty == true
+                    ? widget.careerId!
+                    : cycle.careerId;
+                if (careerId.isNotEmpty) {
+                  context.push(
+                    AppRoutes.gestionParalelosAnidados
+                        .replaceFirst(':carreraId', careerId)
+                        .replaceFirst(':semestreId', cycle.id),
+                  );
+                  return;
+                }
+
+                _openCycleForm(cycle: cycle);
+              },
+              onEdit: _openCycleForm,
+              onToggleStatus: _toggleStatus,
             ),
           ),
         );
       },
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: AppSizes.sm),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: selected,
-        onSelected: onSelected,
-        selectedColor: AppColors.primary.withValues(alpha: 0.12),
-        backgroundColor: AppColors.surface,
-        labelStyle: AppTextStyles.body.copyWith(
-          color: selected ? AppColors.primary : AppColors.textSecondary,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-        ),
-        side: BorderSide(
-          color: selected ? AppColors.primary : AppColors.outline,
-        ),
-      ),
     );
   }
 }

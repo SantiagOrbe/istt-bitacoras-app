@@ -8,11 +8,11 @@ class VistaPreviaPdfCard extends StatelessWidget {
     return Container(
       height: 180,
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSizes.md),
+      padding: const EdgeInsets.all(AppTamanos.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        border: Border.all(color: AppColors.outline),
+        color: AppColores.surface,
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
+        border: Border.all(color: AppColores.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -21,23 +21,23 @@ class VistaPreviaPdfCard extends StatelessWidget {
           const Icon(
             Icons.find_in_page_outlined,
             size: 40,
-            color: AppColors.primary,
+            color: AppColores.primary,
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           Text(
             'BITÁCORA DEL ESTUDIANTE',
-            style: AppTextStyles.bodyBold.copyWith(
+            style: AppEstiloTexto.bodyBold.copyWith(
               fontSize: 12,
-              color: AppColors.primary,
+              color: AppColores.primary,
             ),
           ),
-          AppSizes.gapV4,
+          AppTamanos.gapV4,
           Text(
             'FORMACIÓN PRÁCTICA EN EL ENTORNO LABORAL REAL',
             textAlign: TextAlign.center,
-            style: AppTextStyles.caption.copyWith(
+            style: AppEstiloTexto.caption.copyWith(
               fontSize: 10,
-              color: AppColors.textSecondary,
+              color: AppColores.textSecondary,
             ),
           ),
         ],

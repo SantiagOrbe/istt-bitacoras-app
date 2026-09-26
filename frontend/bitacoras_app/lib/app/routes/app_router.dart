@@ -6,111 +6,144 @@ import 'package:bitacoras_app/features/responsable_practicas/responsable_practic
 import 'package:bitacoras_app/features/responsable_practicas/domain/models/empresa_model.dart'
     as rp;
 
-Widget _requiereSesion(
+// Verifica que el usuario esté autenticado antes de abrir una pantalla.
+Widget _requiereAutenticacion(
   BuildContext context,
-  Widget Function(UsuarioModel usuario) construir,
+  Widget Function(UsuarioModel usuarioActual) construirVista,
 ) {
-  final usuario = context.watch<AuthSession>().currentUser;
-  if (usuario == null) {
+  final usuarioActual = context.watch<AuthSession>().currentUser;
+  if (usuarioActual == null) {
     return LoginScreen(authRepository: context.read<IAuthRepository>());
   }
-  return construir(usuario);
+  return construirVista(usuarioActual);
+}
+
+bool _puedeAccederPracticasEstudiante(UsuarioModel usuario) {
+  final tieneSemestre = (usuario.semestreId ?? '').trim().isNotEmpty;
+  final tieneParalelo = (usuario.paraleloId ?? '').trim().isNotEmpty;
+  final tieneEmpresa = (usuario.companyId ?? '').trim().isNotEmpty;
+  return usuario.puedeRegistrarPracticas &&
+      tieneSemestre &&
+      tieneParalelo &&
+      tieneEmpresa;
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.login,
+  initialLocation: AppRoutes.inicioSesion,
   routes: [
     ...AuthRoutes.routes,
     GoRoute(
-      path: AppRoutes.studentHome,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.inicioEstudiante,
+      builder: (context, state) => _requiereAutenticacion(
         context,
-        (usuario) => estudiantes.InicioEstudianteScreen(currentUser: usuario),
+        (usuarioActual) =>
+            estudiantes.InicioEstudianteScreen(currentUser: usuarioActual),
       ),
     ),
     GoRoute(
-      path: AppRoutes.registerExitAttendance,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.registrarSalidaAsistencia,
+      builder: (context, state) => _requiereAutenticacion(
         context,
-        (usuario) => RegistroSalidaScreen(
-          currentUser: usuario,
-          attendanceRepository: context.read<IAsistenciaRepository>(),
-        ),
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.attendance,
-      builder: (context, state) => RegistroAsistenciaScreen(
-        currentUser: context.watch<AuthSession>().currentUser!,
-        attendanceRepository: context.read<IAsistenciaRepository>(),
-        bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.registerActivity,
-      builder: (context, state) => _requiereSesion(
-        context,
-        (usuario) => RegistroActividadScreen(
-          currentUser: usuario,
-          attendanceRepository: context.read<IAsistenciaRepository>(),
-          bitacoraRepository: context.read<BitacoraRepositoryImpl>(),
-        ),
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.history,
-      builder: (context, state) => _requiereSesion(
-        context,
-        (usuario) => HistorialScreen(
-          currentUser: usuario,
-          attendanceRepository: context.read<IAsistenciaRepository>(),
-        ),
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.reports,
-      builder: (context, state) => _requiereSesion(
-        context,
-        (user) {
-        if (user.role == RolUsuarioModel.academicTutor ||
-            user.role == RolUsuarioModel.companyTutor) {
-          return ReportesTutorScreen(currentUser: user);
-        }
-        return ReportesScreen(
-          currentUser: user,
-          attendanceRepository: context.read<IAsistenciaRepository>(),
-        );
+        (usuarioActual) {
+          if (usuarioActual.role == RolUsuarioModel.student &&
+              !_puedeAccederPracticasEstudiante(usuarioActual)) {
+            return InicioEstudianteScreen(currentUser: usuarioActual);
+          }
+          return RegistroSalidaScreen(
+            currentUser: usuarioActual,
+            attendanceRepository: context.read<IAsistenciaRepositorio>(),
+          );
         },
       ),
     ),
     GoRoute(
-      path: AppRoutes.perfil,
+      path: AppRoutes.asistencia,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) {
+          if (usuarioActual.role == RolUsuarioModel.student &&
+              !_puedeAccederPracticasEstudiante(usuarioActual)) {
+            return InicioEstudianteScreen(currentUser: usuarioActual);
+          }
+          return RegistroAsistenciaScreen(
+            currentUser: usuarioActual,
+            attendanceRepository: context.read<IAsistenciaRepositorio>(),
+            bitacoraRepository: context.read<BitacoraRepositorioImpl>(),
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.registrarActividad,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) {
+          if (usuarioActual.role == RolUsuarioModel.student &&
+              !_puedeAccederPracticasEstudiante(usuarioActual)) {
+            return InicioEstudianteScreen(currentUser: usuarioActual);
+          }
+          return RegistroActividadScreen(
+            currentUser: usuarioActual,
+            attendanceRepository: context.read<IAsistenciaRepositorio>(),
+            bitacoraRepository: context.read<BitacoraRepositorioImpl>(),
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.historial,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) => HistorialScreen(
+          currentUser: usuarioActual,
+          attendanceRepository: context.read<IAsistenciaRepositorio>(),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.reportes,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) {
+          if (usuarioActual.role == RolUsuarioModel.academicTutor ||
+              usuarioActual.role == RolUsuarioModel.companyTutor) {
+            return ReportesTutorScreen(currentUser: usuarioActual);
+          }
+          return ReportesScreen(
+            currentUser: usuarioActual,
+            attendanceRepository: context.read<IAsistenciaRepositorio>(),
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.perfilUsuario,
       builder: (context, state) =>
           PerfilScreen(currentUser: context.watch<AuthSession>().currentUser!),
     ),
     GoRoute(
-      path: AppRoutes.adminHome,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.inicioAdmin,
+      builder: (context, state) => _requiereAutenticacion(
         context,
-        (usuario) => AdminDashboardScreen(
-          currentUser: usuario,
+        (usuarioActual) => AdminDashboardScreen(
+          currentUser: usuarioActual,
           adminRepository: context.read<IAdminRepository>(),
         ),
       ),
     ),
     GoRoute(
-      path: AppRoutes.userManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionUsuarios,
+      builder: (context, state) => _requiereAutenticacion(
         context,
-        (usuario) => GestionUsuarioScreen(
-          currentUser: usuario,
+        (usuarioActual) => GestionUsuarioScreen(
+          currentUser: usuarioActual,
           adminRepository: context.read<IAdminRepository>(),
         ),
       ),
     ),
     GoRoute(
-      path: AppRoutes.userDetail,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.detalleUsuario,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuarioActual) => UsuarioDetailScreen(
           user: state.extra as UsuarioModel? ?? usuarioActual,
@@ -119,8 +152,8 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.careerManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionCarreras,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionCarreraScreen(
           currentUser: usuario,
@@ -129,8 +162,8 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.careerDetail,
-      builder: (context, state) => _requiereSesion(context, (usuario) {
+      path: AppRoutes.detalleCarrera,
+      builder: (context, state) => _requiereAutenticacion(context, (usuario) {
         final career = state.extra as CarreraModel?;
         return CarreraDetailScreen(
           currentUser: usuario,
@@ -151,8 +184,8 @@ final GoRouter appRouter = GoRouter(
       }),
     ),
     GoRoute(
-      path: AppRoutes.semesterManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionSemestres,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionCicloScreen(
           currentUser: usuario,
@@ -162,8 +195,8 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.nestedParallelManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionParalelosAnidados,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionParaleloScreen(
           currentUser: usuario,
@@ -174,18 +207,19 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.careerPeriod,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.periodoAcademico,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => CarreraPeriodoScreen(
           currentUser: usuario,
           adminRepository: context.read<IAdminRepository>(),
+          initialPeriodId: state.uri.queryParameters['periodoId'],
         ),
       ),
     ),
     GoRoute(
-      path: AppRoutes.periodManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionPeriodos,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionPeriodoScreen(
           currentUser: usuario,
@@ -194,8 +228,8 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.cycleManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionCiclos,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionCicloScreen(
           currentUser: usuario,
@@ -204,8 +238,8 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.parallelManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionParalelos,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionParaleloScreen(
           currentUser: usuario,
@@ -214,8 +248,8 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.companyManagement,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.gestionEmpresasAdmin,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => GestionEmpresaScreen(
           currentUser: usuario,
@@ -224,12 +258,21 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.teacherHome,
-      builder: (context, state) => const InicioDocenteScreen(),
+      path: AppRoutes.inicioDocente,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) => InicioScreen(
+          user: usuarioActual,
+          actions: const [],
+          drawerSections: OpcionesDrawerFactory.getSectionsForRole(
+            usuarioActual.role,
+          ),
+        ),
+      ),
     ),
     GoRoute(
-      path: AppRoutes.academicTutorHome,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.inicioTutorAcademico,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => InicioTutorAcademicoScreen(
           user: usuario,
@@ -238,15 +281,15 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.companyTutorHome,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.inicioTutorEmpresarial,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => InicioTutorEmpresarialScreen(user: usuario),
       ),
     ),
     GoRoute(
-      path: AppRoutes.coordinatorHome,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.inicioCoordinador,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => CoordinadorDashboardScreen(
           currentUser: usuario,
@@ -255,19 +298,19 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.practiceManagerHome,
+      path: AppRoutes.inicioResponsablePracticas,
       builder: (context, state) => const InicioResponsablePracticasScreen(),
     ),
-    GoRoute(
-      path: AppRoutes.adminPracticeLogs,
-      builder: (context, state) => _requiereSesion(
+    /* GoRoute(
+      path: AppRoutes.registrosPracticasAdmin,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => AdminBitacorasScreen(currentUser: usuario),
       ),
-    ),
+    ), */
     GoRoute(
-      path: AppRoutes.assignedStudents,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.estudiantesAsignados,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => EstudiantesAsignadosScreen(
           currentUser: usuario,
@@ -276,15 +319,15 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.academicTutorRegisterVisit,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.registrarVisitaTutor,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => RegistroVisitaScreen(currentUser: usuario),
       ),
     ),
     GoRoute(
-      path: AppRoutes.academicTutorTracking,
-      builder: (context, state) => _requiereSesion(context, (usuario) {
+      path: AppRoutes.seguimientoTutorAcademico,
+      builder: (context, state) => _requiereAutenticacion(context, (usuario) {
         final assignedStudent = state.extra as EstudianteAsignadoModel?;
         if (assignedStudent != null) {
           return DetalleSeguimientoEstudianteScreen(
@@ -299,8 +342,8 @@ final GoRouter appRouter = GoRouter(
       }),
     ),
     GoRoute(
-      path: AppRoutes.companyTutorTracking,
-      builder: (context, state) => _requiereSesion(context, (usuario) {
+      path: AppRoutes.seguimientoTutorEmpresarial,
+      builder: (context, state) => _requiereAutenticacion(context, (usuario) {
         final assignedStudent = state.extra as EstudianteAsignadoModel?;
         if (assignedStudent != null) {
           return DetalleSeguimientoEstudianteScreen(
@@ -316,36 +359,36 @@ final GoRouter appRouter = GoRouter(
       }),
     ),
     GoRoute(
-      path: AppRoutes.academicTutorRegisterDeparture,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.registrarSalidaTutor,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => RegistroSalidaVisitaScreen(currentUser: usuario),
       ),
     ),
     GoRoute(
-      path: AppRoutes.academicTutorActivities,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.actividadesTutor,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => RegistrarActividadesTutorScreen(currentUser: usuario),
       ),
     ),
 
     GoRoute(
-      path: AppRoutes.responsablePracticasHome,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.inicioResponsable,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (_) => const rp_feature.InicioResponsablePracticasScreen(),
       ),
     ),
     GoRoute(
-      path: AppRoutes.responsablePracticasCompanies,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.empresasResponsable,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (_) => const GestionEmpresasScreen(),
       ),
     ),
     GoRoute(
-      path: AppRoutes.responsablePracticasCompanyForm,
+      path: AppRoutes.formularioEmpresaResponsable,
       builder: (context, state) {
         // Recibe un mapa o un extra si viene en modo edición
         final extraMap = state.extra as Map<String, dynamic>?;
@@ -355,7 +398,7 @@ final GoRouter appRouter = GoRouter(
               repository: context.read<IResponsablePracticasRepository>(),
             );
 
-        return _requiereSesion(
+        return _requiereAutenticacion(
           context,
           (_) => FormularioEmpresaScreen(
             company: company,
@@ -365,8 +408,8 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: AppRoutes.responsablePracticasCompanyDetail,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.detalleEmpresaResponsable,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (_) => DetalleEmpresaResponsableScreen(
           company: state.extra as rp.EmpresaModel,
@@ -374,14 +417,14 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.responsablePracticasAssignStudents,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.asignacionesResponsable,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (_) => const AsignacionEstudiantesScreen(),
       ),
     ),
     GoRoute(
-      path: AppRoutes.responsablePracticasAssignStudentForm,
+      path: AppRoutes.formularioAsignacionResponsable,
       builder: (context, state) {
         final extraMap = state.extra as Map<String, dynamic>;
         final assignment = extraMap['assignment'] as AsignacionEstudianteModel;
@@ -396,26 +439,28 @@ final GoRouter appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: AppRoutes.coordinatorStudents,
-      builder: (context, state) => CoordinadorEstudiantesScreen(
-        currentUser:
-            context.watch<AuthSession>().currentUser ??
-            FakeUsuarioRepository.coordinator,
+      path: AppRoutes.estudiantesCoordinador,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) => CoordinadorEstudiantesScreen(
+          currentUser: usuarioActual,
+        ),
       ),
     ),
     GoRoute(
-      path: AppRoutes.coordinatorCareers,
-      builder: (context, state) => _requiereSesion(
+      path: AppRoutes.carrerasCoordinador,
+      builder: (context, state) => _requiereAutenticacion(
         context,
         (usuario) => CoordinadorCarrerasScreen(currentUser: usuario),
       ),
     ),
     GoRoute(
-      path: AppRoutes.coordinatorTutors,
-      builder: (context, state) => CoordinadorTutoresScreen(
-        currentUser:
-            context.watch<AuthSession>().currentUser ??
-            FakeUsuarioRepository.coordinator,
+      path: AppRoutes.tutoresCoordinador,
+      builder: (context, state) => _requiereAutenticacion(
+        context,
+        (usuarioActual) => CoordinadorTutoresScreen(
+          currentUser: usuarioActual,
+        ),
       ),
     ),
   ],

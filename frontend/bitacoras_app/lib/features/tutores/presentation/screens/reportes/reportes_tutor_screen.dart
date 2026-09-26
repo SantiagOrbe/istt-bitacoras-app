@@ -78,36 +78,36 @@ class _ReportesTutorScreenState extends State<ReportesTutorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(user: widget.currentUser),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? const Center(child: CircularProgressIndicator(color: AppColores.primary))
           : RefreshIndicator(
-              color: AppColors.primary,
+              color: AppColores.primary,
               onRefresh: _loadVisits,
               child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: const EdgeInsets.all(AppTamanos.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InstitutionalGlowCard(
-                    accentColor: AppColors.primary,
+                    accentColor: AppColores.primary,
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSizes.lg),
+                      padding: const EdgeInsets.all(AppTamanos.lg),
                       child: Row(
                         children: [
-                          const Icon(Icons.description_outlined, size: 34, color: AppColors.primary),
-                          AppSizes.gapH12,
+                          const Icon(Icons.description_outlined, size: 34, color: AppColores.primary),
+                          AppTamanos.gapH12,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Reportes de visitas', style: AppTextStyles.heading),
-                                AppSizes.gapV4,
+                                Text('Reportes de visitas', style: AppEstiloTexto.heading),
+                                AppTamanos.gapV4,
                                 Text(
                                   'Genera la hoja de ruta institucional con tus registros.',
-                                  style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+                                  style: AppEstiloTexto.body.copyWith(color: AppColores.textSecondary),
                                 ),
                               ],
                             ),
@@ -116,48 +116,48 @@ class _ReportesTutorScreenState extends State<ReportesTutorScreen> {
                       ),
                     ),
                   ),
-                  AppSizes.gapV12,
+                  AppTamanos.gapV12,
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final columns = constraints.maxWidth >= 620 ? 3 : 2;
-                      final width = (constraints.maxWidth - AppSizes.sm * (columns - 1)) / columns;
+                      final width = (constraints.maxWidth - AppTamanos.sm * (columns - 1)) / columns;
                       return Wrap(
-                        spacing: AppSizes.sm,
-                        runSpacing: AppSizes.sm,
+                        spacing: AppTamanos.sm,
+                        runSpacing: AppTamanos.sm,
                         children: [
                           _ReportMetricCard(
                             width: width,
                             icon: Icons.assignment_outlined,
                             label: 'Visitas',
                             value: '${_visits.length}',
-                            color: AppColors.secondary,
+                            color: AppColores.secondary,
                           ),
                           _ReportMetricCard(
                             width: width,
                             icon: Icons.event_available_outlined,
                             label: 'Finalizadas',
                             value: '$_completedVisits',
-                            color: AppColors.success,
+                            color: AppColores.success,
                           ),
                           _ReportMetricCard(
                             width: width,
                             icon: Icons.edit_note_outlined,
                             label: 'Con actividad',
                             value: '$_visitsWithActivity',
-                            color: AppColors.info,
+                            color: AppColores.info,
                           ),
                           _ReportMetricCard(
                             width: width,
                             icon: Icons.calendar_today_outlined,
                             label: 'Última visita',
                             value: _latestVisitDate,
-                            color: AppColors.primary,
+                            color: AppColores.primary,
                           ),
                         ],
                       );
                     },
                   ),
-                  AppSizes.gapV16,
+                  AppTamanos.gapV16,
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
@@ -196,18 +196,18 @@ class _ReportMetricCard extends StatelessWidget {
       child: InstitutionalGlowCard(
         accentColor: color,
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           child: Row(
             children: [
               Icon(icon, color: color, size: 26),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(label, style: AppTextStyles.caption),
-                    AppSizes.gapV4,
-                    Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTextStyles.bodyBold),
+                    Text(label, style: AppEstiloTexto.caption),
+                    AppTamanos.gapV4,
+                    Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppEstiloTexto.bodyBold),
                   ],
                 ),
               ),

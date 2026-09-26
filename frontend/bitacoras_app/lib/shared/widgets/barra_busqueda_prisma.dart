@@ -58,8 +58,8 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
       children: [
         Text(
           widget.etiqueta.toUpperCase(),
-          style: AppTextStyles.caption.copyWith(
-            color: AppColors.textSecondary,
+          style: AppEstiloTexto.caption.copyWith(
+            color: AppColores.textSecondary,
             fontSize: 11,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.6,
@@ -74,7 +74,7 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
               Icon(
                 Icons.search_rounded,
                 size: 20,
-                color: enfocado ? AppColors.primary : AppColors.textSecondary,
+                color: enfocado ? AppColores.primary : AppColores.textSecondary,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -83,12 +83,12 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
                   focusNode: _nodoEnfoque,
                   onChanged: widget.alCambiar,
                   style: const TextStyle(
-                    color: AppColors.textPrimary,
+                    color: AppColores.textPrimary,
                     fontSize: 16,
                   ),
                   decoration: InputDecoration.collapsed(
                     hintText: widget.textoSugerido,
-                    hintStyle: const TextStyle(color: AppColors.textHint),
+                    hintStyle: const TextStyle(color: AppColores.textHint),
                   ),
                 ),
               ),
@@ -96,7 +96,7 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
                 IconButton(
                   onPressed: widget.alLimpiar,
                   icon: const Icon(Icons.close_rounded, size: 18),
-                  color: AppColors.textSecondary,
+                  color: AppColores.textSecondary,
                   tooltip: 'Limpiar búsqueda',
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints.tightFor(
@@ -107,7 +107,7 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
               else if (widget.atajo != null)
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.outline),
+                    border: Border.all(color: AppColores.outline),
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: Padding(
@@ -117,9 +117,9 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
                     ),
                     child: Text(
                       widget.atajo!,
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         fontSize: 11,
-                        color: AppColors.textSecondary,
+                        color: AppColores.textSecondary,
                         letterSpacing: 1.1,
                       ),
                     ),
@@ -132,9 +132,9 @@ class _BarraBusquedaPrismaState extends State<BarraBusquedaPrisma> {
           const SizedBox(height: 8),
           Text(
             widget.textoAyuda!.toUpperCase(),
-            style: AppTextStyles.caption.copyWith(
+            style: AppEstiloTexto.caption.copyWith(
               fontSize: 10,
-              color: AppColors.textSecondary,
+              color: AppColores.textSecondary,
               letterSpacing: 1.2,
             ),
           ),

@@ -18,12 +18,12 @@ class ReportesBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(AppSizes.md),
+      padding: const EdgeInsets.all(AppTamanos.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const ReportesHeader(),
-          AppSizes.gapV24,
+          AppTamanos.gapV24,
 
           ProgresoPracticasCard(
             period: period,
@@ -31,11 +31,11 @@ class ReportesBody extends StatelessWidget {
             totalHours: totalHours,
           ),
 
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
 
           GeneradorPdfCard(onGeneratePressed: onGeneratePdf),
 
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
         ],
       ),
     );

@@ -59,8 +59,8 @@ class GestionParaleloController extends ChangeNotifier {
     _clearMessages();
 
     try {
-      final loadedCycles = await repository.getCycles(careerId: _careerId);
-      final loadedParallels = await repository.getParallels(
+      final loadedCycles = await repository.obtenerCiclos(careerId: _careerId);
+      final loadedParallels = await repository.obtenerParalelos(
         careerId: _careerId,
         semesterId: _semesterId,
       );
@@ -153,8 +153,8 @@ class GestionParaleloController extends ChangeNotifier {
       );
 
       final success = parallelId == null
-          ? await repository.createParallel(parallel)
-          : await repository.updateParallel(parallel);
+          ? await repository.crearParalelo(parallel)
+          : await repository.actualizarParalelo(parallel);
 
       if (!success) {
         _errorMessage = parallelId == null

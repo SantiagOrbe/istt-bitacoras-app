@@ -1,5 +1,9 @@
-import 'package:bitacoras_app/shared/exports.dart'; // O tus enums de RolUsuarioModel
+import 'package:bitacoras_app/shared/exports.dart';
 
+/// Modelo principal del usuario autenticado en la aplicación.
+///
+/// Se conserva la API original para evitar romper el resto del proyecto,
+/// pero se añaden alias y métodos en español para la nueva nomenclatura.
 class UsuarioModel {
   final String id;
   final String username;
@@ -22,7 +26,10 @@ class UsuarioModel {
   final String? carreraId;
   final String? semestreId;
   final String? semestreNombre;
+  final String? paraleloId;
+  final String? paraleloNombre;
   final int horasPracticas;
+  final bool puedeRegistrarPracticas;
 
   const UsuarioModel({
     required this.id,
@@ -44,10 +51,13 @@ class UsuarioModel {
     this.carreraId,
     this.semestreId,
     this.semestreNombre,
+    this.paraleloId,
+    this.paraleloNombre,
     this.horasPracticas = 0,
+    this.puedeRegistrarPracticas = false,
   });
 
-  // Método copyWith fundamental para la lógica del Controller
+  // Método de copia fundamental para la lógica del controlador.
   UsuarioModel copyWith({
     String? id,
     String? username,
@@ -68,7 +78,10 @@ class UsuarioModel {
     String? carreraId,
     String? semestreId,
     String? semestreNombre,
+    String? paraleloId,
+    String? paraleloNombre,
     int? horasPracticas,
+    bool? puedeRegistrarPracticas,
   }) {
     return UsuarioModel(
       id: id ?? this.id,
@@ -90,74 +103,144 @@ class UsuarioModel {
       carreraId: carreraId ?? this.carreraId,
       semestreId: semestreId ?? this.semestreId,
       semestreNombre: semestreNombre ?? this.semestreNombre,
+      paraleloId: paraleloId ?? this.paraleloId,
+      paraleloNombre: paraleloNombre ?? this.paraleloNombre,
       horasPracticas: horasPracticas ?? this.horasPracticas,
+      puedeRegistrarPracticas:
+          puedeRegistrarPracticas ?? this.puedeRegistrarPracticas,
     );
   }
 
-  // Serialización lista para Django REST Framework
-  factory UsuarioModel.fromJson(Map<String, dynamic> json) {
-    final profile = json['perfil'] as Map<String, dynamic>?;
-    final user = profile?['usuario'] as Map<String, dynamic>? ?? json;
-    final roleName = (user['rol'] ?? json['role']) as String? ?? '';
-    final role = _roleFromName(roleName);
-    final careerName = user['career_name']?.toString() ??
-      profile?['career_name']?.toString() ??
-      (profile?['carrera'] is Map<String, dynamic>
-        ? (profile?['carrera'] as Map<String, dynamic>)['nombre']?.toString()
-        : null);
-    final fullName = [
-      user['first_name'],
-      user['last_name'],
-    ].whereType<String>().where((value) => value.trim().isNotEmpty).join(' ');
+  /// Alias en español para la operación de copia.
+  UsuarioModel copiarCon({
+    String? id,
+    String? username,
+    String? name,
+    String? email,
+    String? company,
+    RolUsuarioModel? role,
+    bool? isActive,
+    String? phone,
+    String? cedula,
+    String? careerName,
+    String? periodName,
+    String? password,
+    String? tutorAcademico,
+    String? tutorEmpresarial,
+    String? cargo,
+    String? companyId,
+    String? carreraId,
+    String? semestreId,
+    String? semestreNombre,
+    String? paraleloId,
+    String? paraleloNombre,
+    int? horasPracticas,
+    bool? puedeRegistrarPracticas,
+  }) {
+    return copyWith(
+      id: id,
+      username: username,
+      name: name,
+      email: email,
+      company: company,
+      role: role,
+      isActive: isActive,
+      phone: phone,
+      cedula: cedula,
+      careerName: careerName,
+      periodName: periodName,
+      password: password,
+      tutorAcademico: tutorAcademico,
+      tutorEmpresarial: tutorEmpresarial,
+      cargo: cargo,
+      companyId: companyId,
+      carreraId: carreraId,
+      semestreId: semestreId,
+      semestreNombre: semestreNombre,
+      paraleloId: paraleloId,
+      paraleloNombre: paraleloNombre,
+      horasPracticas: horasPracticas,
+      puedeRegistrarPracticas: puedeRegistrarPracticas,
+    );
+  }
 
-    final requiredHours = (profile?['horas_practicas'] ?? user['horas_practicas'] ?? 0) as num? ?? 0;
+  /// Serialización lista para Django REST Framework.
+  factory UsuarioModel.fromJson(Map<String, dynamic> json) {
+    final perfil = json['perfil'] as Map<String, dynamic>?;
+    final usuario = perfil?['usuario'] as Map<String, dynamic>? ?? json;
+    final nombreRol = (usuario['rol'] ?? json['role']) as String? ?? '';
+    final rol = _roleFromName(nombreRol);
+    final nombreCarrera = usuario['career_name']?.toString() ??
+        perfil?['career_name']?.toString() ??
+        (perfil?['carrera'] is Map<String, dynamic>
+            ? (perfil?['carrera'] as Map<String, dynamic>)['nombre']?.toString()
+            : null);
+    final nombreCompleto = [
+      usuario['first_name'],
+      usuario['last_name'],
+    ].whereType<String>().where((valor) => valor.trim().isNotEmpty).join(' ');
+
+    final horasRequeridas =
+        (perfil?['horas_practicas'] ?? usuario['horas_practicas'] ?? 0) as num? ?? 0;
 
     return UsuarioModel(
-      id: user['id']?.toString() ?? '',
-      username: user['username']?.toString() ?? '',
-      name:
-          (user['name'] as String?) ??
-          (fullName.isEmpty ? user['username'] as String? ?? '' : fullName),
-      email: user['email'] as String? ?? '',
-      company: (user['company_name'] ?? user['company'])?.toString(),
-      role: role,
-      isActive: user['estado'] as bool? ?? user['is_active'] as bool? ?? true,
-      phone: user['telefono']?.toString() ?? user['phone']?.toString(),
-      cedula: profile?['cedula']?.toString() ?? user['cedula']?.toString(),
-      careerName: careerName,
-      periodName: user['period_name'] as String?,
+      id: usuario['id']?.toString() ?? '',
+      username: usuario['username']?.toString() ?? '',
+      name: (usuario['name'] as String?) ??
+          (nombreCompleto.isEmpty ? usuario['username'] as String? ?? '' : nombreCompleto),
+      email: usuario['email'] as String? ?? '',
+      company: (usuario['company_name'] ?? usuario['company'])?.toString(),
+      role: rol,
+      isActive: usuario['estado'] as bool? ?? usuario['is_active'] as bool? ?? true,
+      phone: usuario['telefono']?.toString() ?? usuario['phone']?.toString(),
+      cedula: perfil?['cedula']?.toString() ?? usuario['cedula']?.toString(),
+      careerName: nombreCarrera,
+      periodName: usuario['period_name'] as String?,
       password: null,
-      tutorAcademico: profile?['tutor_academico']?.toString(),
-      tutorEmpresarial: profile?['tutor_empresarial']?.toString(),
-      cargo: user['cargo']?.toString(),
-      companyId: (user['empresa_id'] ?? user['empresa'])?.toString(),
-      carreraId: user['carrera_id']?.toString(),
-      semestreId: (profile?['semestre_id'] ?? user['semestre_id'])?.toString(),
-      semestreNombre: (profile?['semestre_nombre'] ?? user['semestre_nombre'])?.toString(),
-      horasPracticas: requiredHours.toInt(),
+      tutorAcademico: perfil?['tutor_academico']?.toString(),
+      tutorEmpresarial: perfil?['tutor_empresarial']?.toString(),
+      cargo: usuario['cargo']?.toString(),
+      companyId: (usuario['empresa_id'] ?? usuario['empresa'])?.toString(),
+      carreraId: usuario['carrera_id']?.toString(),
+      semestreId: (perfil?['semestre_id'] ?? perfil?['semestre'] ?? usuario['semestre_id'] ?? usuario['semestre'])?.toString(),
+      semestreNombre: (perfil?['semestre_nombre'] ?? usuario['semestre_nombre'])?.toString(),
+      paraleloId: (perfil?['paralelo_id'] ?? perfil?['paralelo'] ?? usuario['paralelo_id'] ?? usuario['paralelo'])?.toString(),
+      paraleloNombre: (perfil?['paralelo_nombre'] ?? usuario['paralelo_nombre'])?.toString(),
+      horasPracticas: horasRequeridas.toInt(),
+      puedeRegistrarPracticas: (
+            perfil?['puede_registrar_practicas'] ??
+                usuario['puede_registrar_practicas'] ??
+                false
+          ) as bool? ?? false,
     );
   }
+
+  /// Alias en español para la fábrica de deserialización.
+  factory UsuarioModel.desdeJson(Map<String, dynamic> json) =>
+      UsuarioModel.fromJson(json);
 
   static RolUsuarioModel _roleFromName(String role) {
     return switch (role.toLowerCase()) {
       'estudiante' || 'student' => RolUsuarioModel.student,
-      'docente' || 'teacher' => RolUsuarioModel.teacher,
       'tutor_academico' || 'academictutor' => RolUsuarioModel.academicTutor,
       'tutor_empresarial' || 'companytutor' => RolUsuarioModel.companyTutor,
       'coordinador' || 'coordinator' => RolUsuarioModel.coordinator,
-      'responsable_practicas' ||
-      'practicemanager' => RolUsuarioModel.practiceManager,
+      'responsable_practicas' || 'practicemanager' =>
+        RolUsuarioModel.practiceManager,
       'admin' || 'administrador' => RolUsuarioModel.admin,
       _ => RolUsuarioModel.student,
     };
   }
 
+  /// Alias en español para la conversión de rol.
+  static RolUsuarioModel rolDesdeNombre(String rol) => _roleFromName(rol);
+
   Map<String, dynamic> toJson() {
-    final names = name.trim().split(RegExp(r'\s+'));
+    final nombres = name.trim().split(RegExp(r'\s+'));
     return {
       'email': email,
-      'first_name': names.first,
-      'last_name': names.length > 1 ? names.sublist(1).join(' ') : '',
+      'first_name': nombres.first,
+      'last_name': nombres.length > 1 ? nombres.sublist(1).join(' ') : '',
       'telefono': phone ?? '',
       'rol': role.apiValue,
       'estado': isActive,
@@ -172,13 +255,22 @@ class UsuarioModel {
     };
   }
 
+  /// Alias en español para serialización.
+  Map<String, dynamic> aJson() => toJson();
+
   String get initials {
     if (name.trim().isEmpty) return 'U';
 
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    final partes = name.trim().split(RegExp(r'\s+'));
+    if (partes.length >= 2) {
+      return '${partes[0][0]}${partes[1][0]}'.toUpperCase();
     }
-    return parts[0][0].toUpperCase();
+    return partes[0][0].toUpperCase();
   }
+
+  /// Alias en español para iniciales.
+  String get iniciales => initials;
 }
+
+/// Alias en español para mantener compatibilidad con la nomenclatura nueva.
+typedef UsuarioModelo = UsuarioModel;

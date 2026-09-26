@@ -24,17 +24,17 @@ class MapaPreview extends StatelessWidget {
     final hasLocation = latitude != null && longitude != null;
     final centerLat = latitude ?? -0.9938;
     final centerLng = longitude ?? -77.8128;
-    final activeColor = isGpsActive ? AppColors.primary : AppColors.error;
+    final activeColor = isGpsActive ? AppColores.primary : AppColores.error;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+      borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       child: Container(
         height: 180,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-          border: Border.all(color: AppColors.outline),
+          color: AppColores.surface,
+          borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
+          border: Border.all(color: AppColores.outline),
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -46,19 +46,19 @@ class MapaPreview extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              top: AppSizes.sm + 4,
-              left: AppSizes.sm + 4,
+              top: AppTamanos.sm + 4,
+              left: AppTamanos.sm + 4,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.sm,
-                  vertical: AppSizes.xs + 2,
+                  horizontal: AppTamanos.sm,
+                  vertical: AppTamanos.xs + 2,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.surface.withValues(alpha: 0.94),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  color: AppColores.surface.withValues(alpha: 0.94),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                   boxShadow: const [
                     BoxShadow(
-                      color: AppColors.shadow,
+                      color: AppColores.shadow,
                       blurRadius: 8,
                       offset: Offset(0, 3),
                     ),
@@ -70,15 +70,15 @@ class MapaPreview extends StatelessWidget {
                     const Icon(
                       Icons.business_rounded,
                       size: 14,
-                      color: AppColors.primary,
+                      color: AppColores.primary,
                     ),
-                    AppSizes.gapH4,
+                    AppTamanos.gapH4,
                     Text(
                       'Ubicación de la empresa',
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppColores.textPrimary,
                       ),
                     ),
                   ],
@@ -107,8 +107,8 @@ class MapaPreview extends StatelessWidget {
                               point: LatLng(centerLat, centerLng),
                               radius: radiusInMeters,
                               useRadiusInMeter: true,
-                              color: AppColors.primary.withValues(alpha: 0.18),
-                              borderColor: AppColors.primary,
+                              color: AppColores.primary.withValues(alpha: 0.18),
+                              borderColor: AppColores.primary,
                               borderStrokeWidth: 2,
                             ),
                           ],
@@ -121,7 +121,7 @@ class MapaPreview extends StatelessWidget {
                               height: 32,
                               child: const Icon(
                                 Icons.location_on,
-                                color: AppColors.primary,
+                                color: AppColores.primary,
                                 size: 32,
                               ),
                             ),
@@ -130,7 +130,7 @@ class MapaPreview extends StatelessWidget {
                       ],
                     )
                   : Container(
-                      color: AppColors.background,
+                      color: AppColores.background,
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -138,13 +138,13 @@ class MapaPreview extends StatelessWidget {
                             const Icon(
                               Icons.location_off,
                               size: 34,
-                              color: AppColors.textSecondary,
+                              color: AppColores.textSecondary,
                             ),
-                            AppSizes.gapV8,
+                            AppTamanos.gapV8,
                             Text(
                               'Ubicación no disponible',
-                              style: AppTextStyles.body.copyWith(
-                                color: AppColors.textSecondary,
+                              style: AppEstiloTexto.body.copyWith(
+                                color: AppColores.textSecondary,
                               ),
                             ),
                           ],
@@ -153,16 +153,16 @@ class MapaPreview extends StatelessWidget {
                     ),
             ),
             Positioned(
-              bottom: AppSizes.sm + 4,
-              right: AppSizes.sm + 4,
+              bottom: AppTamanos.sm + 4,
+              right: AppTamanos.sm + 4,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.sm + 2,
-                  vertical: AppSizes.xs + 2,
+                  horizontal: AppTamanos.sm + 2,
+                  vertical: AppTamanos.xs + 2,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  color: AppColores.surface,
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
                   boxShadow: const [
                     BoxShadow(
                       color: Colors.black12,
@@ -181,13 +181,13 @@ class MapaPreview extends StatelessWidget {
                       size: 14,
                       color: activeColor,
                     ),
-                    AppSizes.gapH4,
+                    AppTamanos.gapH4,
                     Text(
                       statusLabel,
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AppColores.textPrimary,
                       ),
                     ),
                   ],

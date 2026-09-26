@@ -34,7 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     setState(() => _estaCargando = true);
     try {
-      await widget.authRepository.register(
+      await widget.authRepository.registrarUsuario(
         email: _controladorCorreo.text.trim(),
         password: _controladorContrasena.text,
         confirmPassword: _controladorConfirmacion.text,
@@ -46,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
-      context.go(AppRoutes.login);
+      context.go(AppRoutes.inicioSesion);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -95,27 +95,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: AppBar(
         title: Text('Registro de Usuarios'),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColores.primary,
         foregroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Form(
           key: _claveFormulario,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.lg),
+            padding: const EdgeInsets.all(AppTamanos.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Registro institucional', style: AppTextStyles.title),
-                AppSizes.gapV8,
+                Text('Registro institucional', style: AppEstiloTexto.title),
+                AppTamanos.gapV8,
                 Text(
                   'Crea tu cuenta con tu correo institucional.',
-                  style: AppTextStyles.body,
+                  style: AppEstiloTexto.body,
                 ),
-                AppSizes.gapV24,
+                AppTamanos.gapV24,
                 CampoFormularioPrisma(
                   controlador: _controladorCorreo,
                   etiqueta: 'Correo institucional',
@@ -124,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   tipoTeclado: TextInputType.emailAddress,
                   validador: _validarCorreo,
                 ),
-                AppSizes.gapV16,
+                AppTamanos.gapV16,
                 CampoFormularioPrisma(
                   controlador: _controladorContrasena,
                   etiqueta: 'Contraseña',
@@ -142,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                AppSizes.gapV16,
+                AppTamanos.gapV16,
                 CampoFormularioPrisma(
                   controlador: _controladorConfirmacion,
                   etiqueta: 'Confirmar contraseña',
@@ -161,25 +161,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 if (_mensajeServidor != null) ...[
-                  AppSizes.gapV16,
+                  AppTamanos.gapV16,
                   Container(
-                    padding: const EdgeInsets.all(AppSizes.md),
+                    padding: const EdgeInsets.all(AppTamanos.md),
                     decoration: BoxDecoration(
-                      color: AppColors.errorSoft,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      color: AppColores.errorSoft,
+                      borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                       border: Border.all(
-                        color: AppColors.error.withValues(alpha: 0.25),
+                        color: AppColores.error.withValues(alpha: 0.25),
                       ),
                     ),
                     child: Text(
                       _mensajeServidor!,
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.error,
+                      style: AppEstiloTexto.body.copyWith(
+                        color: AppColores.error,
                       ),
                     ),
                   ),
                 ],
-                AppSizes.gapV24,
+                AppTamanos.gapV24,
                 BotonPrisma(
                   texto: 'Registrarme',
                   icono: Icons.person_add_alt_1,
@@ -187,9 +187,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   anchoCompleto: true,
                   alPresionar: _registrar,
                 ),
-                AppSizes.gapV8,
+                AppTamanos.gapV8,
                 TextButton(
-                  onPressed: () => context.go(AppRoutes.login),
+                  onPressed: () => context.go(AppRoutes.inicioSesion),
                   child: const Text('¿Ya tienes cuenta? Inicia sesión'),
                 ),
               ],

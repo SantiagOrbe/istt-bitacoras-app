@@ -1,6 +1,6 @@
   import 'package:flutter/material.dart';
 
-  import '../../../../../config/theme/app_text_styles.dart';
+  import '../../../../../config/theme/app_estilo_texto.dart';
 
   class TituloSeccionTableroWidget extends StatelessWidget {
 
@@ -15,7 +15,7 @@
     Widget build(BuildContext context) {
       return Text(
         title,
-        style: AppTextStyles.title,
+        style: AppEstiloTexto.title,
       );
     }
   }

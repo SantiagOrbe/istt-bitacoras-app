@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bitacoras_app/config/constants/app_colors.dart';
+import 'package:bitacoras_app/config/constants/app_colores.dart';
 import '../../../domain/models/accion_rapida_model.dart';
 import 'acceso_rapido_card.dart';
 
@@ -38,7 +38,7 @@ class AccionesTableroWidget extends StatelessWidget {
               onTap: action.route != null
                   ? () => context.push(action.route!)
                   : action.onTap,
-              color: action.iconBackgroundColor ?? AppColors.primary,
+              color: action.iconBackgroundColor ?? AppColores.primary,
               enabled: action.enabled,
             );
           },

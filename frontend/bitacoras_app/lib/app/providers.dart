@@ -21,8 +21,8 @@ List<SingleChildWidget> get appProviders => [
     create: (context) =>
         AsistenciaRemoteDataSource(apiClient: context.read<ApiClient>()),
   ),
-  Provider<IAsistenciaRepository>(
-    create: (context) => AsistenciaRepositoryImpl(
+  Provider<IAsistenciaRepositorio>(
+    create: (context) => AsistenciaRepositorioImpl(
       remoteDataSource: context.read<AsistenciaRemoteDataSource>(),
     ),
   ),
@@ -30,8 +30,8 @@ List<SingleChildWidget> get appProviders => [
     create: (context) =>
         BitacoraRemoteDataSource(apiClient: context.read<ApiClient>()),
   ),
-  Provider<BitacoraRepositoryImpl>(
-    create: (context) => BitacoraRepositoryImpl(
+  Provider<BitacoraRepositorioImpl>(
+    create: (context) => BitacoraRepositorioImpl(
       remoteDataSource: context.read<BitacoraRemoteDataSource>(),
     ),
   ),

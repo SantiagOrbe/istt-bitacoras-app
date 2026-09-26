@@ -26,16 +26,16 @@ class HistorialBody extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
           ),
           title: Row(
             children: [
-              const Icon(Icons.list_alt_rounded, color: AppColors.primary),
+              const Icon(Icons.list_alt_rounded, color: AppColores.primary),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Actividades del día',
-                  style: AppTextStyles.title.copyWith(fontSize: 18),
+                  style: AppEstiloTexto.title.copyWith(fontSize: 18),
                 ),
               ),
             ],
@@ -56,10 +56,10 @@ class HistorialBody extends StatelessWidget {
                           'Actividad sin descripción';
 
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
+                        padding: const EdgeInsets.symmetric(vertical: AppTamanos.sm),
                         child: Text(
                           '• $description',
-                          style: AppTextStyles.body.copyWith(fontSize: 14),
+                          style: AppEstiloTexto.body.copyWith(fontSize: 14),
                         ),
                       );
                     },
@@ -84,7 +84,7 @@ class HistorialBody extends StatelessWidget {
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(AppSizes.md),
+      padding: const EdgeInsets.all(AppTamanos.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -94,33 +94,33 @@ class HistorialBody extends StatelessWidget {
             completedHours: completedHours.toDouble(),
             totalHours: totalRequiredHours.toDouble(),
           ),
-          AppSizes.gapV24,
+          AppTamanos.gapV24,
 
           ProgresoPracticasCard(
             period: semesterName,
             completedHours: completedHours,
             totalHours: totalRequiredHours > 0 ? totalRequiredHours : completedHours,
           ),
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
 
           if (activeRecord != null) ...[
             SesionActivaCard(
               record: activeRecord!,
               onExitPressed: onRegisterExit ?? () {},
             ),
-            AppSizes.gapV16,
+            AppTamanos.gapV16,
           ],
 
           Text(
             'REGISTROS ANTERIORES',
-            style: AppTextStyles.caption.copyWith(
+            style: AppEstiloTexto.caption.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,
-              color: AppColors.textSecondary,
+              color: AppColores.textSecondary,
             ),
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
 
           if (historyList.isEmpty)
             const HistorialEmptyState()
@@ -129,7 +129,7 @@ class HistorialBody extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: historyList.length,
-              separatorBuilder: (context, index) => AppSizes.gapV16,
+              separatorBuilder: (context, index) => AppTamanos.gapV16,
               itemBuilder: (context, index) {
                 final record = historyList[index];
                 return HistorialCard(

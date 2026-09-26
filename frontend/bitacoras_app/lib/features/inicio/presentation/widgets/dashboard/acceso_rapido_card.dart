@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../config/constants/app_colors.dart';
-import '../../../../../config/constants/app_sizes.dart';
-import '../../../../../config/theme/app_text_styles.dart';
+import '../../../../../config/constants/app_colores.dart';
+import '../../../../../config/constants/app_tamanos.dart';
+import '../../../../../config/theme/app_estilo_texto.dart';
 
 class AccesoRapidoCard extends StatelessWidget {
 
@@ -27,22 +27,22 @@ class AccesoRapidoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: enabled ? onTap : null,
-      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+      borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       child: Container(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          color: AppColores.surface,
+          borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
           border: Border.all(
             color: enabled
                 ? color.withValues(alpha: 0.15)
-                : AppColors.outline,
+                : AppColores.outline,
           ),
           boxShadow: [
             BoxShadow(
               color: enabled
                   ? color.withValues(alpha: 0.10)
-                  : AppColors.shadow,
+                  : AppColores.shadow,
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
@@ -57,12 +57,12 @@ class AccesoRapidoCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: enabled
                     ? color.withValues(alpha: 0.12)
-                    : AppColors.disabledSurface,
-                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    : AppColores.disabledSurface,
+                borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
               ),
               child: Icon(
                 icon,
-                color: enabled ? color : AppColors.textDisabled,
+                color: enabled ? color : AppColores.textDisabled,
               ),
             );
             final titleContent = Column(
@@ -73,10 +73,10 @@ class AccesoRapidoCard extends StatelessWidget {
                   title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodyBold.copyWith(
+                  style: AppEstiloTexto.bodyBold.copyWith(
                     color: enabled
-                        ? AppColors.textPrimary
-                        : AppColors.textDisabled,
+                        ? AppColores.textPrimary
+                        : AppColores.textDisabled,
                   ),
                 ),
                 if (subtitle != null && subtitle!.isNotEmpty) ...[
@@ -85,10 +85,10 @@ class AccesoRapidoCard extends StatelessWidget {
                     subtitle!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.small.copyWith(
+                    style: AppEstiloTexto.small.copyWith(
                       color: enabled
-                          ? AppColors.textSecondary
-                          : AppColors.textDisabled,
+                          ? AppColores.textSecondary
+                          : AppColores.textDisabled,
                     ),
                   ),
                 ],
@@ -106,11 +106,11 @@ class AccesoRapidoCard extends StatelessWidget {
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 18,
-                        color: enabled ? color : AppColors.textDisabled,
+                        color: enabled ? color : AppColores.textDisabled,
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSizes.sm),
+                  const SizedBox(height: AppTamanos.sm),
                   titleContent,
                 ],
               );
@@ -119,13 +119,13 @@ class AccesoRapidoCard extends StatelessWidget {
             return Row(
               children: [
                 iconBox,
-                const SizedBox(width: AppSizes.sm),
+                const SizedBox(width: AppTamanos.sm),
                 Expanded(child: titleContent),
-                const SizedBox(width: AppSizes.sm),
+                const SizedBox(width: AppTamanos.sm),
                 Icon(
                   Icons.arrow_forward_rounded,
                   size: 18,
-                  color: enabled ? color : AppColors.textDisabled,
+                  color: enabled ? color : AppColores.textDisabled,
                 ),
               ],
             );

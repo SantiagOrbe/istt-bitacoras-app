@@ -5,7 +5,8 @@ class ResponsablePracticasRemoteDataSource {
 
   ResponsablePracticasRemoteDataSource({required this.apiClient});
 
-  Future<Map<String, dynamic>> getDatos() async {
+  /// Obtiene los datos del responsable de prácticas.
+  Future<Map<String, dynamic>> obtenerDatos() async {
     final response = await apiClient.get(
       'usuarios/responsable-practicas/datos/',
     );
@@ -15,46 +16,84 @@ class ResponsablePracticasRemoteDataSource {
     return response;
   }
 
+  /// Alias de compatibilidad con la nomenclatura anterior.
+  Future<Map<String, dynamic>> getDatos() => obtenerDatos();
+
+  /// Asigna un estudiante con sus tutores y empresa.
+  Future<void> asignarEstudiante({
+    required String estudianteId,
+    required String tutorAcademicoId,
+    required String tutorEmpresarialId,
+    required String empresaId,
+  }) async {
+    await apiClient.post(
+      'usuarios/responsable-practicas/datos/',
+      body: {
+        'estudiante_id': int.tryParse(estudianteId) ?? estudianteId,
+        'tutor_academico_id': int.tryParse(tutorAcademicoId) ?? tutorAcademicoId,
+        'tutor_empresarial_id': int.tryParse(tutorEmpresarialId) ?? tutorEmpresarialId,
+        'empresa_id': int.tryParse(empresaId) ?? empresaId,
+      },
+    );
+  }
+
+  /// Alias de compatibilidad con la nomenclatura anterior.
   Future<void> assignStudent({
     required String studentId,
     required String academicTutorId,
     required String companyTutorId,
     required String companyId,
   }) async {
-    await apiClient.post(
-      'usuarios/responsable-practicas/datos/',
-      body: {
-        'estudiante_id': int.tryParse(studentId) ?? studentId,
-        'tutor_academico_id': int.tryParse(academicTutorId) ?? academicTutorId,
-        'tutor_empresarial_id': int.tryParse(companyTutorId) ?? companyTutorId,
-        'empresa_id': int.tryParse(companyId) ?? companyId,
-      },
+    await asignarEstudiante(
+      estudianteId: studentId,
+      tutorAcademicoId: academicTutorId,
+      tutorEmpresarialId: companyTutorId,
+      empresaId: companyId,
     );
   }
 
-  Future<Map<String, dynamic>> createCompany(Map<String, dynamic> data) async {
-    final response = await apiClient.post('empresas/empresas/', body: data);
+  /// Crea una nueva empresa.
+  Future<Map<String, dynamic>> crearEmpresa(Map<String, dynamic> datos) async {
+    final response = await apiClient.post('empresas/empresas/', body: datos);
     if (response is! Map<String, dynamic>) {
       throw const FormatException('La respuesta de la empresa no es válida.');
     }
     return response;
   }
 
+  /// Alias de compatibilidad con la nomenclatura anterior.
+  Future<Map<String, dynamic>> createCompany(Map<String, dynamic> data) =>
+      crearEmpresa(data);
+
+  /// Actualiza una empresa existente.
+  Future<Map<String, dynamic>> actualizarEmpresa(
+    String id,
+    Map<String, dynamic> datos,
+  ) async {
+    final response = await apiClient.put('empresas/empresas/$id/', body: datos);
+    if (response is! Map<String, dynamic>) {
+      throw const FormatException('La respuesta de la empresa no es válida.');
+    }
+    return response;
+  }
+
+  /// Alias de compatibilidad con la nomenclatura anterior.
   Future<Map<String, dynamic>> updateCompany(
     String id,
     Map<String, dynamic> data,
-  ) async {
-    final response = await apiClient.put('empresas/empresas/$id/', body: data);
-    if (response is! Map<String, dynamic>) {
-      throw const FormatException('La respuesta de la empresa no es válida.');
-    }
-    return response;
-  }
+  ) =>
+      actualizarEmpresa(id, data);
 
-  Future<void> updateCompanyStatus(String id, bool isActive) async {
+  /// Actualiza el estado de una empresa.
+  Future<void> actualizarEstadoEmpresa(String id, bool estaActivo) async {
     await apiClient.patch(
       'empresas/empresas/$id/',
-      body: {'estado': isActive},
+      body: {'estado': estaActivo},
     );
+  }
+
+  /// Alias de compatibilidad con la nomenclatura anterior.
+  Future<void> updateCompanyStatus(String id, bool isActive) async {
+    await actualizarEstadoEmpresa(id, isActive);
   }
 }

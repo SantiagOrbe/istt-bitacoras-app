@@ -11,29 +11,29 @@ class PerfilScreen extends StatelessWidget {
     final profile = PerfilModel.fromUser(currentUser);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(user: currentUser),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(AppSizes.lg),
+        padding: const EdgeInsets.all(AppTamanos.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header del Perfil
             PerfilHeaderCard(user: profile.user),
 
-            AppSizes.gapV24,
+            AppTamanos.gapV24,
 
             Text(
               currentUser.role == RolUsuarioModel.admin
                   ? 'Información del administrador'
                   : 'Información Académica y Personal',
-              style: AppTextStyles.bodyBold.copyWith(
+              style: AppEstiloTexto.bodyBold.copyWith(
                 fontSize: 16,
-                color: AppColors.primary,
+                color: AppColores.primary,
               ),
             ),
-            AppSizes.gapV12,
+            AppTamanos.gapV12,
 
             if (currentUser.role == RolUsuarioModel.admin) ...[
               PerfilInfoTile(
@@ -145,7 +145,6 @@ class PerfilScreen extends StatelessWidget {
             value: currentUser.careerName ?? 'No asignada',
           ),
         );
-      case RolUsuarioModel.teacher:
       case RolUsuarioModel.admin:
         break;
     }

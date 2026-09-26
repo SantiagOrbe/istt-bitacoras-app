@@ -15,6 +15,12 @@
     this.activities = const [],
   });
 
+  String get fecha => date;
+  String get horaEntrada => entryTime;
+  String? get horaSalida => exitTime;
+  String get estado => status;
+  bool get tieneActividades => activities.isNotEmpty;
+
   static String formatTimeToAmPm(String? rawTime) {
     if (rawTime == null || rawTime.trim().isEmpty) {
       return 'Sin registro';
@@ -38,6 +44,12 @@
 
   String get entryTimeLabel => formatTimeToAmPm(entryTime);
   String get exitTimeLabel => formatTimeToAmPm(exitTime);
+  String get etiquetaHoraEntrada => entryTimeLabel;
+  String get etiquetaHoraSalida => exitTimeLabel;
+
+  bool get hasActivities => actividades.isNotEmpty;
+  bool get actividadesDisponibles => actividades.isNotEmpty;
+  List<Map<String, dynamic>> get actividades => activities;
 
   // Deserialización desde Django API
   factory RegistroAsistenciaModel.fromJson(Map<String, dynamic> json) {
@@ -51,13 +63,15 @@
       status: rawStatus is bool
           ? (rawStatus ? 'En curso' : 'Completado')
           : rawStatus as String? ?? 'En curso',
-        activities: (json['actividades'] as List<dynamic>? ?? [])
+      activities: (json['actividades'] as List<dynamic>? ?? [])
           .whereType<Map<String, dynamic>>()
           .toList(),
     );
   }
 
-      bool get hasActivities => activities.isNotEmpty;
+  factory RegistroAsistenciaModel.desdeJson(Map<String, dynamic> json) {
+    return RegistroAsistenciaModel.fromJson(json);
+  }
 
   // Serialización para peticiones POST/PUT
   Map<String, dynamic> toJson() {
@@ -67,6 +81,47 @@
       'hora_entrada': entryTime,
       'hora_salida': exitTime,
       'estado': status,
+      'actividades': activities,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
+
+  RegistroAsistenciaModel copyWith({
+    String? id,
+    String? date,
+    String? entryTime,
+    String? exitTime,
+    String? status,
+    List<Map<String, dynamic>>? activities,
+  }) {
+    return RegistroAsistenciaModel(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      entryTime: entryTime ?? this.entryTime,
+      exitTime: exitTime ?? this.exitTime,
+      status: status ?? this.status,
+      activities: activities ?? this.activities,
+    );
+  }
+
+  RegistroAsistenciaModel copiarCon({
+    String? id,
+    String? date,
+    String? entryTime,
+    String? exitTime,
+    String? status,
+    List<Map<String, dynamic>>? activities,
+  }) {
+    return copyWith(
+      id: id,
+      date: date,
+      entryTime: entryTime,
+      exitTime: exitTime,
+      status: status,
+      activities: activities,
+    );
+  }
 }
+
+typedef RegistroAsistenciaModelo = RegistroAsistenciaModel;

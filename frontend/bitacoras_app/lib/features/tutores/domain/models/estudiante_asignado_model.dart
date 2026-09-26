@@ -27,11 +27,28 @@ class EstudianteAsignadoModel {
     this.lastAttendanceTime,
   });
 
+  UsuarioModel get estudiante => student;
+  String get tutorAcademicoId => academicTutorId;
+  String get tutorEmpresarialId => companyTutorId;
+  String get nombreTutorEmpresarial => companyTutorName;
+  String get telefonoTutorEmpresarial => companyTutorPhone;
+  double get horasTotalesRequeridas => totalHoursRequired;
+  double get horasTotalesCompletadas => totalHoursCompleted;
+  String get estado => status;
+  String? get ultimaDescripcionActividad => lastActivityDescription;
+  String? get ultimaFechaActividad => lastActivityDate;
+  String? get ultimaHoraAsistencia => lastAttendanceTime;
+
   double get remainingHours => (totalHoursRequired - totalHoursCompleted).clamp(0, totalHoursRequired);
   double get progressPercentage => totalHoursRequired > 0 ? (totalHoursCompleted / totalHoursRequired).clamp(0.0, 1.0) : 0.0;
+  double get horasRestantes => remainingHours;
+  double get porcentajeProgreso => progressPercentage;
   String get totalHoursCompletedLabel => _formatHours(totalHoursCompleted);
   String get totalHoursRequiredLabel => _formatHours(totalHoursRequired);
   String get remainingHoursLabel => _formatHours(remainingHours);
+  String get horasCompletadasEtiqueta => totalHoursCompletedLabel;
+  String get horasRequeridasEtiqueta => totalHoursRequiredLabel;
+  String get horasRestantesEtiqueta => remainingHoursLabel;
 
   static String _formatHours(double value) {
     return value == value.roundToDouble()
@@ -58,6 +75,10 @@ class EstudianteAsignadoModel {
     );
   }
 
+  factory EstudianteAsignadoModel.desdeJson(Map<String, dynamic> json) {
+    return EstudianteAsignadoModel.fromJson(json);
+  }
+
   static double _toDouble(dynamic value, {required double fallback}) {
     if (value == null) return fallback;
     if (value is num) return value.toDouble();
@@ -80,4 +101,66 @@ class EstudianteAsignadoModel {
       'last_attendance_time': lastAttendanceTime,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
+
+  EstudianteAsignadoModel copyWith({
+    UsuarioModel? student,
+    String? academicTutorId,
+    String? companyTutorId,
+    String? companyTutorName,
+    String? companyTutorPhone,
+    double? totalHoursRequired,
+    double? totalHoursCompleted,
+    String? status,
+    String? lastActivityDescription,
+    String? lastActivityDate,
+    String? lastAttendanceTime,
+  }) {
+    return EstudianteAsignadoModel(
+      student: student ?? this.student,
+      academicTutorId: academicTutorId ?? this.academicTutorId,
+      companyTutorId: companyTutorId ?? this.companyTutorId,
+      companyTutorName: companyTutorName ?? this.companyTutorName,
+      companyTutorPhone: companyTutorPhone ?? this.companyTutorPhone,
+      totalHoursRequired: totalHoursRequired ?? this.totalHoursRequired,
+      totalHoursCompleted: totalHoursCompleted ?? this.totalHoursCompleted,
+      status: status ?? this.status,
+      lastActivityDescription:
+          lastActivityDescription ?? this.lastActivityDescription,
+      lastActivityDate: lastActivityDate ?? this.lastActivityDate,
+      lastAttendanceTime: lastAttendanceTime ?? this.lastAttendanceTime,
+    );
+  }
+
+  EstudianteAsignadoModel copiarCon({
+    UsuarioModel? student,
+    String? academicTutorId,
+    String? companyTutorId,
+    String? companyTutorName,
+    String? companyTutorPhone,
+    double? totalHoursRequired,
+    double? totalHoursCompleted,
+    String? status,
+    String? lastActivityDescription,
+    String? lastActivityDate,
+    String? lastAttendanceTime,
+  }) {
+    return copyWith(
+      student: student,
+      academicTutorId: academicTutorId,
+      companyTutorId: companyTutorId,
+      companyTutorName: companyTutorName,
+      companyTutorPhone: companyTutorPhone,
+      totalHoursRequired: totalHoursRequired,
+      totalHoursCompleted: totalHoursCompleted,
+      status: status,
+      lastActivityDescription: lastActivityDescription,
+      lastActivityDate: lastActivityDate,
+      lastAttendanceTime: lastAttendanceTime,
+    );
+  }
 }
+
+typedef EstudianteAsignadoModelo = EstudianteAsignadoModel;
+typedef EstudianteAsignado = EstudianteAsignadoModel;

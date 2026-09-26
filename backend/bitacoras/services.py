@@ -11,6 +11,38 @@ from .models import RegistroPractica
 
 class GeofencingService:
     @staticmethod
+    def validar_eligibilidad_practicas(estudiante):
+        if not estudiante:
+            raise ValidationError({'error': 'El usuario autenticado no tiene un perfil de estudiante asociado.'})
+
+        if estudiante.semestre_id is None or estudiante.paralelo_id is None:
+            raise ValidationError({
+                'error': 'Todavía no tienes un semestre y un paralelo asignados. No puedes acceder a las prácticas.',
+                'semestre': estudiante.semestre_id is not None,
+                'paralelo': estudiante.paralelo_id is not None,
+            })
+
+        if estudiante.semestre is None:
+            raise ValidationError({'error': 'El semestre del estudiante no está disponible para registrar prácticas.'})
+
+        if estudiante.paralelo is None:
+            raise ValidationError({'error': 'El paralelo del estudiante no está disponible para registrar prácticas.'})
+
+        if not estudiante.empresa_id:
+            raise ValidationError({'error': 'El estudiante no tiene una empresa asignada para registrar prácticas.'})
+
+        if not estudiante.semestre.estado:
+            raise ValidationError({'error': 'Tu semestre está inactivo y no puede registrar prácticas.'})
+
+        if not estudiante.paralelo.estado:
+            raise ValidationError({'error': 'Tu paralelo está inactivo y no puede registrar prácticas.'})
+
+        if not estudiante.puede_registrar_practicas:
+            raise ValidationError({
+                'error': 'Tu semestre no está habilitado para prácticas en la carrera y periodo actual.'
+            })
+
+    @staticmethod
     def _distancia_a_empresa(empresa, latitud, longitud):
         if empresa.ubicacion:
             empresa_latitud = empresa.ubicacion.y
@@ -33,8 +65,7 @@ class GeofencingService:
 
     @staticmethod
     def realizar_check_in(estudiante, latitud, longitud):
-        if not estudiante:
-            raise ValidationError({'error': 'El usuario autenticado no tiene un perfil de estudiante asociado.'})
+        GeofencingService.validar_eligibilidad_practicas(estudiante)
 
         if not estudiante.empresa:
             raise ValidationError({'error': 'El estudiante no tiene una empresa asignada.'})
@@ -103,8 +134,7 @@ class GeofencingService:
 
     @staticmethod
     def realizar_check_out(estudiante, latitud, longitud):
-        if not estudiante:
-            raise ValidationError({'error': 'El usuario autenticado no tiene un perfil de estudiante asociado.'})
+        GeofencingService.validar_eligibilidad_practicas(estudiante)
 
         today = date.today()
         registro = RegistroPractica.objects.filter(

@@ -5,6 +5,7 @@ from django.contrib.gis.geos import Point
 """ Modelos de la Entidad Empresa """
 class Empresa(models.Model):
     nombre = models.CharField(max_length=150)
+    canton = models.CharField(max_length=100, blank=True, default='')
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=15)
     correo = models.EmailField()

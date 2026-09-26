@@ -26,12 +26,12 @@ export 'package:bitacoras_app/features/estudiantes/domain/models/ubicacion_empre
 // --- Models ---
 
 // --- Repositories ---
-export 'package:bitacoras_app/features/estudiantes/data/repositories/asistencia_repository_impl.dart';
-export 'package:bitacoras_app/features/estudiantes/data/repositories/bitacora_repository_impl.dart';
+export 'package:bitacoras_app/features/estudiantes/data/repositories/asistencia_repositorio_impl.dart';
+export 'package:bitacoras_app/features/estudiantes/data/repositories/bitacora_repositorio_impl.dart';
 export 'package:bitacoras_app/features/estudiantes/data/datasources/asistencia_remote_datasource.dart';
 export 'package:bitacoras_app/features/estudiantes/data/datasources/bitacora_remote_datasource.dart';
 export 'package:bitacoras_app/features/estudiantes/data/repositories/opciones_drawer_estudiante.dart';
-export 'package:bitacoras_app/features/estudiantes/domain/repositories/i_asistencia_repository.dart';
+export 'package:bitacoras_app/features/estudiantes/domain/repositories/i_asistencia_repositorio.dart';
 
 // --- Controllers ---
 export 'package:bitacoras_app/features/estudiantes/presentation/controllers/asistencia_provider.dart';
@@ -67,6 +67,11 @@ export 'package:bitacoras_app/features/estudiantes/presentation/widgets/historia
 export 'package:bitacoras_app/features/estudiantes/presentation/widgets/historial/historial_card.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/widgets/historial/historial_empty_state.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/widgets/historial/historial_header.dart';
+export 'package:bitacoras_app/features/estudiantes/presentation/widgets/inicio/estudiante_dashboard_contenido.dart';
+export 'package:bitacoras_app/features/estudiantes/presentation/widgets/inicio/estudiante_dashboard_error.dart';
+export 'package:bitacoras_app/features/estudiantes/presentation/widgets/inicio/estudiante_dashboard_hero.dart';
+export 'package:bitacoras_app/features/estudiantes/presentation/widgets/inicio/estudiante_dashboard_modulo.dart';
+export 'package:bitacoras_app/features/estudiantes/presentation/widgets/inicio/estudiante_dashboard_modulo_card.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/widgets/reportes/generador_pdf_card.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/widgets/reportes/reportes_body.dart';
 export 'package:bitacoras_app/features/estudiantes/presentation/widgets/reportes/reportes_header.dart';

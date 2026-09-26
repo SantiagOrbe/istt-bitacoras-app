@@ -26,6 +26,9 @@ class PeriodoModel {
     );
   }
 
+  factory PeriodoModel.desdeJson(Map<String, dynamic> json) =>
+      PeriodoModel.fromJson(json);
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -35,6 +38,8 @@ class PeriodoModel {
       'estado': isActive,
     };
   }
+
+  Map<String, dynamic> aJson() => toJson();
 
   static String _formatDate(DateTime date) =>
       '${date.year.toString().padLeft(4, '0')}-'
@@ -56,4 +61,36 @@ class PeriodoModel {
       isActive: isActive ?? this.isActive,
     );
   }
+
+  PeriodoModel copiarCon({
+    String? nuevoId,
+    String? nombre,
+    DateTime? fechaInicio,
+    DateTime? fechaFin,
+    bool? estado,
+  }) {
+    return PeriodoModel(
+      id: nuevoId ?? id,
+      name: nombre ?? name,
+      startDate: fechaInicio ?? startDate,
+      endDate: fechaFin ?? endDate,
+      isActive: estado ?? isActive,
+    );
+  }
+}
+
+typedef PeriodoModelo = PeriodoModel;
+
+extension PeriodoModelEspanol on PeriodoModel {
+  String get nombre => name;
+  DateTime get fechaInicio => startDate;
+  DateTime get fechaFin => endDate;
+  bool get estado => isActive;
+
+  PeriodoModel conNombre(String nuevoNombre) => copyWith(name: nuevoNombre);
+  PeriodoModel conFechaInicio(DateTime nuevaFechaInicio) =>
+      copyWith(startDate: nuevaFechaInicio);
+  PeriodoModel conFechaFin(DateTime nuevaFechaFin) =>
+      copyWith(endDate: nuevaFechaFin);
+  PeriodoModel conEstado(bool nuevoEstado) => copyWith(isActive: nuevoEstado);
 }

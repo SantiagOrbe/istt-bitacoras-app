@@ -256,6 +256,104 @@ class ParaleloEstudiantesTests(APITestCase):
 			{1, 3},
 		)
 
+	def test_periodos_de_anios_distintos_no_se_consideran_duplicados(self):
+		Periodo.objects.create(
+			nombre='2026-IS',
+			fecha_inicio='2026-01-05',
+			fecha_fin='2026-06-30',
+		)
+		serializer = PeriodoSerializer(data={
+			'nombre': '2027-IS',
+			'fecha_inicio': '2027-01-05',
+			'fecha_fin': '2027-06-30',
+		})
+
+		self.assertTrue(serializer.is_valid(), serializer.errors)
+
+		duplicate_serializer = PeriodoSerializer(data={
+			'nombre': '2026-IS',
+			'fecha_inicio': '2027-01-05',
+			'fecha_fin': '2027-06-30',
+		})
+		self.assertFalse(duplicate_serializer.is_valid())
+		self.assertNotIn('already exists', str(duplicate_serializer.errors).lower())
+
+	def test_solo_un_periodo_puede_quedar_activo(self):
+		periodos_url = reverse('periodo-list')
+		primer_periodo = self.client.post(
+			periodos_url,
+			{
+				'nombre': '2026-IS',
+				'fecha_inicio': '2026-01-05',
+				'fecha_fin': '2026-06-30',
+				'estado': True,
+			},
+			format='json',
+		)
+		self.assertEqual(primer_periodo.status_code, status.HTTP_201_CREATED)
+
+		segundo_periodo = self.client.post(
+			periodos_url,
+			{
+				'nombre': '2027-IS',
+				'fecha_inicio': '2027-01-05',
+				'fecha_fin': '2027-06-30',
+				'estado': True,
+			},
+			format='json',
+		)
+		self.assertEqual(segundo_periodo.status_code, status.HTTP_201_CREATED)
+		self.assertFalse(Periodo.objects.get(pk=primer_periodo.data['id']).estado)
+		self.assertTrue(Periodo.objects.get(pk=segundo_periodo.data['id']).estado)
+
+		response = self.client.patch(
+			reverse('periodo-detail', args=[segundo_periodo.data['id']]),
+			{'estado': False},
+			format='json',
+		)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertFalse(Periodo.objects.get(pk=segundo_periodo.data['id']).estado)
+
+	def test_configuracion_masiva_reemplaza_semestres_en_un_periodo(self):
+		periodo = Periodo.objects.create(
+			nombre='2027-IS',
+			fecha_inicio='2027-01-05',
+			fecha_fin='2027-06-30',
+			estado=True,
+		)
+		segundo_semestre = Semestre.objects.create(
+			nombre='Segundo',
+			nivel=2,
+			carrera=self.carrera,
+		)
+		primera_configuracion = CarreraPeriodo.objects.create(
+			carrera=self.carrera,
+			periodo=periodo,
+			semestre=self.first_parallel.semestre,
+			estado=True,
+		)
+		response = self.client.post(
+			reverse('carreraperiodo-configurar-periodo'),
+			{
+				'periodo': periodo.pk,
+				'carreras': [{
+					'carrera': self.carrera.pk,
+					'active_semesters': [2],
+				}],
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		primera_configuracion.refresh_from_db()
+		self.assertFalse(primera_configuracion.estado)
+		self.assertTrue(CarreraPeriodo.objects.get(
+			carrera=self.carrera,
+			periodo=periodo,
+			semestre=segundo_semestre,
+			paralelo=None,
+		).estado)
+
 	def test_desactiva_carrera_requiere_confirmacion_si_tiene_relaciones(self):
 		carrera = Carrera.objects.create(
 			nombre='Contabilidad',
@@ -265,7 +363,12 @@ class ParaleloEstudiantesTests(APITestCase):
 			modalidad='Presencial',
 			total_semestres=4,
 		)
-		Semestre.objects.create(nombre='Primero', nivel=1, carrera=carrera)
+		semestre = Semestre.objects.create(
+			nombre='Primero', nivel=1, carrera=carrera
+		)
+		paralelo = Paralelo.objects.create(
+			nombre='A', jornada='matutina', semestre=semestre
+		)
 		user = Usuario.objects.create_user(
 			username='estudiante_con',
 			email='estudiante_con@est.itstena.edu.ec',
@@ -290,7 +393,48 @@ class ParaleloEstudiantesTests(APITestCase):
 		)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		carrera.refresh_from_db()
+		semestre.refresh_from_db()
+		paralelo.refresh_from_db()
 		self.assertFalse(carrera.estado)
+		self.assertFalse(semestre.estado)
+		self.assertFalse(paralelo.estado)
+
+	def test_editar_carrera_inactiva_con_usuarios_no_requiere_confirmar_desactivacion(self):
+		carrera = Carrera.objects.create(
+			nombre='Carrera inactiva',
+			descripcion='Carrera para validar edición',
+			codigo_carrera='CI-2026',
+			sigla_carrera='CI',
+			modalidad='Presencial',
+			total_semestres=4,
+			estado=False,
+		)
+		Semestre.objects.create(nombre='Primero', nivel=1, carrera=carrera)
+		user = Usuario.objects.create_user(
+			username='estudiante_ci',
+			email='estudiante_ci@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='estudiante',
+		)
+		Estudiante.objects.create(usuario=user, carrera=carrera)
+
+		response = self.client.put(
+			reverse('carrera-detail', args=[carrera.pk]),
+			{
+				'nombre': 'Carrera inactiva editada',
+				'descripcion': 'Información actualizada',
+				'codigo_carrera': 'CI-2026',
+				'sigla_carrera': 'CI',
+				'modalidad': 'Presencial',
+				'total_semestres': 4,
+				'estado': False,
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		carrera.refresh_from_db()
+		self.assertEqual(carrera.nombre, 'Carrera inactiva editada')
 
 	def test_reactiva_carrera_con_nombre_y_descripcion_reales(self):
 		carrera = Carrera.objects.create(
@@ -333,6 +477,9 @@ class ParaleloEstudiantesTests(APITestCase):
 		semestre = Semestre.objects.create(
 			nombre='Primero', nivel=1, carrera=carrera, estado=True,
 		)
+		paralelo = Paralelo.objects.create(
+			nombre='A', jornada='matutina', semestre=semestre, estado=True,
+		)
 		periodo = Periodo.objects.create(
 			nombre='2026-P',
 			fecha_inicio='2026-01-05',
@@ -353,7 +500,35 @@ class ParaleloEstudiantesTests(APITestCase):
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		config.refresh_from_db()
+		paralelo.refresh_from_db()
 		self.assertFalse(config.estado)
+		self.assertFalse(paralelo.estado)
+
+	def test_paralelo_se_retorna_inactivo_si_su_carrera_o_semestre_estan_inactivos(self):
+		carrera = Carrera.objects.create(
+			nombre='Carrera inactiva con paralelo',
+			descripcion='Prueba de estado efectivo',
+			codigo_carrera='CIP-2026',
+			sigla_carrera='CIP',
+			modalidad='Presencial',
+			total_semestres=4,
+			estado=False,
+		)
+		semestre = Semestre.objects.create(
+			nombre='Primero', nivel=1, carrera=carrera, estado=False,
+		)
+		paralelo = Paralelo.objects.create(
+			nombre='A', jornada='matutina', semestre=semestre, estado=True,
+		)
+
+		response = self.client.get(
+			reverse('paralelo-list'), {'semestre': semestre.pk}
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(len(response.data), 1)
+		self.assertEqual(response.data[0]['id'], paralelo.pk)
+		self.assertFalse(response.data[0]['estado'])
 
 	def test_desactivar_carrera_desactiva_semestres_y_relaciones(self):
 		carrera = Carrera.objects.create(

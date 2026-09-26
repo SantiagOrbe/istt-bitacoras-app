@@ -19,17 +19,24 @@ class _GestionEmpresaScreenState extends State<GestionEmpresaScreen> {
   bool _estaCargando = true;
   bool? _filtroEstado;
   String _consulta = '';
+  late final GestionEmpresaActions _actions;
 
   @override
   void initState() {
     super.initState();
+    _actions = GestionEmpresaActions(
+      context: context,
+      currentUser: widget.currentUser,
+      repository: widget.adminRepository,
+      reloadCompanies: _cargarEmpresas,
+    );
     _cargarEmpresas();
   }
 
   Future<void> _cargarEmpresas() async {
     setState(() => _estaCargando = true);
     try {
-      final empresas = await widget.adminRepository.getCompanies();
+      final empresas = await widget.adminRepository.obtenerEmpresas();
       if (!mounted) return;
       setState(() {
         _empresas = empresas;
@@ -56,42 +63,6 @@ class _GestionEmpresaScreenState extends State<GestionEmpresaScreen> {
     }).toList();
   }
 
-  Future<void> _abrirFormulario({EmpresaModel? empresa}) async {
-    final resultado = await showModalBottomSheet<EmpresaModel>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => EmpresaFormSheet(empresa: empresa),
-    );
-    if (resultado == null) return;
-
-    try {
-      if (empresa == null) {
-        await widget.adminRepository.createCompany(resultado);
-      } else {
-        await widget.adminRepository.updateCompany(resultado);
-      }
-      await _cargarEmpresas();
-      if (mounted) _mostrarExito('Empresa guardada correctamente.');
-    } catch (error) {
-      if (mounted) _mostrarError(_mensajeError(error));
-    }
-  }
-
-  Future<void> _abrirDetalle(EmpresaModel empresa) async {
-    final resultado = await Navigator.push<EmpresaModel>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => EmpresaDetailScreen(
-          usuarioActual: widget.currentUser,
-          repositorio: widget.adminRepository,
-          empresa: empresa,
-        ),
-      ),
-    );
-    if (resultado != null) await _cargarEmpresas();
-  }
-
   String _mensajeError(Object error) {
     if (error is ApiException) return error.message;
     return 'No se pudo completar la operación.';
@@ -99,13 +70,7 @@ class _GestionEmpresaScreenState extends State<GestionEmpresaScreen> {
 
   void _mostrarError(String mensaje) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensaje), backgroundColor: AppColors.error),
-    );
-  }
-
-  void _mostrarExito(String mensaje) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensaje), backgroundColor: AppColors.success),
+      SnackBar(content: Text(mensaje), backgroundColor: AppColores.error),
     );
   }
 
@@ -114,62 +79,32 @@ class _GestionEmpresaScreenState extends State<GestionEmpresaScreen> {
     final empresas = _empresasFiltradas;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(
         user: widget.currentUser,
         showBackButton: true,
         onBackPressed: () => context.pop(),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _abrirFormulario(),
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.add_business_outlined, color: AppColors.surface),
+        onPressed: () => _actions.openForm(),
+        backgroundColor: AppColores.primary,
+        icon: const Icon(
+          Icons.add_business_outlined,
+          color: AppColores.surface,
+        ),
         label: const Text('Nueva empresa'),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSizes.md,
-            AppSizes.sm,
-            AppSizes.md,
-            0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              EmpresaListadoHeader(
-                total: empresas.length,
-                alBuscar: (valor) => setState(() => _consulta = valor),
-                filtroEstado: _filtroEstado,
-                alFiltrar: (valor) => setState(() => _filtroEstado = valor),
-              ),
-              AppSizes.gapV16,
-              Expanded(
-                child: _estaCargando
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      )
-                    : empresas.isEmpty
-                    ? EmpresaListadoVacio(filtroEstado: _filtroEstado)
-                    : RefreshIndicator(
-                        onRefresh: _cargarEmpresas,
-                        child: ListView.separated(
-                          itemCount: empresas.length,
-                          separatorBuilder: (context, index) => AppSizes.gapV8,
-                          itemBuilder: (context, index) {
-                            final empresa = empresas[index];
-                            return EmpresaTile(
-                              empresa: empresa,
-                              alAbrir: () => _abrirDetalle(empresa),
-                            );
-                          },
-                        ),
-                      ),
-              ),
-            ],
-          ),
+        child: GestionEmpresaBody(
+          isLoading: _estaCargando,
+          empresas: empresas,
+          searchQuery: _consulta,
+          filterState: _filtroEstado,
+          onRefresh: _cargarEmpresas,
+          onSearchChanged: (valor) => setState(() => _consulta = valor),
+          onFilterChanged: (valor) => setState(() => _filtroEstado = valor),
+          onOpenDetail: _actions.openDetail,
+          onOpenForm: _actions.openForm,
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
 
 
 class RegistroAsistenciaController extends ChangeNotifier {
-  final IAsistenciaRepository repository;
+  final IAsistenciaRepositorio repository;
 
   RegistroAsistenciaController({required this.repository});
 
@@ -20,7 +20,7 @@ class RegistroAsistenciaController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      companyLocation = await repository.getAssignedCompanyLocation();
+      companyLocation = await repository.obtenerUbicacionEmpresaAsignada();
       hasCompanyAssigned = true;
     } catch (error) {
       companyLocation = null;
@@ -53,7 +53,7 @@ class RegistroAsistenciaController extends ChangeNotifier {
 
   Future<void> _loadPracticeProgress() async {
     try {
-      final progress = await repository.getStudentPracticeProgress();
+      final progress = await repository.obtenerProgresoPracticasEstudiante();
       final completo = progress['completo'] == true;
       hasReachedHourLimit = completo;
 
@@ -69,6 +69,7 @@ class RegistroAsistenciaController extends ChangeNotifier {
 
   Future<bool> validateLocation() async {
     if (!hasCompanyAssigned || companyLocation == null) {
+      warningTitle = 'Empresa no asignada';
       validationMessage =
           'Usted no tiene empresa asignada. Comuníquese con el responsable del proceso de prácticas para que le asigne una empresa.';
       canRegister = false;
@@ -174,10 +175,10 @@ class RegistroAsistenciaController extends ChangeNotifier {
       return false;
     }
 
-    final success = await repository.registerAttendance(
-      type: isEntry ? 'ENTRY' : 'EXIT',
-      latitude: position.latitude,
-      longitude: position.longitude,
+    final success = await repository.registrarAsistencia(
+      tipo: isEntry ? 'ENTRY' : 'EXIT',
+      latitud: position.latitude,
+      longitud: position.longitude,
     );
 
     isLoading = false;

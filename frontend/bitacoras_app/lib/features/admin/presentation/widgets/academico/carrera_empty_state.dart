@@ -19,30 +19,30 @@ class CarreraEmptyState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSizes.lg),
+            padding: const EdgeInsets.all(AppTamanos.lg),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: AppColores.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.account_tree_rounded,
               size: 40,
-              color: AppColors.primary,
+              color: AppColores.primary,
             ),
           ),
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
           Text(
             title,
-            style: AppTextStyles.bodyBold.copyWith(
-              color: AppColors.textPrimary,
+            style: AppEstiloTexto.bodyBold.copyWith(
+              color: AppColores.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
           Text(
             subtitle,
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary,
+            style: AppEstiloTexto.caption.copyWith(
+              color: AppColores.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),

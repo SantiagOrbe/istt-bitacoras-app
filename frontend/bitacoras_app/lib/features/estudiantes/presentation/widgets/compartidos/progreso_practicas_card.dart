@@ -23,31 +23,31 @@ class ProgresoPracticasCard extends StatelessWidget {
     final int percentage = (progress * 100).toInt();
 
     return InstitutionalGlowCard(
-      accentColor: progress >= 1 ? AppColors.success : AppColors.primary,
+      accentColor: progress >= 1 ? AppColores.success : AppColores.primary,
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Selector / Header de Período Académico
           InkWell(
             onTap: onPeriodTap,
-            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSizes.xs),
+              padding: const EdgeInsets.symmetric(vertical: AppTamanos.xs),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'PERÍODO ACADÉMICO',
-                    style: AppTextStyles.caption.copyWith(
+                    style: AppEstiloTexto.caption.copyWith(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
-                      color: AppColors.textSecondary,
+                      color: AppColores.textSecondary,
                     ),
                   ),
-                  AppSizes.gapV4,
+                  AppTamanos.gapV4,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -56,14 +56,14 @@ class ProgresoPracticasCard extends StatelessWidget {
                           const Icon(
                             Icons.calendar_today_outlined,
                             size: 18,
-                            color: AppColors.primary,
+                            color: AppColores.primary,
                           ),
-                          AppSizes.gapH8,
+                          AppTamanos.gapH8,
                           Text(
                             period,
-                            style: AppTextStyles.bodyBold.copyWith(
+                            style: AppEstiloTexto.bodyBold.copyWith(
                               fontSize: 16,
-                              color: AppColors.primary,
+                              color: AppColores.primary,
                             ),
                           ),
                         ],
@@ -71,7 +71,7 @@ class ProgresoPracticasCard extends StatelessWidget {
                       if (onPeriodTap != null)
                         const Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: AppColors.textSecondary,
+                          color: AppColores.textSecondary,
                         ),
                     ],
                   ),
@@ -80,7 +80,7 @@ class ProgresoPracticasCard extends StatelessWidget {
             ),
           ),
 
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
 
           // Conteo de horas acumuladas vs total
           Row(
@@ -88,11 +88,11 @@ class ProgresoPracticasCard extends StatelessWidget {
             children: [
               Text(
                 'HORAS REGISTRADAS',
-                style: AppTextStyles.caption.copyWith(
+                style: AppEstiloTexto.caption.copyWith(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.5,
-                  color: AppColors.textSecondary,
+                  color: AppColores.textSecondary,
                 ),
               ),
               RichText(
@@ -100,16 +100,16 @@ class ProgresoPracticasCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: '${completedValue.toStringAsFixed(1)} ',
-                      style: AppTextStyles.bodyBold.copyWith(
+                      style: AppEstiloTexto.bodyBold.copyWith(
                         fontSize: 16,
-                        color: AppColors.primary,
+                        color: AppColores.primary,
                       ),
                     ),
                     TextSpan(
                       text: '/ ${totalValue.toStringAsFixed(0)} hrs',
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppEstiloTexto.caption.copyWith(
                         fontSize: 13,
-                        color: AppColors.textSecondary,
+                        color: AppColores.textSecondary,
                       ),
                     ),
                   ],
@@ -118,22 +118,22 @@ class ProgresoPracticasCard extends StatelessWidget {
             ],
           ),
 
-          AppSizes.gapV8,
+          AppTamanos.gapV8,
 
           // Barra de progreso estilizada
           ClipRRect(
-            borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusPill),
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 10,
-              backgroundColor: AppColors.outline.withValues(alpha: 0.4),
+              backgroundColor: AppColores.outline.withValues(alpha: 0.4),
               valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.secondary,
+                AppColores.secondary,
               ),
             ),
           ),
 
-          AppSizes.gapV16,
+          AppTamanos.gapV16,
 
           // Resumen textual con estado de avance
           Row(
@@ -143,18 +143,18 @@ class ProgresoPracticasCard extends StatelessWidget {
                     ? Icons.check_circle_rounded
                     : Icons.timelapse_rounded,
                 size: 16,
-                color: progress >= 1 ? AppColors.success : AppColors.primary,
+                color: progress >= 1 ? AppColores.success : AppColores.primary,
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Expanded(
                 child: Text(
                     progress >= 1
                       ? 'Has completado el 100% de tus prácticas.'
                       : 'Has completado el $percentage% de tus prácticas.',
-                  style: AppTextStyles.caption.copyWith(
+                  style: AppEstiloTexto.caption.copyWith(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: AppColores.textPrimary,
                   ),
                 ),
               ),

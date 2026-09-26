@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/features/admin/admin.dart';
 
-
 class CicloCard extends StatelessWidget {
   final CicloModel cycle;
   final VoidCallback onTap;
@@ -18,19 +17,19 @@ class CicloCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+      color: AppColores.surface,
+      borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
         child: Container(
-          padding: const EdgeInsets.all(AppSizes.md),
+          padding: const EdgeInsets.all(AppTamanos.md),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            border: Border.all(color: AppColors.outline),
+            borderRadius: BorderRadius.circular(AppTamanos.radiusLg),
+            border: Border.all(color: AppColores.outline),
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow,
+                color: AppColores.shadow,
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -43,56 +42,58 @@ class CicloCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  color: AppColores.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppTamanos.radiusMd),
                   border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.16),
+                    color: AppColores.primary.withValues(alpha: 0.16),
                   ),
                 ),
                 child: const Icon(
                   Icons.school_rounded,
-                  color: AppColors.primary,
+                  color: AppColores.primary,
                 ),
               ),
-              AppSizes.gapH12,
+              AppTamanos.gapH12,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       cycle.name,
-                      style: AppTextStyles.bodyBold.copyWith(fontSize: 15),
+                      style: AppEstiloTexto.bodyBold.copyWith(fontSize: 15),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       'Nivel ${cycle.level}',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                       ),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
-                      cycle.isActive ? 'Periodo habilitado' : 'Periodo suspendido',
-                      style: AppTextStyles.caption.copyWith(
+                      cycle.isActive
+                          ? 'Periodo habilitado'
+                          : 'Periodo suspendido',
+                      style: AppEstiloTexto.caption.copyWith(
                         color: cycle.isActive
-                            ? AppColors.success
-                            : AppColors.textSecondary,
+                            ? AppColores.success
+                            : AppColores.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    AppSizes.gapV4,
+                    AppTamanos.gapV4,
                     Text(
                       'Prácticas: ${cycle.hoursPracticas} h',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: AppEstiloTexto.caption.copyWith(
+                        color: AppColores.textSecondary,
                       ),
                     ),
-                    AppSizes.gapV8,
-                    AdminStatusChip(isActive: cycle.isActive),
+                    AppTamanos.gapV8,
+                    ChipEstadoAdmin(isActive: cycle.isActive),
                   ],
                 ),
               ),
-              AppSizes.gapH8,
+              AppTamanos.gapH8,
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -102,21 +103,26 @@ class CicloCard extends StatelessWidget {
                       tooltip: 'Editar semestre',
                       icon: const Icon(
                         Icons.edit_outlined,
-                        color: AppColors.primary,
+                        color: AppColores.primary,
                         size: 20,
                       ),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
                     ),
                   Switch.adaptive(
                     value: cycle.isActive,
                     onChanged: (_) => onToggleStatus(),
-                    activeThumbColor: AppColors.primary,
-                    activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
+                    activeThumbColor: AppColores.primary,
+                    activeTrackColor: AppColores.primary.withValues(
+                      alpha: 0.35,
+                    ),
                   ),
                   const Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.textSecondary,
+                    color: AppColores.textSecondary,
                   ),
                 ],
               ),

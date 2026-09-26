@@ -25,14 +25,14 @@ class InicioScreen extends StatelessWidget {
     final sectionsToDisplay = drawerSections ?? OpcionesDrawerFactory.getSectionsForRole(user.role);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColores.background,
       appBar: InicioAppBar(
         user: user,
         showDrawerButton: true,
       ),
       drawer: InicioDrawer(user: user, sections: sectionsToDisplay),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.md),
+        padding: const EdgeInsets.all(AppTamanos.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,21 +45,21 @@ class InicioScreen extends StatelessWidget {
 
             // Si es estudiante, mostramos la tarjeta de estado actual
             if (isStudent) ...[
-              AppSizes.gapV16,
+              AppTamanos.gapV16,
               EstadoCard(
                 todayRecord: todayRecord,
                 isLoading: isAttendanceLoading,
               ),
             ],
 
-            AppSizes.gapV24,
+            AppTamanos.gapV24,
 
             // Título de la sección de accesos directos
             const TituloSeccionTableroWidget(
               title: "Acciones Rápidas",
             ),
 
-            AppSizes.gapV16,
+            AppTamanos.gapV16,
 
             // El grid con las acciones específicas que provee cada Home
             AccionesTableroWidget(actions: actions),

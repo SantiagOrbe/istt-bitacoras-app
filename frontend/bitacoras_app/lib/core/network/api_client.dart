@@ -14,13 +14,16 @@ class ApiException implements Exception {
   });
 
   @override
-  String toString() => 'ApiException ($statusCode): $message';
+  String toString() => 'Error de API ($statusCode): $message';
 }
 
 class ApiClient {
   // Android emulator: 10.0.2.2:8000
-  // Physical device through the Windows-to-WSL port bridge: port 8001.
-  static const defaultBaseUrl = 'http://192.168.1.39:8001/api/';
+  // Physical device on the same local network: use the Windows host IP.
+  static const defaultBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://192.168.1.39:8000/api/',
+  );
 
   final String baseUrl;
   final TokenStorage tokenStorage;
@@ -189,10 +192,21 @@ class ApiClient {
       return responseBody;
     } on ApiException {
       rethrow;
-    } on http.ClientException catch (e) {
-      throw ApiException(statusCode: 0, message: 'Error de red: $e');
-    } on FormatException catch (e) {
-      throw ApiException(statusCode: 0, message: 'Respuesta JSON inválida: $e');
+    } on http.ClientException {
+      throw ApiException(
+        statusCode: 0,
+        message: 'No se pudo conectar al servidor. Verifica tu conexión e inténtalo de nuevo.',
+      );
+    } on FormatException {
+      throw ApiException(
+        statusCode: 0,
+        message: 'La respuesta del servidor no es válida.',
+      );
+    } catch (_) {
+      throw ApiException(
+        statusCode: 0,
+        message: 'Ocurrió un error inesperado. Inténtalo de nuevo.',
+      );
     }
   }
 
@@ -218,14 +232,22 @@ class ApiClient {
   ) {
     if (body is Map<String, dynamic>) {
       final detail = body['detail'] ?? body['message'] ?? body['error'];
-      if (detail != null) return detail.toString();
+      if (detail != null) {
+        final translatedDetail = _translateServerError(detail.toString());
+        if (translatedDetail != null) return translatedDetail;
+        return detail.toString();
+      }
 
       final fieldErrors = body.entries
           .map((entry) {
             final value = entry.value;
             final messages = value is List ? value : [value];
             return messages
-                .map((message) => '${_fieldLabel(entry.key)}: $message')
+                .map((message) {
+                  final label = _fieldLabel(entry.key);
+                  final translated = _translateServerError(message.toString());
+                  return translated ?? '$label: $message';
+                })
                 .join(' ');
           })
           .where((message) => message.isNotEmpty)
@@ -245,8 +267,50 @@ class ApiClient {
     };
   }
 
+  String? _translateServerError(String value) {
+    final lower = value.toLowerCase();
+
+    if ((lower.contains('period') || lower.contains('período')) &&
+        (lower.contains('name') || lower.contains('nombre')) &&
+        (lower.contains('already exists') || lower.contains('ya existe'))) {
+      return 'Ya existe un período lectivo con ese nombre.';
+    }
+
+    if (lower.contains('already exists') || lower.contains('ya existe')) {
+      if (lower.contains('telefono') || lower.contains('phone')) {
+        return 'El número de teléfono ya está registrado por otro usuario.';
+      }
+      if (lower.contains('cedula') || lower.contains('dni') || lower.contains('id card')) {
+        return 'La cédula ya está registrada por otro usuario.';
+      }
+      if (lower.contains('email') || lower.contains('correo')) {
+        return 'El correo electrónico ya está registrado por otro usuario.';
+      }
+    }
+
+    if (lower.contains('ensure this field has') ||
+        lower.contains('no es válida') ||
+        lower.contains('invalid') ||
+        lower.contains('formato')) {
+      if (lower.contains('telefono') || lower.contains('phone')) {
+        return 'El número de teléfono no cumple el formato válido.';
+      }
+      if (lower.contains('cedula') || lower.contains('dni')) {
+        return 'La cédula no cumple el formato válido.';
+      }
+      if (lower.contains('email') || lower.contains('correo')) {
+        return 'El correo electrónico no cumple el formato válido.';
+      }
+    }
+
+    return null;
+  }
+
   String _fieldLabel(String field) {
     return switch (field) {
+      'nombre' => 'Nombre',
+      'fecha_inicio' => 'Fecha de inicio',
+      'fecha_fin' => 'Fecha de fin',
       'telefono' => 'Teléfono',
       'cedula' => 'Cédula',
       'carrera_id' => 'Carrera',
