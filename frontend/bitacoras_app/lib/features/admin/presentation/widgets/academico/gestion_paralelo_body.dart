@@ -3,14 +3,12 @@ import 'package:bitacoras_app/features/admin/admin.dart';
 class GestionParaleloBody extends StatelessWidget {
   final bool isLoading;
   final String searchQuery;
-  final String? selectedCycleId;
   final String statusFilter;
   final List<CicloModel> cycles;
   final List<ParaleloModel> parallels;
   final String subtitle;
   final int count;
   final ValueChanged<String> onSearchChanged;
-  final ValueChanged<String?> onCycleChanged;
   final ValueChanged<String> onStatusChanged;
   final Future<void> Function({ParaleloModel? parallel}) onParallelTap;
   final ValueChanged<ParaleloModel> onToggleStatus;
@@ -21,14 +19,12 @@ class GestionParaleloBody extends StatelessWidget {
     super.key,
     required this.isLoading,
     required this.searchQuery,
-    required this.selectedCycleId,
     required this.statusFilter,
     required this.cycles,
     required this.parallels,
     required this.subtitle,
     required this.count,
     required this.onSearchChanged,
-    required this.onCycleChanged,
     required this.onStatusChanged,
     required this.onParallelTap,
     required this.onToggleStatus,
@@ -59,31 +55,6 @@ class GestionParaleloBody extends StatelessWidget {
                 CarreraSearchBar(
                   onChanged: onSearchChanged,
                   hintText: 'Buscar paralelo o jornada...',
-                ),
-                AppTamanos.gapV12,
-                DropdownButtonFormField<String?>(
-                  initialValue: selectedCycleId,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Filtrar por semestre',
-                    prefixIcon: Icon(Icons.layers_outlined),
-                  ),
-                  items: [
-                    const DropdownMenuItem<String?>(
-                      value: null,
-                      child: Text('Todos los semestres'),
-                    ),
-                    ...cycles.map(
-                      (cycle) => DropdownMenuItem<String?>(
-                        value: cycle.id,
-                        child: Text(
-                          '${cycle.name} (Nivel ${cycle.level})',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                  ],
-                  onChanged: onCycleChanged,
                 ),
                 AppTamanos.gapV12,
                 SingleChildScrollView(

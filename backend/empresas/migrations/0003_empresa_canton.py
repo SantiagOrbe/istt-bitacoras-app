@@ -12,5 +12,5 @@ class Migration(migrations.Migration):
             model_name='empresa',
             name='canton',
             field=models.CharField(blank=True, default='', max_length=100),
-        ),
+        ),                                                  
     ]

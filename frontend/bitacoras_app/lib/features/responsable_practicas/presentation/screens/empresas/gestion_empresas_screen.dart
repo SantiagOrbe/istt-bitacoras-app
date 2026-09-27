@@ -17,6 +17,7 @@ class _GestionEmpresasScreenState extends State<GestionEmpresasScreen> {
     _controller = GestionEmpresaController(
       repository: context.read<IResponsablePracticasRepository>(),
     );
+    _controller.repository.invalidarCache();
     _controller.loadCompanies();
   }
 

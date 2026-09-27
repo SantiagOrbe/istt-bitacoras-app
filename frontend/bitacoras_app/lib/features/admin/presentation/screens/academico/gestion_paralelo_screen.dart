@@ -73,7 +73,6 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
             child: GestionParaleloBody(
               isLoading: _controller.isLoading,
               searchQuery: _controller.searchQuery,
-              selectedCycleId: _controller.selectedCycleId,
               statusFilter: _controller.statusFilter,
               cycles: _controller.cycles,
               parallels: _controller.filteredParallels,
@@ -82,7 +81,6 @@ class _GestionParaleloScreenState extends State<GestionParaleloScreen> {
                   : 'Semestre: ${_controller.getCycleName(widget.semesterId!)}',
               count: _controller.filteredParallels.length,
               onSearchChanged: _controller.setSearchQuery,
-              onCycleChanged: _controller.setSelectedCycle,
               onStatusChanged: _controller.setStatusFilter,
               onParallelTap: _actions.openParallelForm,
               onToggleStatus: _actions.toggleStatus,

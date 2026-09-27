@@ -15,7 +15,12 @@ from weasyprint import HTML
 from gestion_academica.models import CarreraPeriodo
 from usuarios.models import Coordinador, Estudiante, TutorAcademico, TutorEmpresarial
 from .models import Actividad, RegistroPractica, VisitaTutorAcademico
-from .serializers import ActividadSerializer, RegistroPracticaSerializer, VisitaTutorAcademicoSerializer
+from .serializers import (
+    ActividadSerializer,
+    RegistroPracticaSerializer,
+    VisitaTutorAcademicoSerializer,
+    validar_descripcion_actividad,
+)
 from .services import GeofencingService
 
 
@@ -44,6 +49,9 @@ class RegistroPracticaViewSet(viewsets.ModelViewSet):
             actividad_descripcion = request.data.get('descripcion')
 
         if actividad_descripcion is not None:
+            actividad_descripcion = validar_descripcion_actividad(
+                actividad_descripcion
+            )
             actividad = instance.actividades.order_by('-id').first()
             if actividad is None:
                 Actividad.objects.create(

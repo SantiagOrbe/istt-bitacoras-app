@@ -15,6 +15,11 @@ List<SeccionMenuModel> getCoordinatorDrawerSections() {
           icon: Icons.badge_rounded,
           route: AppRoutes.tutoresCoordinador,
         ),
+        ItemMenuModel(
+          title: 'Carreras',
+          icon: Icons.account_tree_outlined,
+          route: AppRoutes.carrerasCoordinador,
+        ),
       ],
     ),
     

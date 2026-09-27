@@ -39,10 +39,42 @@ class _RegistrarActividadesTutorScreenState extends State<RegistrarActividadesTu
     } catch (_) { if (mounted) setState(() => _isLoading = false); }
   }
 
+  String? _validateActivitiesText(String text) {
+    final entries = text
+        .split(RegExp(r'\n+'))
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty)
+        .toList();
+
+    if (entries.isEmpty) {
+      return 'Ingrese al menos una actividad.';
+    }
+
+    final validDescription = RegExp(r'^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$');
+    if (entries.any((entry) => !validDescription.hasMatch(entry))) {
+      return 'No se pueden usar números ni símbolos; escriba solo letras y espacios.';
+    }
+
+    final letterCount = RegExp(r'[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]');
+    if (entries.any((entry) => letterCount.allMatches(entry).length < 20)) {
+      return 'Cada actividad debe tener al menos 20 letras.';
+    }
+
+    return null;
+  }
+
   Future<void> _save() async {
     final visit = _visit;
     final text = _controllers.map((c) => c.text.trim()).where((e) => e.isNotEmpty).join('\n');
-    if (visit?.id == null || text.isEmpty) return;
+    if (visit?.id == null) return;
+
+    final validationError = _validateActivitiesText(text);
+    if (validationError != null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(validationError)));
+      return;
+    }
+
     setState(() => _isSaving = true);
     try {
       final updated = await context.read<ITutorRepository>().updateTutorActivities(visitId: visit!.id!, activities: text);

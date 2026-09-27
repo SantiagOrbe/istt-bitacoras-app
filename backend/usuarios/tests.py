@@ -10,7 +10,13 @@ from .models import Estudiante
 from .models import Coordinador
 from .models import ResponsablePracticas
 from .models import TutorAcademico
-from gestion_academica.models import Carrera
+from gestion_academica.models import (
+	Carrera,
+	CarreraPeriodo,
+	Paralelo,
+	Periodo,
+	Semestre,
+)
 
 
 Usuario = get_user_model()
@@ -151,6 +157,112 @@ class AutenticacionTests(APITestCase):
 		self.assertFalse(student.estado)
 		self.assertFalse(student.is_active)
 		self.assertTrue(Usuario.objects.filter(pk=student.pk).exists())
+
+	def test_listado_admin_expone_cedula_del_perfil_estudiante_enlazado(self):
+		self.client.force_authenticate(user=self.admin)
+		student = Usuario.objects.create_user(
+			username='estudiante_legacy',
+			email='estudiante.legacy@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='rol_heredado',
+		)
+		Estudiante.objects.create(usuario=student, cedula='1501133282')
+
+		response = self.client.get(reverse('usuario-list'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		student_data = next(
+			item for item in response.data if item['id'] == student.pk
+		)
+		self.assertEqual(student_data['cedula'], '1501133282')
+
+	def test_editar_estudiante_actualiza_carrera_y_empresa_del_perfil(self):
+		self.client.force_authenticate(user=self.admin)
+		career = Carrera.objects.create(
+			nombre='Carrera para edición',
+			descripcion='Prueba de asignación',
+			codigo_carrera='CE-2026',
+			sigla_carrera='CE',
+			modalidad='Presencial',
+			total_semestres=4,
+		)
+		company = Empresa.objects.create(
+			nombre='Empresa para edición',
+			direccion='Dirección de prueba',
+			telefono='0999999999',
+			correo='empresa.edicion@prueba.com',
+			latitud=-0.995,
+			longitud=-77.814,
+			radio_permitido=50,
+		)
+		student = Usuario.objects.get(email=self.email)
+		Estudiante.objects.create(usuario=student, cedula='1501133282')
+
+		response = self.client.put(
+			reverse('usuario-detail', args=[student.pk]),
+			{
+				'email': self.email,
+				'first_name': 'Estudiante',
+				'last_name': 'Prueba',
+				'telefono': '',
+				'rol': 'estudiante',
+				'estado': True,
+				'is_active': True,
+				'carrera_id': career.pk,
+				'empresa_id': company.pk,
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		profile = Estudiante.objects.get(usuario=student)
+		self.assertEqual(profile.carrera_id, career.pk)
+		self.assertEqual(profile.empresa_id, company.pk)
+
+	def test_editar_responsable_guarda_y_devuelve_carrera_al_recargar(self):
+		self.client.force_authenticate(user=self.admin)
+		career = Carrera.objects.create(
+			nombre='Carrera responsable asignada',
+			descripcion='Prueba de asignación de responsable',
+			codigo_carrera='CRA',
+			sigla_carrera='CRA',
+			modalidad='Presencial',
+		)
+		responsable = Usuario.objects.create_user(
+			username='responsable.sin.carrera',
+			email='responsable.sin.carrera@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='responsable_practicas',
+		)
+		ResponsablePracticas.objects.create(
+			usuario=responsable,
+			cedula='1500000204',
+		)
+
+		response = self.client.put(
+			reverse('usuario-detail', args=[responsable.pk]),
+			{
+				'email': responsable.email,
+				'first_name': 'Responsable',
+				'last_name': 'Sin Carrera',
+				'telefono': '',
+				'rol': 'responsable_practicas',
+				'estado': True,
+				'is_active': True,
+				'carrera_id': career.pk,
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.assertEqual(response.data['carrera_id'], career.pk)
+		self.assertEqual(response.data['career_name'], career.nombre)
+
+		list_response = self.client.get(reverse('usuario-list'))
+		responsable_data = next(
+			item for item in list_response.data if item['id'] == responsable.pk
+		)
+		self.assertEqual(responsable_data['carrera_id'], career.pk)
 
 	def test_admin_puede_crear_usuario_con_email_sin_error_500(self):
 		self.client.force_authenticate(user=self.admin)
@@ -382,6 +494,112 @@ class AutenticacionTests(APITestCase):
 		perfil = ResponsablePracticas.objects.get(usuario=usuario)
 		self.assertEqual(perfil.cedula, '1500000003')
 		self.assertEqual(response.data['cedula'], '1500000003')
+
+	def test_responsable_practicas_recibe_canton_en_empresas(self):
+		carrera = Carrera.objects.create(
+			nombre='Carrera responsable',
+			descripcion='Carrera de prueba',
+			codigo_carrera='CRP',
+			sigla_carrera='CRP',
+			modalidad='Presencial',
+		)
+		empresa = Empresa.objects.create(
+			nombre='Instituto de prueba',
+			canton='Tena',
+			direccion='Avenida Principal',
+			telefono='0999999999',
+			correo='instituto.prueba@empresa.com',
+			latitud=-0.995,
+			longitud=-77.814,
+		)
+		usuario = Usuario.objects.create_user(
+			username='responsable.canton',
+			email='responsable.canton@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='responsable_practicas',
+		)
+		ResponsablePracticas.objects.create(
+			usuario=usuario,
+			cedula='1500000203',
+			carrera=carrera,
+		)
+		self.client.force_authenticate(user=usuario)
+
+		response = self.client.get(reverse('responsable-practicas-datos'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		empresa_data = next(
+			item for item in response.data['empresas']
+			if item['id'] == empresa.id
+		)
+		self.assertEqual(empresa_data['canton'], 'Tena')
+
+	def test_responsable_no_recibe_estudiantes_duplicados_por_periodos_historicos(self):
+		carrera = Carrera.objects.create(
+			nombre='Carrera responsable duplicados',
+			descripcion='Prueba de configuraciones históricas',
+			codigo_carrera='CRD',
+			sigla_carrera='CRD',
+			modalidad='Presencial',
+		)
+		semestre = Semestre.objects.create(
+			nombre='Primero', nivel=1, carrera=carrera, estado=True,
+		)
+		paralelo = Paralelo.objects.create(
+			nombre='A', jornada='Matutina', semestre=semestre, estado=True,
+		)
+		periodo_anterior = Periodo.objects.create(
+			nombre='2025-HIST',
+			fecha_inicio='2025-01-01',
+			fecha_fin='2025-06-30',
+			estado=False,
+		)
+		periodo_actual = Periodo.objects.create(
+			nombre='2026-ACT',
+			fecha_inicio='2026-01-01',
+			fecha_fin='2026-06-30',
+			estado=True,
+		)
+		CarreraPeriodo.objects.create(
+			carrera=carrera, periodo=periodo_anterior,
+			semestre=semestre, estado=True,
+		)
+		CarreraPeriodo.objects.create(
+			carrera=carrera, periodo=periodo_actual,
+			semestre=semestre, estado=True,
+		)
+		responsable_usuario = Usuario.objects.create_user(
+			username='responsable.sin.duplicados',
+			email='responsable.sin.duplicados@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='responsable_practicas',
+		)
+		ResponsablePracticas.objects.create(
+			usuario=responsable_usuario,
+			cedula='1500000205',
+			carrera=carrera,
+		)
+		estudiante_usuario = Usuario.objects.create_user(
+			username='estudiante.unico',
+			email='estudiante.unico@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='estudiante',
+		)
+		Estudiante.objects.create(
+			usuario=estudiante_usuario,
+			cedula='1500000206',
+			carrera=carrera,
+			semestre=semestre,
+			paralelo=paralelo,
+		)
+		self.client.force_authenticate(user=responsable_usuario)
+
+		response = self.client.get(reverse('responsable-practicas-datos'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(len(response.data['semestres']), 1)
+		self.assertEqual(len(response.data['paralelos']), 1)
+		self.assertEqual(len(response.data['estudiantes']), 1)
 
 	def test_admin_rechaza_empresa_y_carrera_inactivas_al_crear_estudiante(self):
 		self.client.force_authenticate(user=self.admin)

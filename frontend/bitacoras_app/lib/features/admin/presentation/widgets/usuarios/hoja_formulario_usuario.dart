@@ -23,6 +23,7 @@ class _HojaFormularioUsuarioState extends State<HojaFormularioUsuario> {
   List<CarreraModel> _careers = [];
   String? _companyId;
   String? _careerId;
+  bool _mostrarContrasena = false;
 
   @override
   void initState() {
@@ -226,7 +227,20 @@ class _HojaFormularioUsuarioState extends State<HojaFormularioUsuario> {
                   controlador: _password,
                   etiqueta: 'Contraseña temporal',
                   icono: Icons.lock_outline_rounded,
-                  ocultarTexto: true,
+                  ocultarTexto: !_mostrarContrasena,
+                  accion: IconButton(
+                    tooltip: _mostrarContrasena
+                        ? 'Ocultar contraseña'
+                        : 'Mostrar contraseña',
+                    onPressed: () => setState(
+                      () => _mostrarContrasena = !_mostrarContrasena,
+                    ),
+                    icon: Icon(
+                      _mostrarContrasena
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                  ),
                   validador: (value) => (value?.trim().length ?? 0) < 8
                       ? 'Use al menos 8 caracteres.'
                       : null,

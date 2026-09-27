@@ -73,7 +73,7 @@ class AsignacionEstudianteController extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      _errorMessage = 'Error al guardar la asignación del estudiante';
+      _errorMessage = 'Algo falló, inténtelo más tarde.';
       return false;
     } finally {
       _setLoading(false);

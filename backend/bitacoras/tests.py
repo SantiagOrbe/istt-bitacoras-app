@@ -284,6 +284,81 @@ class BitacorasGeofencingTests(APITestCase):
         self.assertEqual(response['Content-Type'], 'application/pdf')
         self.assertTrue(response.content.startswith(b'%PDF'))
 
+    def test_actividad_rechaza_numeros_y_simbolos_en_creacion_y_edicion(self):
+        from datetime import time
+
+        registro = RegistroPractica.objects.create(
+            estudiante=self.estudiante,
+            fecha='2026-09-21',
+            hora_entrada=time(8, 0),
+            hora_salida=time(12, 0),
+            estado=False,
+        )
+        actividad = Actividad.objects.create(
+            registro_practica=registro,
+            descripcion='Revision del sistema',
+            estado=True,
+        )
+        self.client.force_authenticate(user=self.user_estudiante)
+
+        create_response = self.client.post(
+            self.actividades_url,
+            {
+                'registro_practica': registro.id,
+                'descripcion': 'Revision del equipo 2!',
+            },
+            format='json',
+        )
+        self.assertEqual(create_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        short_response = self.client.post(
+            self.actividades_url,
+            {
+                'registro_practica': registro.id,
+                'descripcion': 'Hola mundo tranquilo',
+            },
+            format='json',
+        )
+        self.assertEqual(short_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('20 letras', str(short_response.data))
+
+        update_response = self.client.patch(
+            reverse('registropractica-detail', args=[registro.id]),
+            {'actividad_descripcion': 'Revision del equipo 2!'},
+            format='json',
+        )
+        self.assertEqual(update_response.status_code, status.HTTP_400_BAD_REQUEST)
+        actividad.refresh_from_db()
+        self.assertEqual(actividad.descripcion, 'Revision del sistema')
+
+    def test_tutor_actividad_rechaza_numeros_y_simbolos(self):
+        visita = VisitaTutorAcademico.objects.create(
+            tutor=self.tutor_acad,
+            empresa=self.empresa,
+            fecha='2026-09-21',
+            hora_entrada='08:00:00',
+            actividades='',
+            estado=True,
+        )
+        self.client.force_authenticate(user=self.user_tutor_acad)
+
+        invalid_response = self.client.patch(
+            reverse('visita-tutor-detail', args=[visita.id]),
+            {'actividades': 'Visita 2 del estudiante!'},
+            format='json',
+        )
+        self.assertEqual(invalid_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('letras', str(invalid_response.data).lower())
+
+        valid_response = self.client.patch(
+            reverse('visita-tutor-detail', args=[visita.id]),
+            {'actividades': 'Visita y seguimiento del estudiante en la empresa.'},
+            format='json',
+        )
+        self.assertEqual(valid_response.status_code, status.HTTP_200_OK)
+        visita.refresh_from_db()
+        self.assertEqual(visita.actividades, 'Visita y seguimiento del estudiante en la empresa.')
+
     def test_tutor_academico_registra_entrada_y_salida_en_su_entidad(self):
         self.client.force_authenticate(user=self.user_tutor_acad)
 

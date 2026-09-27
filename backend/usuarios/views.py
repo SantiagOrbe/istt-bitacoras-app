@@ -1,7 +1,7 @@
 import logging
 
 from django.db import DatabaseError, IntegrityError
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -82,7 +82,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().prefetch_related('estudiante')
         is_active = self.request.query_params.get('is_active')
         role = self.request.query_params.get('rol')
         search = self.request.query_params.get('search', '').strip()
@@ -485,27 +485,32 @@ class ResponsablePracticasDatosView(APIView):
         from gestion_academica.models import CarreraPeriodo, Paralelo, Semestre
 
         carrera_id = responsable.carrera_id
+        configuracion_periodo_activo = CarreraPeriodo.objects.filter(
+            carrera_id=carrera_id,
+            semestre_id=OuterRef('pk'),
+            periodo__estado=True,
+            estado=True,
+        )
         semestres = Semestre.objects.filter(
             carrera_id=carrera_id,
             estado=True,
-            carreraperiodo__estado=True,
-        ).distinct().order_by('nivel', 'id')
+        ).filter(
+            Exists(configuracion_periodo_activo)
+        ).order_by('nivel', 'id')
         paralelos = Paralelo.objects.filter(
-            semestre__carrera_id=carrera_id,
-            semestre__estado=True,
+            semestre__in=semestres,
             estado=True,
-            semestre__carreraperiodo__estado=True,
         ).select_related('semestre').order_by('semestre__nivel', 'nombre')
         estudiantes = Estudiante.objects.filter(
             carrera_id=carrera_id,
-            semestre__estado=True,
-            paralelo__estado=True,
-            semestre__carreraperiodo__estado=True,
-            paralelo__semestre__carreraperiodo__estado=True,
+            semestre__in=semestres,
+            paralelo__in=paralelos,
         ).select_related(
             'usuario', 'semestre', 'paralelo', 'empresa',
             'tutor_academico__usuario', 'tutor_empresarial__usuario',
-        ).order_by('paralelo__semestre__nivel', 'paralelo__nombre', 'usuario__last_name')
+        ).distinct().order_by(
+            'paralelo__semestre__nivel', 'paralelo__nombre', 'usuario__last_name'
+        )
         tutores_academicos = TutorAcademico.objects.filter(
             carrera_id=carrera_id,
             usuario__estado=True,
@@ -526,6 +531,7 @@ class ResponsablePracticasDatosView(APIView):
                 {
                     'id': empresa.id,
                     'nombre': empresa.nombre,
+                    'canton': empresa.canton,
                     'direccion': empresa.direccion,
                     'telefono': empresa.telefono,
                     'correo': empresa.correo,

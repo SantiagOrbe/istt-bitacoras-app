@@ -57,8 +57,10 @@ class CabeceraDetalleUsuario extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: [
               Chip(
                 label: Text(user.role.label),
@@ -69,7 +71,6 @@ class CabeceraDetalleUsuario extends StatelessWidget {
                   fontSize: 12,
                 ),
               ),
-              const SizedBox(width: 8),
               InkWell(
                 onTap: isLoading ? null : onToggleStatus,
                 borderRadius: BorderRadius.circular(20),

@@ -6,6 +6,7 @@ class UsuarioDetailController extends ChangeNotifier {
   late UsuarioModel user;
   bool isEditing = false;
   bool isLoading = false;
+  bool isPasswordVisible = false;
   String? errorMessage;
   String? successMessage;
 
@@ -111,8 +112,14 @@ class UsuarioDetailController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void togglePasswordVisibility() {
+    isPasswordVisible = !isPasswordVisible;
+    notifyListeners();
+  }
+
   void toggleEditMode() {
     isEditing = !isEditing;
+    isPasswordVisible = false;
     if (!isEditing) {
       _initControllers(); // Restablece los campos si cancela la edición
     }
@@ -228,14 +235,30 @@ class UsuarioDetailController extends ChangeNotifier {
       final success = await repository.actualizarUsuario(updatedUser);
 
       if (success) {
-        user = updatedUser;
+        final companyName = companies
+            .where((company) => company.id == selectedCompanyId)
+            .firstOrNull
+            ?.name;
+        final careerName = careers
+            .where((career) => career.id == selectedCareerId)
+            .firstOrNull
+            ?.name;
+        user = updatedUser.copyWith(
+          company: companyName,
+          clearCompany: selectedCompanyId == null,
+          careerName: careerName,
+          clearCareerName: selectedCareerId == null,
+        );
+        _initControllers();
         isEditing = false;
         successMessage = 'Información actualizada con éxito';
       } else {
         errorMessage = 'No se pudieron guardar los cambios.';
       }
-    } catch (_) {
-      errorMessage = 'No se pudieron guardar los cambios. Inténtalo de nuevo.';
+    } catch (error) {
+      errorMessage = error is ApiException
+          ? error.message
+          : 'No se pudieron guardar los cambios. Inténtalo de nuevo.';
     } finally {
       isLoading = false;
       notifyListeners();

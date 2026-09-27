@@ -288,9 +288,9 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
     @staticmethod
     def _validate_plain_text(value, label):
         text = value.strip()
-        if text and not re.fullmatch(r'[A-Za-z ]+', text):
+        if text and not re.fullmatch(r'[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+', text):
             raise serializers.ValidationError(
-                f'{label} solo pueden contener letras sin tildes ni símbolos.'
+                f'{label} solo pueden contener letras, tildes y espacios.'
             )
         return text
 
@@ -415,7 +415,8 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
         return attrs
 
     def _sync_profile(self, usuario, profile_data):
-        if usuario.rol == 'estudiante':
+        role = (usuario.rol or '').strip().lower()
+        if role in {'estudiante', 'student'}:
             defaults = {
                 key: profile_data[key]
                 for key in (
@@ -425,7 +426,7 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                 if key in profile_data
             }
             Estudiante.objects.update_or_create(usuario=usuario, defaults=defaults)
-        elif usuario.rol == 'tutor_academico':
+        elif role == 'tutor_academico':
             TutorAcademico.objects.update_or_create(
                 usuario=usuario,
                 defaults={
@@ -433,7 +434,7 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                     'carrera': profile_data.get('carrera'),
                 },
             )
-        elif usuario.rol == 'tutor_empresarial':
+        elif role == 'tutor_empresarial':
             current_profile = TutorEmpresarial.objects.filter(
                 usuario=usuario
             ).first()
@@ -451,7 +452,7 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                     ),
                 },
             )
-        elif usuario.rol == 'coordinador':
+        elif role == 'coordinador':
             Coordinador.objects.update_or_create(
                 usuario=usuario,
                 defaults={
@@ -459,7 +460,7 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
                     'carrera': profile_data.get('carrera'),
                 },
             )
-        elif usuario.rol == 'responsable_practicas':
+        elif role == 'responsable_practicas':
             ResponsablePracticas.objects.update_or_create(
                 usuario=usuario,
                 defaults={
@@ -515,29 +516,33 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         profile = None
-        if instance.rol == 'estudiante':
-            profile = Estudiante.objects.filter(usuario=instance).first()
-            if profile:
-                data.update({
-                    'cedula': profile.cedula,
-                    'empresa': profile.empresa_id,
-                    'empresa_id': profile.empresa_id,
-                    'company_name': (
-                        profile.empresa.nombre if profile.empresa else None
-                    ),
-                    'carrera_id': profile.carrera_id,
-                })
-                data['career_name'] = (
-                    profile.carrera.nombre if profile.carrera else None
-                )
-                period = None
-                if profile.carrera_id and profile.semestre_id:
-                    period = CarreraPeriodo.objects.filter(
-                        carrera_id=profile.carrera_id,
-                        semestre_id=profile.semestre_id,
-                        estado=True,
-                    ).select_related('periodo').first()
-                data['period_name'] = period.periodo.nombre if period else None
+        role = (instance.rol or '').strip().lower()
+        try:
+            profile = instance.estudiante
+        except Estudiante.DoesNotExist:
+            profile = None
+
+        if profile is not None:
+            data.update({
+                'cedula': profile.cedula,
+                'empresa': profile.empresa_id,
+                'empresa_id': profile.empresa_id,
+                'company_name': (
+                    profile.empresa.nombre if profile.empresa else None
+                ),
+                'carrera_id': profile.carrera_id,
+            })
+            data['career_name'] = (
+                profile.carrera.nombre if profile.carrera else None
+            )
+            period = None
+            if profile.carrera_id and profile.semestre_id:
+                period = CarreraPeriodo.objects.filter(
+                    carrera_id=profile.carrera_id,
+                    semestre_id=profile.semestre_id,
+                    estado=True,
+                ).select_related('periodo').first()
+            data['period_name'] = period.periodo.nombre if period else None
         elif instance.rol == 'tutor_academico':
             profile = TutorAcademico.objects.filter(usuario=instance).first()
             if profile:
@@ -572,6 +577,10 @@ class UsuarioAdminSerializer(serializers.ModelSerializer):
             profile = ResponsablePracticas.objects.filter(usuario=instance).first()
             if profile:
                 data['cedula'] = profile.cedula
+                data['carrera_id'] = profile.carrera_id
+                data['career_name'] = (
+                    profile.carrera.nombre if profile.carrera else None
+                )
         return data
 
 

@@ -106,7 +106,7 @@ class _InicioTutorAcademicoScreenState
         appBar: InicioAppBar(user: widget.user, showDrawerButton: true),
         drawer: InicioDrawer(
           user: widget.user,
-          sections: getOpcionesDrawerTutorAcademico(),
+          sections: getOpcionesDrawerTutorAcademico(visita: _visit),
         ),
         body: SafeArea(
           child: _isLoading

@@ -23,7 +23,6 @@ class GestionParaleloController extends ChangeNotifier {
   String? get successMessage => _successMessage;
   String get searchQuery => _searchQuery;
   String get statusFilter => _statusFilter;
-  String? get selectedCycleId => _selectedCycleId;
 
   List<ParaleloModel> get filteredParallels {
     var result = parallels;
@@ -90,11 +89,6 @@ class GestionParaleloController extends ChangeNotifier {
 
   void setStatusFilter(String value) {
     _statusFilter = value;
-    notifyListeners();
-  }
-
-  void setSelectedCycle(String? cycleId) {
-    _selectedCycleId = cycleId;
     notifyListeners();
   }
 

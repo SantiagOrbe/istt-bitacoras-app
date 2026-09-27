@@ -1,4 +1,5 @@
 import 'package:bitacoras_app/features/estudiantes/estudiantes.dart';
+import 'package:flutter/services.dart';
 
 class ActividadInputCard extends StatelessWidget {
   final int index;
@@ -68,6 +69,11 @@ class ActividadInputCard extends StatelessWidget {
           TextField(
             controller: controller,
             maxLines: 4,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]'),
+              ),
+            ],
             style: AppEstiloTexto.body.copyWith(
               fontSize: 14,
               color: AppColores.textPrimary,
@@ -79,6 +85,7 @@ class ActividadInputCard extends StatelessWidget {
               ),
               hintText:
                   'Describa detalladamente las tareas realizadas, herramientas utilizadas y resultados obtenidos...',
+                helperText: 'Escriba solo letras y espacios.',
               hintStyle: AppEstiloTexto.caption.copyWith(
                 color: AppColores.textHint,
                 fontSize: 13,

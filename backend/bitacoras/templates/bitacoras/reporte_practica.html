@@ -210,7 +210,7 @@
         width: 100%;
         position: absolute;
         left: 0;
-        bottom: 41mm;
+        bottom: 23mm;
         z-index: 2;
         margin: 0;
       }
@@ -317,7 +317,7 @@
           <table class="grid">
             <tr><td class="label">Institución/Empresa:</td><td class="cell">{{ empresa.nombre|default:'Sin empresa asignada' }}</td></tr>
             <tr><td class="label">Dirección:</td><td class="cell">{{ empresa.direccion|default:'Sin dirección registrada' }}</td></tr>
-            <tr><td class="label label-wide">Cantón:</td><td class="cell cell-wide">Sin cantón registrado</td><td class="label label-compact">Teléfono:</td><td class="cell cell-compact">{{ empresa.telefono|default:'Sin teléfono registrado' }}</td></tr>
+            <tr><td class="label label-wide">Cantón:</td><td class="cell cell-wide">{{ empresa.canton|default:'Sin cantón registrado' }}</td><td class="label label-compact">Teléfono:</td><td class="cell cell-compact">{{ empresa.telefono|default:'Sin teléfono registrado' }}</td></tr>
           </table>
           <div class="section-title">DATOS ADICIONALES</div>
           <table class="grid">

@@ -43,7 +43,28 @@ class _FormularioAsignacionEstudianteBodyState extends State<FormularioAsignacio
 
     if (mounted) {
       setState(() => _isSaving = false);
-      if (success) context.pop();
+      final messenger = ScaffoldMessenger.of(context);
+      if (success) {
+        context.pop();
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Se asignó correctamente.'),
+            backgroundColor: AppColores.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.controller.errorMessage ??
+                  'Algo falló, inténtelo más tarde.',
+            ),
+            backgroundColor: AppColores.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 

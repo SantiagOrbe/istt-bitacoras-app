@@ -203,11 +203,22 @@ class TarjetaInfoUsuario extends StatelessWidget {
             ],
             TextFormField(
               controller: controller.passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
+              obscureText: !controller.isPasswordVisible,
+              decoration: InputDecoration(
                 labelText: 'Nueva contraseña (opcional)',
-                prefixIcon: Icon(Icons.lock_outline),
+                prefixIcon: const Icon(Icons.lock_outline),
                 helperText: 'Déjalo vacío para conservar la actual.',
+                suffixIcon: IconButton(
+                  tooltip: controller.isPasswordVisible
+                      ? 'Ocultar contraseña'
+                      : 'Mostrar contraseña',
+                  onPressed: controller.togglePasswordVisibility,
+                  icon: Icon(
+                    controller.isPasswordVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                  ),
+                ),
               ),
             ),
           ] else ...[
@@ -268,21 +279,26 @@ class _InfoTile extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: Colors.grey[600]),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
-              ),
-            ],
+                Text(
+                  value,
+                  softWrap: true,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

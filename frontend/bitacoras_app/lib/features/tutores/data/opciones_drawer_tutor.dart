@@ -1,34 +1,43 @@
 import 'package:bitacoras_app/features/tutores/tutores.dart';
 
-List<SeccionMenuModel> getOpcionesDrawerTutorAcademico() {
+List<SeccionMenuModel> getOpcionesDrawerTutorAcademico({
+  EstadoVisitaTutorModel? visita,
+}) {
+  final estado = visita ?? const EstadoVisitaTutorModel();
+
   return [
-    const SeccionMenuModel(
+    SeccionMenuModel(
       title: 'Tutoría Académica',
       items: [
-        ItemMenuModel(
+        const ItemMenuModel(
           icon: Icons.people_outline_rounded,
           title: 'Mis Tutoriados',
           route: AppRoutes.estudiantesAsignados,
+          enabled: true,
         ),
         ItemMenuModel(
           icon: Icons.assignment_turned_in_outlined,
           title: 'Registrar Entrada',
           route: AppRoutes.registrarVisitaTutor,
+          enabled: estado.puedeRegistrarEntrada,
         ),
         ItemMenuModel(
           icon: Icons.exit_to_app_outlined,
           title: 'Registrar Salida',
           route: AppRoutes.registrarSalidaTutor,
+          enabled: estado.puedeRegistrarSalida,
         ),
         ItemMenuModel(
           icon: Icons.edit_note_outlined,
           title: 'Registrar Actividades',
           route: AppRoutes.actividadesTutor,
+          enabled: estado.puedeRegistrarActividades,
         ),
-        ItemMenuModel(
+        const ItemMenuModel(
           icon: Icons.description_outlined,
           title: 'Reportes',
           route: AppRoutes.reportes,
+          enabled: true,
         ),
       ],
     ),

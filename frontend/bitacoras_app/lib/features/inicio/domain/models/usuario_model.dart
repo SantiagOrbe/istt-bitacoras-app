@@ -64,11 +64,13 @@ class UsuarioModel {
     String? name,
     String? email,
     String? company,
+    bool clearCompany = false,
     RolUsuarioModel? role,
     bool? isActive,
     String? phone,
     String? cedula,
     String? careerName,
+    bool clearCareerName = false,
     String? periodName,
     String? password,
     String? tutorAcademico,
@@ -88,12 +90,12 @@ class UsuarioModel {
       username: username ?? this.username,
       name: name ?? this.name,
       email: email ?? this.email,
-      company: company ?? this.company,
+      company: clearCompany ? null : company ?? this.company,
       role: role ?? this.role,
       isActive: isActive ?? this.isActive,
       phone: phone ?? this.phone,
       cedula: cedula ?? this.cedula,
-      careerName: careerName ?? this.careerName,
+      careerName: clearCareerName ? null : careerName ?? this.careerName,
       periodName: periodName ?? this.periodName,
       password: password ?? this.password,
       tutorAcademico: tutorAcademico ?? this.tutorAcademico,
@@ -182,6 +184,13 @@ class UsuarioModel {
 
     final horasRequeridas =
         (perfil?['horas_practicas'] ?? usuario['horas_practicas'] ?? 0) as num? ?? 0;
+    final cedula = [
+      perfil?['cedula'],
+      usuario['cedula'],
+      json['cedula'],
+    ].map((value) => value?.toString().trim())
+      .whereType<String>()
+      .firstWhere((value) => value.isNotEmpty, orElse: () => '');
 
     return UsuarioModel(
       id: usuario['id']?.toString() ?? '',
@@ -193,7 +202,7 @@ class UsuarioModel {
       role: rol,
       isActive: usuario['estado'] as bool? ?? usuario['is_active'] as bool? ?? true,
       phone: usuario['telefono']?.toString() ?? usuario['phone']?.toString(),
-      cedula: perfil?['cedula']?.toString() ?? usuario['cedula']?.toString(),
+      cedula: cedula.isEmpty ? null : cedula,
       careerName: nombreCarrera,
       periodName: usuario['period_name'] as String?,
       password: null,

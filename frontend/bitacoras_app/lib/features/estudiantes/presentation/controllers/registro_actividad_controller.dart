@@ -77,13 +77,38 @@ class RegistroActividadController extends ChangeNotifier {
   }
 
   Future<bool> saveActivities() async {
-    if (!await validateLocation()) return false;
+    validationMessage = null;
 
-    final bool hasContent = controllers.any((c) => c.text.trim().isNotEmpty);
+    final descriptions = controllers
+        .map((controller) => controller.text.trim())
+        .where((description) => description.isNotEmpty)
+        .toList();
 
-    if (!hasContent) {
+    if (descriptions.isEmpty) {
+      validationMessage = 'Ingrese al menos una actividad.';
+      notifyListeners();
       return false;
     }
+
+    final validDescription = RegExp(r'^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$');
+    if (descriptions.any((description) => !validDescription.hasMatch(description))) {
+      validationMessage =
+          'No se pueden usar números ni símbolos; escriba solo letras y espacios.';
+      notifyListeners();
+      return false;
+    }
+
+    final letterCount = RegExp(r'[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]');
+    if (descriptions.any(
+      (description) => letterCount.allMatches(description).length < 20,
+    )) {
+      validationMessage =
+          'Cada actividad debe tener al menos 20 letras.';
+      notifyListeners();
+      return false;
+    }
+
+    if (!await validateLocation()) return false;
 
     isLoading = true;
     notifyListeners();
@@ -96,9 +121,7 @@ class RegistroActividadController extends ChangeNotifier {
     }
 
     try {
-      for (final controller in controllers) {
-        final description = controller.text.trim();
-        if (description.isEmpty) continue;
+      for (final description in descriptions) {
         await bitacoraRepository.crearActividad({
           'descripcion': description,
           'registro_practica': currentRecord.id,
