@@ -29,6 +29,7 @@ backend/venv/
 .env
 .env.*
 !.env.example
+credenciales_demo.local.txt
 *.pem
 *.key
 

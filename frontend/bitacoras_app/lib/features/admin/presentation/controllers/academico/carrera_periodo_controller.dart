@@ -7,6 +7,7 @@ class CarreraPeriodoController extends ChangeNotifier {
 
   List<PeriodoModel> periods = [];
   List<CarreraModel> careers = [];
+  final Map<String, Set<int>> selectableSemestersByCareer = {};
   bool isLoading = true;
   String? errorMessage;
 
@@ -21,8 +22,16 @@ class CarreraPeriodoController extends ChangeNotifier {
     try {
       periods = await repository.obtenerPeriodos();
       careers = await repository.obtenerCarreras();
+      final semesters = await repository.obtenerCiclos();
       final configsList = await repository
           .obtenerConfiguracionesPeriodoCarrera();
+
+      selectableSemestersByCareer.clear();
+      for (final semester in semesters.where((item) => item.isActive)) {
+        selectableSemestersByCareer
+            .putIfAbsent(semester.careerId, () => <int>{})
+            .add(semester.level);
+      }
 
       configs.clear();
       for (final config in configsList) {
@@ -86,7 +95,8 @@ class CarreraPeriodoController extends ChangeNotifier {
         totalSemesters: 0,
       ),
     );
-    if (!career.isActive) {
+    if (!career.isActive ||
+        !(selectableSemestersByCareer[careerId]?.contains(semester) ?? false)) {
       return;
     }
 
@@ -114,7 +124,12 @@ class CarreraPeriodoController extends ChangeNotifier {
       final activeCareers = careers.where((career) => career.isActive);
       final configurations = activeCareers.map((career) {
         final key = getConfigKey(career.id);
-        final activeSemesters = (configs[key]?.toList() ?? [])..sort();
+        final selectableSemesters =
+            selectableSemestersByCareer[career.id] ?? <int>{};
+        final activeSemesters = (configs[key] ?? {})
+            .where(selectableSemesters.contains)
+            .toList()
+          ..sort();
         return ConfiguracionPeriodoCarreraModel(
           careerId: career.id,
           periodId: selectedPeriodId,

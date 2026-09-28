@@ -206,8 +206,12 @@ class UsuarioModel {
       careerName: nombreCarrera,
       periodName: usuario['period_name'] as String?,
       password: null,
-      tutorAcademico: perfil?['tutor_academico']?.toString(),
-      tutorEmpresarial: perfil?['tutor_empresarial']?.toString(),
+        tutorAcademico:
+          (perfil?['tutor_academico_nombre'] ?? perfil?['tutor_academico'])
+            ?.toString(),
+        tutorEmpresarial:
+          (perfil?['tutor_empresarial_nombre'] ?? perfil?['tutor_empresarial'])
+            ?.toString(),
       cargo: usuario['cargo']?.toString(),
       companyId: (usuario['empresa_id'] ?? usuario['empresa'])?.toString(),
       carreraId: usuario['carrera_id']?.toString(),

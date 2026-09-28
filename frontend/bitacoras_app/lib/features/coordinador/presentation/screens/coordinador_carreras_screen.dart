@@ -80,4 +80,3 @@ class _CoordinadorCarrerasScreenState extends State<CoordinadorCarrerasScreen> {
     );
   }
 }
-

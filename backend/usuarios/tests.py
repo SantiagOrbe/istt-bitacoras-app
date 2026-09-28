@@ -10,6 +10,8 @@ from .models import Estudiante
 from .models import Coordinador
 from .models import ResponsablePracticas
 from .models import TutorAcademico
+from .models import TutorEmpresarial
+from .serializers import EstudianteSerializer
 from gestion_academica.models import (
 	Carrera,
 	CarreraPeriodo,
@@ -106,6 +108,67 @@ class AutenticacionTests(APITestCase):
 		self.assertTrue(
 			Estudiante.objects.filter(usuario=usuario).exists()
 		)
+
+	def test_perfil_estudiante_incluye_nombres_de_tutores_asignados(self):
+		usuario_academico = Usuario.objects.create_user(
+			username='tutor_academico',
+			email='tutor.academico@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='tutor_academico',
+			first_name='María',
+			last_name='Pérez',
+		)
+		tutor_academico = TutorAcademico.objects.create(
+			usuario=usuario_academico,
+			cedula='1500000001',
+		)
+		empresa = Empresa.objects.create(
+			nombre='Empresa de prueba',
+			direccion='Tena',
+			telefono='0999999999',
+			correo='empresa@example.com',
+		)
+		usuario_empresarial = Usuario.objects.create_user(
+			username='tutor_empresarial',
+			email='tutor.empresarial@est.itstena.edu.ec',
+			password='ClaveSegura123',
+			rol='tutor_empresarial',
+			first_name='Luis',
+			last_name='Gómez',
+		)
+		tutor_empresarial = TutorEmpresarial.objects.create(
+			usuario=usuario_empresarial,
+			cedula='1500000002',
+			cargo='Supervisor',
+			empresa=empresa,
+		)
+		estudiante = Estudiante.objects.create(
+			usuario=Usuario.objects.get(email=self.email),
+			tutor_academico=tutor_academico,
+			tutor_empresarial=tutor_empresarial,
+		)
+
+		data = EstudianteSerializer(estudiante).data
+
+		self.assertEqual(data['tutor_academico_nombre'], 'María Pérez')
+		self.assertEqual(data['tutor_empresarial_nombre'], 'Luis Gómez')
+		self.assertEqual(data['tutor_academico'], tutor_academico.pk)
+		self.assertEqual(data['tutor_empresarial'], tutor_empresarial.pk)
+
+	def test_registro_rechaza_correo_ya_registrado_sin_crear_otra_cuenta(self):
+		response = self.client.post(
+			reverse('register'),
+			{
+				'email': self.email.upper(),
+				'password': 'NuevaClave123',
+				'confirm_password': 'NuevaClave123',
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('email', response.data)
+		self.assertEqual(Usuario.objects.filter(email__iexact=self.email).count(), 1)
 
 	@patch('usuarios.serializers.Estudiante.objects.get_or_create')
 	def test_registro_revierte_usuario_si_falla_perfil(self, get_or_create):

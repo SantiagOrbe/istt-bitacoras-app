@@ -429,7 +429,7 @@ class BitacorasGeofencingTests(APITestCase):
         )
         self.assertEqual(salida_sin_gps.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_tutor_can_edit_and_desactivar_un_registro_de_practica(self):
+    def test_tutors_cannot_edit_or_deactivate_practice_records(self):
         from datetime import time
 
         registro = RegistroPractica.objects.create(
@@ -445,44 +445,20 @@ class BitacorasGeofencingTests(APITestCase):
             estado=True,
         )
 
-        self.client.force_authenticate(user=self.user_tutor_acad)
-        response = self.client.patch(
-            reverse('registropractica-detail', args=[registro.id]),
-            {'actividad_descripcion': 'Actividad actualizada', 'estado': False},
-            format='json',
-        )
+        url = reverse('registropractica-detail', args=[registro.id])
+        for tutor in (self.user_tutor_acad, self.user_tutor_emp):
+            self.client.force_authenticate(user=tutor)
+            response = self.client.patch(
+                url,
+                {
+                    'actividad_descripcion': 'Actividad actualizada',
+                    'estado': False,
+                },
+                format='json',
+            )
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
         registro.refresh_from_db()
         actividad.refresh_from_db()
-        self.assertFalse(registro.estado)
-        self.assertEqual(actividad.descripcion, 'Actividad actualizada')
-
-    def test_tutor_can_edit_and_desactivar_un_registro_de_practica(self):
-        from datetime import time
-
-        registro = RegistroPractica.objects.create(
-            estudiante=self.estudiante,
-            fecha='2026-09-20',
-            hora_entrada=time(8, 0),
-            hora_salida=time(12, 0),
-            estado=True,
-        )
-        actividad = Actividad.objects.create(
-            registro_practica=registro,
-            descripcion='Actividad inicial',
-            estado=True,
-        )
-
-        self.client.force_authenticate(user=self.user_tutor_acad)
-        response = self.client.patch(
-            reverse('registropractica-detail', args=[registro.id]),
-            {'actividad_descripcion': 'Actividad actualizada', 'estado': False},
-            format='json',
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        registro.refresh_from_db()
-        actividad.refresh_from_db()
-        self.assertFalse(registro.estado)
-        self.assertEqual(actividad.descripcion, 'Actividad actualizada')
+        self.assertTrue(registro.estado)
+        self.assertEqual(actividad.descripcion, 'Actividad inicial')

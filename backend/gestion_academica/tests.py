@@ -354,6 +354,44 @@ class ParaleloEstudiantesTests(APITestCase):
 			paralelo=None,
 		).estado)
 
+	def test_configuracion_masiva_rechaza_semestre_inactivo(self):
+		periodo = Periodo.objects.create(
+			nombre='2027-IS-INACTIVO',
+			fecha_inicio='2027-01-05',
+			fecha_fin='2027-06-30',
+			estado=True,
+		)
+		semestre_inactivo = Semestre.objects.create(
+			nombre='Segundo',
+			nivel=2,
+			carrera=self.carrera,
+			estado=False,
+		)
+
+		response = self.client.post(
+			reverse('carreraperiodo-configurar-periodo'),
+			{
+				'periodo': periodo.pk,
+				'carreras': [{
+					'carrera': self.carrera.pk,
+					'active_semesters': [
+						self.first_parallel.semestre.nivel,
+						semestre_inactivo.nivel,
+					],
+				}],
+			},
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertFalse(
+			CarreraPeriodo.objects.filter(
+				carrera=self.carrera,
+				periodo=periodo,
+				semestre=semestre_inactivo,
+			).exists()
+		)
+
 	def test_desactiva_carrera_requiere_confirmacion_si_tiene_relaciones(self):
 		carrera = Carrera.objects.create(
 			nombre='Contabilidad',

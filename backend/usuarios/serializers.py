@@ -621,6 +621,8 @@ class EstudianteSerializer(serializers.ModelSerializer):
     semestre_nombre = serializers.SerializerMethodField()
     horas_practicas = serializers.SerializerMethodField()
     horas_acumuladas = serializers.SerializerMethodField()
+    tutor_academico_nombre = serializers.SerializerMethodField()
+    tutor_empresarial_nombre = serializers.SerializerMethodField()
 
     class Meta:
         model = Estudiante
@@ -636,7 +638,9 @@ class EstudianteSerializer(serializers.ModelSerializer):
             'paralelo',
             'empresa',
             'tutor_academico',
+            'tutor_academico_nombre',
             'tutor_empresarial',
+            'tutor_empresarial_nombre',
         ]
 
     def get_semestre_nombre(self, obj):
@@ -647,3 +651,15 @@ class EstudianteSerializer(serializers.ModelSerializer):
 
     def get_horas_acumuladas(self, obj):
         return obj.recalcular_horas_acumuladas()
+
+    def get_tutor_academico_nombre(self, obj):
+        if obj.tutor_academico is None:
+            return None
+        usuario = obj.tutor_academico.usuario
+        return usuario.get_full_name().strip() or usuario.email or usuario.username
+
+    def get_tutor_empresarial_nombre(self, obj):
+        if obj.tutor_empresarial is None:
+            return None
+        usuario = obj.tutor_empresarial.usuario
+        return usuario.get_full_name().strip() or usuario.email or usuario.username

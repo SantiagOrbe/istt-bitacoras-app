@@ -105,7 +105,7 @@ class _RegistroVisitaScreenState extends State<RegistroVisitaScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RegistroAsistenciaBody(title: 'Registrar Entrada', currentTime: DateFormat('hh:mm a').format(now), currentDate: DateFormat('yyyy-MM-dd').format(now), companyName: _companyLocation?.name ?? 'Sin empresa asignada', isGpsValid: _canRegister, locationAvailable: _companyLocation != null, latitude: _companyLocation?.latitude, longitude: _companyLocation?.longitude, allowedRadiusMeters: _companyLocation?.allowedRadiusMeters, validationMessage: _canRegister ? null : _validationMessage),
+              RegistroAsistenciaBody(title: 'Registrar Entrada', currentTime: DateFormat('hh:mm a').format(now), currentDate: DateFormat('yyyy-MM-dd').format(now), companyName: _companyLocation?.name ?? 'Sin empresa asignada', isGpsValid: _canRegister, locationAvailable: _companyLocation != null, latitude: _companyLocation?.latitude, longitude: _companyLocation?.longitude, allowedRadiusMeters: _companyLocation?.allowedRadiusMeters, validationMessage: null),
               if (!_canRegister) ...[ AppTamanos.gapV12, UbicacionNoAsignadaCard(title: _companyLocation == null ? 'Empresa no asignada' : _warningTitle, message: _companyLocation == null ? 'No hay una empresa asignada con ubicación GPS para este tutor.' : _validationMessage) ],
               AppTamanos.gapV24,
               AsistenciaActionButtons(isEntry: true, isLoading: false, enabled: _canRegister, onConfirm: _confirmArrival, onCancel: () => context.pop()),

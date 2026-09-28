@@ -25,5 +25,7 @@ class CoordinadorRepositoryImpl implements ICoordinadorRepository {
 
   @override
   Future<CoordinadorDatosModel> obtenerDatosCarrera() async =>
-      CoordinadorDatosModel.fromJson(await remoteDataSource.obtenerDatosCarrera());
+      CoordinadorDatosModel.fromJson(
+        await remoteDataSource.obtenerDatosCarrera(),
+      );
 }

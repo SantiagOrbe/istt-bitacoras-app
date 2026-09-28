@@ -71,6 +71,8 @@ class _CarreraPeriodoScreenState extends State<CarreraPeriodoScreen> {
               : CarreraPeriodoBody(
                   periods: _controller.periods,
                   careers: _controller.careers,
+                    selectableSemestersByCareer:
+                      _controller.selectableSemestersByCareer,
                   selectedPeriodId: _controller.selectedPeriodId,
                   configs: _controller.configs,
                   getConfigKey: _controller.getConfigKey,

@@ -4,7 +4,7 @@ class AppColores {
   AppColores._();
 
   // Colores Institucionales IST Tena
-  static const primary = Color(0xFF0F4C81);   // Azul Petróleo Principal
+  static const primary = Color(0xFF0F4C81);   // Azul Petróleo Principal 0xFF0F4C81
   static const secondary = Color(0xFF8CBF3F); // Cian / Verde Agua
 
   // Backgrounds y Superficies

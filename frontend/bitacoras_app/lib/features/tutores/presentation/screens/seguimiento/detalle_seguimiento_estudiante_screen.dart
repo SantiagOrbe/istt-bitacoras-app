@@ -1,6 +1,5 @@
 import 'package:bitacoras_app/features/tutores/tutores.dart';
 
-
 class DetalleSeguimientoEstudianteScreen extends StatefulWidget {
   final EstudianteAsignadoModel assignedStudent;
   final bool isAcademic;
@@ -66,75 +65,6 @@ class _DetalleSeguimientoEstudianteScreenState
     }
   }
 
-  Future<void> _toggleLogStatus(RegistroPracticaModel log) async {
-    try {
-      final updated = await context.read<ITutorRepository>().updateLog(
-        logId: log.id,
-        isActive: !log.isActive,
-      );
-
-      if (!mounted) return;
-
-      final index = _logs.indexWhere((item) => item.id == log.id);
-      if (index != -1) {
-        setState(() => _logs = [..._logs]..[index] = updated);
-      }
-    } catch (_) {
-      _showMessage('No se pudo cambiar el estado del registro.');
-    }
-  }
-
-  Future<void> _editLog(RegistroPracticaModel log) async {
-    final controller = TextEditingController(text: log.activityDescription);
-    final value = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Editar registro'),
-        content: TextField(
-          controller: controller,
-          maxLines: 4,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text.trim()),
-            child: const Text('Guardar'),
-          ),
-        ],
-      ),
-    );
-
-    controller.dispose();
-    if (value == null || value.isEmpty || !mounted) return;
-
-    try {
-      final updated = await context.read<ITutorRepository>().updateLog(
-        logId: log.id,
-        activityDescription: value,
-      );
-
-      if (!mounted) return;
-
-      final index = _logs.indexWhere((item) => item.id == log.id);
-      if (index != -1) {
-        setState(() => _logs = [..._logs]..[index] = updated);
-      }
-    } catch (_) {
-      _showMessage('No se pudo guardar el registro.');
-    }
-  }
-
-  void _showMessage(String message) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final item = widget.assignedStudent;
@@ -177,8 +107,6 @@ class _DetalleSeguimientoEstudianteScreenState
                         errorMessage: _errorMessage,
                         logs: _logs,
                         onRefresh: _fetchLogs,
-                        onToggleStatus: _toggleLogStatus,
-                        onEdit: _editLog,
                       )
                     : TabBarView(
                         controller: _tabController,
@@ -189,8 +117,6 @@ class _DetalleSeguimientoEstudianteScreenState
                             errorMessage: _errorMessage,
                             logs: _logs,
                             onRefresh: _fetchLogs,
-                            onToggleStatus: _toggleLogStatus,
-                            onEdit: _editLog,
                           ),
                         ],
                       ),

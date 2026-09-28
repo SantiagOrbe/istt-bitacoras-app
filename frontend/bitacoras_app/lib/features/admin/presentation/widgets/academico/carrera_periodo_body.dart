@@ -3,6 +3,7 @@ import 'package:bitacoras_app/features/admin/admin.dart';
 class CarreraPeriodoBody extends StatelessWidget {
   final List<PeriodoModel> periods;
   final List<CarreraModel> careers;
+  final Map<String, Set<int>> selectableSemestersByCareer;
   final String selectedPeriodId;
   final Map<String, Set<int>> configs;
   final String Function(String) getConfigKey;
@@ -13,6 +14,7 @@ class CarreraPeriodoBody extends StatelessWidget {
     super.key,
     required this.periods,
     required this.careers,
+    required this.selectableSemestersByCareer,
     required this.selectedPeriodId,
     required this.configs,
     required this.getConfigKey,
@@ -96,6 +98,8 @@ class CarreraPeriodoBody extends StatelessWidget {
               return CarreraConfigCard(
                 career: career,
                 activeSemesters: configs[key] ?? {},
+                selectableSemesters:
+                    selectableSemestersByCareer[career.id] ?? const <int>{},
                 onToggleSemester: (semester) =>
                     onToggleSemester(career.id, semester),
               );

@@ -54,11 +54,6 @@ List<SeccionMenuModel> getOpcionesDrawerTutorEmpresarial() {
           title: 'Pasantes Asignados',
           route: AppRoutes.estudiantesAsignados,
         ),
-        ItemMenuModel(
-          icon: Icons.analytics_outlined,
-          title: 'Seguimiento',
-          route: AppRoutes.seguimientoTutorEmpresarial,
-        ),
       ],
     ),
   ];

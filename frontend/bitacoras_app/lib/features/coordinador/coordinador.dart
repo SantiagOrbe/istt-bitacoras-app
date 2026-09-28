@@ -8,7 +8,6 @@ export 'package:bitacoras_app/features/coordinador/data/repositories/coordinador
 export 'package:bitacoras_app/core/network/api_client.dart';
 export '../../../../app/apps.dart';
 
-
 // --- Dominio ---
 export 'package:bitacoras_app/features/coordinador/domain/models/coordinador_model.dart';
 export 'package:bitacoras_app/features/coordinador/domain/models/coordinador_datos_model.dart';

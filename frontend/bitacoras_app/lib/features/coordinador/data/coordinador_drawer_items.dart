@@ -22,6 +22,5 @@ List<SeccionMenuModel> getCoordinatorDrawerSections() {
         ),
       ],
     ),
-    
   ];
 }

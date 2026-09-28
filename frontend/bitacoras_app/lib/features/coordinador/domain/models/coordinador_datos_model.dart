@@ -84,17 +84,16 @@ class CoordinadorEstudianteModel {
       paralelo: json['paralelo_nombre']?.toString() ?? '',
       empresa: json['empresa_nombre']?.toString() ?? '',
       tutorAcademico: json['tutor_academico']?.toString() ?? '',
-        tutorAcademicoCedula: json['tutor_academico_cedula']?.toString() ?? '',
-        tutorEmpresarial: json['tutor_empresarial']?.toString() ?? '',
-        tutorEmpresarialCedula:
+      tutorAcademicoCedula: json['tutor_academico_cedula']?.toString() ?? '',
+      tutorEmpresarial: json['tutor_empresarial']?.toString() ?? '',
+      tutorEmpresarialCedula:
           json['tutor_empresarial_cedula']?.toString() ?? '',
-        tutorEmpresarialCargo:
-          json['tutor_empresarial_cargo']?.toString() ?? '',
-        horasAcumuladas:
+      tutorEmpresarialCargo: json['tutor_empresarial_cargo']?.toString() ?? '',
+      horasAcumuladas:
           double.tryParse(json['horas_acumuladas']?.toString() ?? '') ?? 0,
-        horasRequeridas:
+      horasRequeridas:
           int.tryParse(json['horas_requeridas']?.toString() ?? '') ?? 0,
-        estaActivo: json['estado'] as bool? ?? false,
+      estaActivo: json['estado'] as bool? ?? false,
     );
   }
 }
@@ -154,7 +153,8 @@ class CoordinadorSemestreModel {
       id: json['id']?.toString() ?? '',
       nombre: json['nombre']?.toString() ?? '',
       nivel: json['nivel']?.toString() ?? '',
-      horasPracticas: int.tryParse(json['horas_practicas']?.toString() ?? '') ?? 0,
+      horasPracticas:
+          int.tryParse(json['horas_practicas']?.toString() ?? '') ?? 0,
       estaActivo: json['estado'] as bool? ?? false,
     );
   }

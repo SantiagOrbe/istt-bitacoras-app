@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from weasyprint import HTML
@@ -41,6 +41,14 @@ class RegistroPracticaViewSet(viewsets.ModelViewSet):
             serializer.save()
 
     def update(self, request, *args, **kwargs):
+        if getattr(request.user, 'rol', None) in {
+            'tutor_academico',
+            'tutor_empresarial',
+        }:
+            raise PermissionDenied(
+                'Los tutores solo pueden consultar los registros de práctica.'
+            )
+
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
 

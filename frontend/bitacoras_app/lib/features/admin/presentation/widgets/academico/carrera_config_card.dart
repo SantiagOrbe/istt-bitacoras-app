@@ -3,12 +3,14 @@ import 'package:bitacoras_app/features/admin/admin.dart';
 class CarreraConfigCard extends StatelessWidget {
   final CarreraModel career;
   final Set<int> activeSemesters;
+  final Set<int> selectableSemesters;
   final ValueChanged<int> onToggleSemester;
 
   const CarreraConfigCard({
     super.key,
     required this.career,
     required this.activeSemesters,
+    required this.selectableSemesters,
     required this.onToggleSemester,
   });
 
@@ -125,11 +127,14 @@ class CarreraConfigCard extends StatelessWidget {
             runSpacing: AppTamanos.sm,
             children: List.generate(career.totalSemesters, (i) {
               final semester = i + 1;
-              final isSelected = activeSemesters.contains(semester);
+              final isSelectable =
+                  !isDisabled && selectableSemesters.contains(semester);
+              final isSelected =
+                  isSelectable && activeSemesters.contains(semester);
 
               return InkWell(
                 borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
-                onTap: isDisabled ? null : () => onToggleSemester(semester),
+                onTap: isSelectable ? () => onToggleSemester(semester) : null,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   padding: const EdgeInsets.symmetric(
@@ -137,14 +142,14 @@ class CarreraConfigCard extends StatelessWidget {
                     vertical: AppTamanos.sm,
                   ),
                   decoration: BoxDecoration(
-                    color: isDisabled
+                    color: !isSelectable
                         ? AppColores.disabledSurface
                         : (isSelected
                               ? AppColores.secondary.withValues(alpha: 0.1)
                               : AppColores.background),
                     borderRadius: BorderRadius.circular(AppTamanos.radiusSm),
                     border: Border.all(
-                      color: isDisabled
+                        color: !isSelectable
                           ? AppColores.outline
                           : (isSelected
                                 ? AppColores.primary
@@ -172,8 +177,8 @@ class CarreraConfigCard extends StatelessWidget {
                               )
                             : AppEstiloTexto.body.copyWith(
                                 fontSize: 13,
-                                color: isDisabled
-                                    ? AppColores.textSecondary
+                                color: !isSelectable
+                                  ? AppColores.textDisabled
                                     : null,
                               ),
                       ),
